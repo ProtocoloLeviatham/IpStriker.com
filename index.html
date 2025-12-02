@@ -138,10 +138,10 @@
         /* API Data Grid */
         .api-row {
             display: grid;
-            grid-template-columns: 120px 1fr;
+            grid-template-columns: 140px 1fr;
             border-bottom: 1px solid #003300;
             padding: 4px 0;
-            font-size: 0.75rem;
+            font-size: 0.70rem;
         }
         .api-key { color: #00aa00; font-weight: bold; text-transform: uppercase; }
         .api-val { color: #ccffcc; word-break: break-all; text-align: right;}
@@ -182,6 +182,23 @@
             padding-bottom: 2px;
             line-height: 1.1;
         }
+
+        /* Ticker Animation */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+        .ticker {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 30s linear infinite;
+        }
+        @keyframes ticker {
+            0%   { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
     </style>
 </head>
 <body class="crt text-sm md:text-base selection:bg-green-500 selection:text-black">
@@ -199,7 +216,7 @@
                     CALCULANDO RED...
                 </span>
                 <span class="animate-pulse text-red-500 font-bold">/// UNAUTHORIZED ACCESS ///</span>
-                <span>V.6.6.7</span>
+                <span>V.6.6.8</span>
             </div>
         </header>
 
@@ -260,15 +277,15 @@
                     </label>
                 </div>
 
-                <div id="api-console" class="hidden border-t-2 border-green-600 pt-4 mt-4 bg-black p-4 h-48 md:h-64 overflow-y-auto font-mono text-xs relative z-50">
+                <div id="api-console" class="hidden border-t-2 border-green-600 pt-4 mt-4 bg-black p-4 h-64 md:h-80 overflow-y-auto font-mono text-xs relative z-50">
                     <div class="text-green-500 mb-2 font-bold flex justify-between">
-                        <span>[+] DATA INTERCEPTED SUCCESSFULLY</span><span class="animate-pulse">LIVE FEED</span>
+                        <span>[+] FULL DATA DUMP INTERCEPTED</span><span class="animate-pulse">LIVE FEED</span>
                     </div>
                     <div id="api-output" class="space-y-1"></div>
                 </div>
 
                 <div id="api-error" class="hidden mt-4 p-4 bg-red-900/30 border border-red-500 text-red-500 font-bold text-center animate-pulse">
-                    [!] ERROR DE CONEXIÓN CON EL NODO DE RASTREO [!]<br><span class="text-xs font-normal">Todas las APIs fallaron. Se activará el protocolo de simulación.</span>
+                    [!] ERROR CRÍTICO DE ENLACE [!]<br><span class="text-xs font-normal">Reintentando conexión satelital...</span>
                 </div>
 
                 <button id="btn-next-config" onclick="showConfig()" disabled class="w-full mt-4 btn-action py-4 hidden font-bold text-lg md:text-xl tracking-[0.2em] animate-[pulse_2s_infinite] cursor-pointer relative z-100 bg-green-900/40 border-2 border-green-500 hover:bg-green-500 hover:text-black">INICIAR CONFIGURACIÓN DE VECTORES >></button>
@@ -379,14 +396,24 @@
             </section>
         </main>
 
-        <footer class="w-full border-t border-green-900 bg-black/90 p-4 text-center text-[10px] md:text-xs font-mono relative z-50">
-           <div class="container mx-auto flex flex-col md:flex-row justify-between items-center opacity-70 gap-2">
-              <span class="glitch-text font-bold tracking-[0.3em] text-green-700" data-text="INDUSTRIAS LEVIATHAM">INDUSTRIAS LEVIATHAM © 2018-2025</span>
-              <div class="flex gap-4 text-green-900 font-bold">
-                 <span>RAM_ALLOC: [|||||||||--] 82%</span>
-                 <span>ENC: <span class="text-green-500 animate-pulse">AES-256</span></span>
-                 <span>NODE_STATUS: <span class="text-green-500">ONLINE</span></span>
-              </div>
+        <footer class="w-full border-t border-green-900 bg-black/95 p-2 text-[10px] md:text-xs font-mono relative z-50 overflow-hidden">
+            <div class="ticker-wrap border-b border-green-900 mb-2 pb-1 bg-black text-green-700">
+                <div class="ticker">
+                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.6.8 STABLE +++
+                </div>
+            </div>
+
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center opacity-80 gap-2">
+                <div class="flex flex-col items-center md:items-start">
+                    <span class="glitch-text font-bold tracking-[0.2em] text-green-500 text-sm" data-text="INDUSTRIAS LEVIATHAM">INDUSTRIAS LEVIATHAM © 2018-2025</span>
+                    <span class="text-[9px] text-gray-500">MILITARY GRADE CYBER WARFARE SUITE</span>
+                </div>
+                
+                <div class="flex gap-4 text-green-900 font-bold border border-green-900/50 p-1 px-2 bg-green-900/10">
+                    <span class="text-green-600">RAM: <span class="text-green-400">16.4 GB</span></span>
+                    <span class="text-green-600">CLIENT_IP: <span id="client-ip-display" class="text-red-400">DETECTING...</span></span>
+                    <span class="text-green-600">UTC: <span id="utc-clock" class="text-white">00:00:00</span></span>
+                </div>
            </div>
         </footer>
 
@@ -413,10 +440,30 @@
             initCanvas();
             animateBg();
             monitorNetwork(); 
+            startClock();
+            detectClientIP();
             setTimeout(() => {
                 termsContainer.innerHTML = termsHTML;
             }, 500);
         };
+
+        // --- FUNCIONES DEL FOOTER ---
+        function startClock() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('utc-clock').innerText = now.toISOString().split('T')[1].split('.')[0] + " Z";
+            }, 1000);
+        }
+
+        async function detectClientIP() {
+            try {
+                const req = await fetch('https://api.ipify.org?format=json');
+                const data = await req.json();
+                document.getElementById('client-ip-display').innerText = data.ip;
+            } catch(e) {
+                document.getElementById('client-ip-display').innerText = "HIDDEN/VPN";
+            }
+        }
 
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
@@ -503,7 +550,7 @@
             else if(val === 'web') input.placeholder = "www.google.com";
         }
 
-        // --- SISTEMA DE RASTREO MULTI-API BLINDADO ---
+        // --- SISTEMA DE RASTREO MULTI-API BLINDADO v2 ---
         async function trackTarget() {
             const input = document.getElementById('ip-input').value.trim();
             const type = document.querySelector('input[name="ttype"]:checked').value;
@@ -514,151 +561,146 @@
             const btn = document.getElementById('btn-track');
             const output = document.getElementById('api-output');
             const consoleDiv = document.getElementById('api-console');
-            const errorDiv = document.getElementById('api-error');
             const nextBtn = document.getElementById('btn-next-config');
             const resetBtn = document.getElementById('btn-reset-target');
 
-            btn.innerHTML = `<span class="animate-spin">⚙</span> ESCANEANDO...`;
+            btn.innerHTML = `<span class="animate-spin">⚙</span> INITIALIZING...`;
             consoleDiv.classList.add('hidden');
-            errorDiv.classList.add('hidden');
             nextBtn.classList.add('hidden');
             output.innerHTML = '';
             
-            let data = {};
-            let success = false;
+            let finalData = {};
+            let isMacMode = (type === 'mac');
 
             try {
-                // --- LÓGICA IP y WEB (TRIPLE FALLBACK) ---
-                if (type === 'ip' || type === 'web') {
-                    
-                    // API 1: ipwho.is (Primary)
-                    try {
-                        const req = await fetch(`https://ipwho.is/${input}`);
-                        const json = await req.json();
-                        if(json.success) {
-                            data = formatIPData(json);
-                            success = true;
-                        } else throw new Error("IPwho failed");
-                    } catch(e1) {
-                        console.log("Fallback 1 active...");
-                        // API 2: ip-api.com (Fallback HTTP/HTTPS mixed sometimes blocked)
+                // 1. SI ES WEB, RESOLVER DNS PRIMERO (EVITA CORS DE FETCH DIRECTO)
+                let targetIP = input;
+                let webResolved = false;
+
+                if (type === 'web') {
+                    // Validar si es dominio
+                    if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(input)) {
                         try {
-                           const req2 = await fetch(`http://ip-api.com/json/${input}`);
-                           const json2 = await req2.json();
-                           if(json2.status === 'success') {
-                               data = {
-                                   IP: json2.query,
-                                   ISP: json2.isp,
-                                   ORG: json2.org,
-                                   COUNTRY: json2.country,
-                                   CITY: json2.city,
-                                   TIMEZONE: json2.timezone
-                               };
-                               success = true;
-                           } else throw new Error("ip-api failed");
-                        } catch(e2) {
-                            console.log("Fallback 2 active...");
-                            // API 3: ipapi.co (Fallback final)
-                            try {
-                                const req3 = await fetch(`https://ipapi.co/${input}/json/`);
-                                const json3 = await req3.json();
-                                if(!json3.error) {
-                                    data = {
-                                        IP: json3.ip,
-                                        NETWORK: json3.org,
-                                        LOCATION: `${json3.city}, ${json3.country_name}`,
-                                        ASN: json3.asn
-                                    };
-                                    success = true;
-                                }
-                            } catch (e3) {
-                                throw new Error("All IP APIs failed");
+                            // Usar Google DNS API para resolver dominio a IP (Esto es CORS Friendly)
+                            const dnsReq = await fetch(`https://dns.google/resolve?name=${input}&type=A`);
+                            const dnsJson = await dnsReq.json();
+                            if (dnsJson.Answer) {
+                                targetIP = dnsJson.Answer[data => data.type === 1].data || dnsJson.Answer[0].data;
+                                webResolved = true;
+                                finalData["[DNS] RESOLUTION"] = "SUCCESS";
+                                finalData["[DNS] SERVER_IP"] = targetIP;
                             }
-                        }
-                    }
-
-                    // Datos extra para WEB
-                    if(success && type === 'web') {
-                         data.TARGET_TYPE = "WEB SERVER (RESOLVED)";
-                         data.PORT_80_CHECK = "OPEN (HTTP)";
-                    }
-
-                } 
-                // --- LÓGICA MAC ADDRESS (BASE DE DATOS LOCAL + API) ---
-                else if (type === 'mac') {
-                    
-                    // Base de datos Local de Fabricantes (OUI comunes) para evitar "Locked Sim"
-                    const macDB = {
-                        "00:1A:2B": "Cisco Systems, Inc", "00:0C:29": "VMware, Inc.", "00:50:56": "VMware, Inc.",
-                        "F0:98:9D": "Apple, Inc.", "BC:92:6B": "Apple, Inc.", "00:1C:B3": "Apple, Inc.",
-                        "B8:27:EB": "Raspberry Pi Foundation", "DC:A6:32": "Raspberry Pi Trading",
-                        "24:77:03": "Intel Corporate", "00:1E:67": "Intel Corporate",
-                        "50:E5:49": "Giga-Byte Technology", "00:D8:61": "TP-LINK TECHNOLOGIES",
-                        "C8:3A:35": "Tenda Technology", "00:E0:4C": "Realtek Semiconductor",
-                        "08:00:27": "PCS Systemtechnik (VirtualBox)", "52:54:00": "QEMU Virtual NIC"
-                    };
-
-                    const cleanMac = input.toUpperCase().replace(/[^A-F0-9]/g, "");
-                    const prefix = cleanMac.substring(0, 6); // Primeros 6 hex
-                    let vendor = "UNKNOWN VENDOR";
-                    let source = "API";
-
-                    // Intento de API primero
-                    try {
-                        const req = await fetch(`https://api.macvendors.com/${input}`);
-                        if(req.ok) {
-                            vendor = await req.text();
-                            success = true;
-                        } else throw new Error("API Fail");
-                    } catch(macErr) {
-                        // Fallback a Base de Datos Local
-                        source = "INTERNAL_DB (OFFLINE)";
-                        // Buscamos coincidencia en DB
-                        for (let key in macDB) {
-                            if (cleanMac.startsWith(key.replace(/:/g, ""))) {
-                                vendor = macDB[key];
-                                success = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (success || vendor !== "UNKNOWN VENDOR") {
-                        data = {
-                            MAC_ADDRESS: input,
-                            VENDOR_OUI: vendor,
-                            DATA_SOURCE: source,
-                            L2_STATUS: "ACTIVE",
-                            TYPE: "HARDWARE ADDRESS"
-                        };
-                        success = true; // Forzamos éxito si encontramos algo
-                    } else {
-                         // Si falla todo, inventamos datos basados en formato para no bloquear al usuario
-                         data = {
-                             MAC_ADDRESS: input,
-                             VENDOR: "GENERIC NETWORK CARD",
-                             STATUS: "UNREGISTERED OUI",
-                             NOTE: "MIGHT BE RANDOMIZED MAC"
-                         };
-                         success = true; 
+                        } catch (e) { console.log("DNS Fail, using fallback simulation for Web"); }
                     }
                 }
 
-                if (!success) throw new Error("Fatal: No data retrieved");
+                // 2. SI ES MAC, USAR DB LOCAL + API
+                if (type === 'mac') {
+                    // Chequeo si el usuario puso una URL en MAC (Capa 8 Error)
+                    if (input.includes('.') && !input.includes(':')) {
+                         // Generar MAC Virtual para el dominio (para que no de error)
+                         finalData["WARNING"] = "DOMAIN DETECTED IN MAC MODE";
+                         finalData["ACTION"] = "GENERATING VIRTUAL INTERFACE";
+                         finalData["MAC_ADDRESS"] = "52:54:00:" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString();
+                         finalData["VENDOR"] = "Virtual Bridge (Simulated)";
+                         finalData["STATUS"] = "ACTIVE (TUNNELED)";
+                    } else {
+                        // DB Local Masiva para evitar fallos
+                        const macDB = {
+                            "00:1A:2B": "Cisco Systems", "00:0C:29": "VMware", "F0:98:9D": "Apple",
+                            "B8:27:EB": "Raspberry Pi", "24:77:03": "Intel", "50:E5:49": "Giga-Byte",
+                            "00:D8:61": "TP-LINK", "C8:3A:35": "Tenda", "00:E0:4C": "Realtek",
+                            "D8:50:E6": "Asus", "FC:AA:14": "Giga-Byte", "00:25:90": "Super Micro",
+                            "00:1B:21": "Intel", "98:90:96": "Dell", "34:E6:D7": "Dell"
+                        };
+                        const clean = input.toUpperCase().replace(/[^A-F0-9]/g, "").substring(0,6);
+                        
+                        // Intentar API
+                        try {
+                            const req = await fetch(`https://api.maclookup.app/v2/macs/${input}`);
+                            if(req.ok) {
+                                const json = await req.json();
+                                if(json.found) finalData["VENDOR"] = json.company;
+                            }
+                        } catch(e) {}
 
+                        // Si API falla o no encuentra, usar DB Local
+                        if(!finalData["VENDOR"]) {
+                             for(let key in macDB) {
+                                 if(clean.startsWith(key.replace(/:/g,""))) finalData["VENDOR"] = macDB[key];
+                             }
+                        }
+                        
+                        // Si aun nada, generar "Unknown" real
+                        if(!finalData["VENDOR"]) finalData["VENDOR"] = "UNKNOWN / PRIVATE";
+                        
+                        finalData["MAC_ADDR"] = input;
+                        finalData["L2_PROTOCOL"] = "ETHERNET II";
+                        finalData["MULTICAST"] = (parseInt(clean.substring(0,2), 16) & 0x01) ? "YES" : "NO";
+                        finalData["LAA (LOCAL)"] = (parseInt(clean.substring(0,2), 16) & 0x02) ? "YES" : "NO";
+                    }
+                }
+
+                // 3. OBTENCIÓN MASIVA DE DATOS IP (Para IP y WEB)
+                if (!isMacMode) {
+                    // Paralelizamos peticiones para velocidad y redundancia
+                    const p1 = fetch(`https://ipapi.co/${targetIP}/json/`).then(r=>r.json()).catch(e=>({}));
+                    const p2 = fetch(`https://ipwho.is/${targetIP}`).then(r=>r.json()).catch(e=>({}));
+                    // Una API extra para datos de headers/navegador falsos
+                    const p3 = fetch(`https://httpbin.org/get`).then(r=>r.json()).catch(e=>({}));
+
+                    const [d1, d2, d3] = await Promise.all([p1, p2, p3]);
+
+                    // MEZCLAR DATOS (Merge Inteligente)
+                    finalData["TARGET_IP"] = targetIP;
+                    finalData["HOSTNAME"] = d2.connection?.domain || d1.org || "Unknown";
+                    
+                    // Geolocalización
+                    finalData["CONTINENT"] = d2.continent || d1.continent_code;
+                    finalData["COUNTRY"] = `${d2.country || d1.country_name} ${d2.flag?.emoji || '🏳️'}`;
+                    finalData["REGION"] = d2.region || d1.region;
+                    finalData["CITY"] = d2.city || d1.city;
+                    finalData["ZIP_CODE"] = d2.postal || d1.postal;
+                    finalData["COORDINATES"] = `${d2.latitude || d1.latitude}, ${d2.longitude || d1.longitude}`;
+                    
+                    // Red
+                    finalData["ASN"] = d2.connection?.asn || d1.asn;
+                    finalData["ISP"] = d2.connection?.isp || d1.org;
+                    finalData["ORG"] = d2.connection?.org || d1.org;
+                    finalData["CONNECTION_TYPE"] = "IPv4 (Public)";
+                    
+                    // Detalles Finos
+                    finalData["TIMEZONE"] = d2.timezone?.id || d1.timezone;
+                    finalData["UTC_OFFSET"] = d2.timezone?.utc || d1.utc_offset;
+                    finalData["CURRENCY"] = `${d2.currency?.name} (${d2.currency?.symbol})`;
+                    finalData["CALLING_CODE"] = `+${d2.calling_code || d1.country_calling_code}`;
+                    
+                    // Seguridad / Estado
+                    finalData["IS_VPN"] = "NO (High Probability)"; 
+                    finalData["IS_PROXY"] = "NO";
+                    finalData["TOR_EXIT"] = "FALSE";
+                    
+                    // Datos calculados o estimados para Web
+                    if (type === 'web') {
+                        finalData["SERVER_SOFTWARE"] = "nginx/1.18.0 (Ubuntu) [ESTIMATED]";
+                        finalData["HTTP_PORTS"] = "80, 443, 8080 (OPEN)";
+                        finalData["SSL_CERT"] = "VALID (Let's Encrypt R3)";
+                    }
+                }
+
+                // RENDERIZADO
                 function renderObject(obj, prefix = '') {
                     for(let key in obj) {
-                        if(typeof obj[key] === 'object' && obj[key] !== null) {
-                            renderObject(obj[key], prefix + key + '.');
-                        } else {
+                        if(obj[key] !== undefined && typeof obj[key] !== 'object') {
                             output.innerHTML += `<div class="api-row"><span class="api-key">${prefix}${key}</span><span class="api-val">${obj[key]}</span></div>`;
                         }
                     }
                 }
                 
-                renderObject(data);
+                renderObject(finalData);
                 consoleDiv.classList.remove('hidden');
-                btn.innerHTML = `<span>✓</span> LOCALIZADO`;
+                
+                btn.innerHTML = `<span>✓</span> TARGET LOCKED`;
                 btn.classList.add('bg-green-600', 'text-black');
                 nextBtn.classList.remove('hidden');
                 nextBtn.disabled = false; 
@@ -666,34 +708,14 @@
                 resetBtn.classList.remove('hidden');
 
             } catch (e) {
-                console.error("All methods failed:", e);
-                // SIMULACIÓN FINAL SI TODO FALLA
-                output.innerHTML = `
-                    <div class="api-row"><span class="api-key text-red-500">ERROR</span><span class="api-val text-red-500">API GATEWAY TIMEOUT</span></div>
-                    <div class="api-row"><span class="api-key">TARGET</span><span class="api-val">${input}</span></div>
-                    <div class="api-row"><span class="api-key">MODE</span><span class="api-val text-yellow-500">FORCED SIMULATION</span></div>
-                `;
+                console.error("Critical Fail:", e);
+                // Fallback de emergencia absoluto
+                output.innerHTML = `<div class="api-row"><span class="api-key text-red-500">FATAL ERROR</span><span class="api-val">NETWORK UNREACHABLE</span></div>`;
                 consoleDiv.classList.remove('hidden');
-                btn.innerHTML = `<span>⚠</span> LOCKED (SIM)`;
-                btn.classList.add('bg-yellow-600', 'text-black');
-                nextBtn.classList.remove('hidden');
-                nextBtn.disabled = false; 
-                nextBtn.style.cursor = "pointer";
+                btn.innerHTML = `<span>X</span> FAIL`;
+                btn.classList.add('bg-red-900');
                 resetBtn.classList.remove('hidden');
             }
-        }
-
-        function formatIPData(json) {
-            return {
-                IP_TARGET: json.ip,
-                TYPE: json.type,
-                COUNTRY: `${json.country} (${json.country_code})`,
-                REGION: `${json.region}, ${json.city}`,
-                ISP: json.connection.isp,
-                ORG: json.connection.org,
-                ASN: json.connection.asn,
-                COORDS: `${json.latitude}, ${json.longitude}`
-            };
         }
 
         function resetTarget() {
@@ -701,7 +723,6 @@
             const btn = document.getElementById('btn-track');
             const output = document.getElementById('api-output');
             const consoleDiv = document.getElementById('api-console');
-            const errorDiv = document.getElementById('api-error');
             const nextBtn = document.getElementById('btn-next-config');
             const resetBtn = document.getElementById('btn-reset-target');
 
@@ -711,7 +732,6 @@
             btn.innerHTML = `<span>⌖</span> LOCALIZAR`;
             btn.classList.remove('bg-green-600', 'text-black', 'bg-red-900', 'bg-yellow-600');
             consoleDiv.classList.add('hidden');
-            errorDiv.classList.add('hidden');
             nextBtn.classList.add('hidden');
             resetBtn.classList.add('hidden');
             output.innerHTML = '';
