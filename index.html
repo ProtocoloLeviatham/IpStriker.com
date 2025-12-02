@@ -3,497 +3,780 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEVIATHAM | GLOBAL CYBER COMMAND</title>
+    <title>LEVIATHAN | ADVANCED WARFARE</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --color-primary: #0f0;     /* Verde Matrix */
-            --color-secondary: #030;   /* Verde oscuro fondo */
-            --color-alert: #ff0000;    /* Rojo Alerta */
-            --color-warning: #ffcc00;  /* Amarillo */
-            --color-dark: #010101;     /* Negro casi total */
-            --font-stack: 'Courier New', Courier, monospace;
+            --primary: #00ff00;
+            --danger: #ff0000;
+            --dark: #050505;
+            --glass: rgba(0, 20, 0, 0.9);
         }
 
-        /* Reset y Base */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: var(--color-dark);
-            color: var(--color-primary);
-            font-family: var(--font-stack);
-            height: 100vh;
+            background-color: var(--dark);
+            color: var(--primary);
+            font-family: 'Share Tech Mono', monospace;
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
+            margin: 0;
+            height: 100vh;
+            cursor: default;
+        }
+
+        /* --- EFECTOS CRT Y GLITCH --- */
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 50;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
         }
         
-        /* Efectos de Pantalla (CRT y Red Neuronal) */
-        #canvas-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2; opacity: 0.4;
+        .glitch-text {
+            position: relative;
         }
-        .crt-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
-            pointer-events: none; z-index: 9999;
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark);
         }
-        .scanline {
-            width: 100%; height: 100px; z-index: 9998; position: fixed; left: 0; top: 0;
-            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,255,0,0.2) 10%, rgba(0,0,0,0.1) 100%);
-            opacity: 0.1; animation: scanline 10s linear infinite; pointer-events: none;
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 red;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+            clip-path: inset(0 0 0 0);
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+            clip-path: inset(0 0 0 0);
         }
 
-        /* Utilidades y Animaciones */
-        .hidden { display: none !important; }
-        .text-alert { color: var(--color-alert); text-shadow: 0 0 5px var(--color-alert); }
-        .text-warning { color: var(--color-warning); }
-        .blink { animation: blinker 1s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0; } }
-        @keyframes scanline { 0% { top: -100px; } 100% { top: 100%; } }
-        @keyframes redAlertPulse { 0% { box-shadow: inset 0 0 0 var(--color-alert); } 50% { box-shadow: inset 0 0 100px var(--color-alert); border-color: var(--color-alert); } 100% { box-shadow: inset 0 0 0 var(--color-alert); } }
-
-        /* Estado de Ataque Global */
-        body.attack-mode {
-            animation: redAlertPulse 2s infinite;
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
         }
-        body.attack-mode .panel, body.attack-mode header {
-            border-color: var(--color-alert);
-            color: var(--color-alert);
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(30% 0 20% 0); }
+            40% { clip-path: inset(90% 0 10% 0); }
+            60% { clip-path: inset(15% 0 80% 0); }
+            80% { clip-path: inset(55% 0 10% 0); }
+            100% { clip-path: inset(40% 0 30% 0); }
         }
-        body.attack-mode .btn-terminal { border-color: var(--color-alert); color: var(--color-alert); }
 
-        /* --- COMPONENTES UI --- */
-
-        /* Modal de Alerta Inicial */
-        #modal-alert {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.97); z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 4px solid var(--color-alert); padding: 20px; text-align: center;
-        }
-        .alert-box h1 { font-size: 3rem; margin-bottom: 20px; letter-spacing: 5px; }
-        .alert-box p { font-size: 1.2rem; margin-bottom: 30px; max-width: 600px; }
-
-        /* Botones Estilo Terminal */
-        .btn-terminal {
-            background: transparent; border: 2px solid var(--color-primary);
-            color: var(--color-primary); padding: 15px 30px; font-size: 1.1rem;
-            cursor: pointer; text-transform: uppercase; font-weight: bold;
-            transition: all 0.3s; position: relative; overflow: hidden;
-        }
-        .btn-terminal:hover { background: var(--color-primary); color: var(--color-dark); box-shadow: 0 0 20px var(--color-primary); }
-        .btn-alert:hover { background: var(--color-alert); color: var(--color-dark); box-shadow: 0 0 20px var(--color-alert); border-color: var(--color-alert); }
-        
-        /* Contenedor Principal */
-        .container { max-width: 1100px; margin: 0 auto; padding: 20px; width: 95%; }
-        header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid var(--color-primary); padding-bottom: 20px; }
-        header h2 { font-size: 2.5rem; letter-spacing: 8px; text-shadow: 0 0 10px var(--color-primary); }
-
-        /* Paneles y Secciones */
+        /* --- UI COMPONENTES --- */
         .panel {
-            background: rgba(0, 10, 0, 0.8); border: 1px solid var(--color-primary);
-            padding: 20px; margin-bottom: 20px; box-shadow: 0 0 15px rgba(0, 50, 0, 0.5);
+            background: var(--glass);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+            position: relative;
+            z-index: 60; 
         }
-        .panel-title { border-bottom: 1px solid var(--color-primary); margin-bottom: 15px; padding-bottom: 5px; font-size: 1.2rem; }
 
-        /* Inputs */
-        .input-group { display: flex; gap: 10px; }
-        input[type="text"] {
-            flex-grow: 1; background: rgba(0,0,0,0.5); border: 2px solid var(--color-primary);
-            color: var(--color-primary); padding: 15px; font-family: var(--font-stack); font-size: 1.1rem;
+        .btn-action {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            text-transform: uppercase;
+            background: rgba(0,20,0,0.8);
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+            z-index: 100;
         }
-        input[type="text"]:focus { outline: none; box-shadow: 0 0 10px var(--color-primary); }
-
-        /* Grilla de Datos de Reconocimiento */
-        .recon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
-        .data-field { border-left: 3px solid var(--color-primary); padding-left: 10px; }
-        .data-label { font-size: 0.8rem; opacity: 0.7; display: block; }
-        .data-value { font-size: 1.1rem; font-weight: bold; }
-        #port-scan-output { margin-top: 15px; height: 100px; overflow-y: auto; font-size: 0.9rem; border-top: 1px dashed var(--color-secondary); padding-top: 10px; }
-
-        /* Configuración de Ataque */
-        .attack-options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .attack-card {
-            border: 2px solid var(--color-primary); padding: 15px; cursor: pointer; text-align: center; transition: 0.3s; opacity: 0.7;
+        .btn-action:hover:not(:disabled) {
+            background: var(--primary);
+            color: black;
+            box-shadow: 0 0 20px var(--primary);
         }
-        .attack-card:hover { opacity: 1; transform: scale(1.05); box-shadow: 0 0 15px var(--color-primary); }
-        .attack-card.selected { opacity: 1; background: var(--color-secondary); box-shadow: 0 0 20px var(--color-primary); }
+        .btn-action:disabled {
+            border-color: #333;
+            color: #555;
+            cursor: not-allowed;
+        }
+
+        /* Vector Card Selection */
+        .vector-card {
+            border: 1px solid #333;
+            transition: transform 0.2s, box-shadow 0.2s;
+            opacity: 0.6;
+            cursor: pointer;
+            position: relative;
+            z-index: 60;
+        }
+        .vector-card:hover {
+            opacity: 1;
+            transform: scale(1.02);
+            z-index: 70;
+        }
+        .vector-card.selected {
+            opacity: 1;
+            box-shadow: 0 0 15px inset;
+            border-width: 2px;
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #001100; }
+        ::-webkit-scrollbar-thumb { background: #0f0; }
+
+        /* API Data Grid */
+        .api-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            border-bottom: 1px solid #003300;
+            padding: 2px 0;
+            font-size: 0.75rem;
+        }
+        .api-key { color: #00aa00; font-weight: bold; text-transform: uppercase; }
+        .api-val { color: #ccffcc; word-break: break-all; }
+
+        /* Decodificación de texto */
+        .decode-text span {
+            opacity: 0;
+            animation: reveal 0.01s forwards;
+        }
+        @keyframes reveal { to { opacity: 1; } }
+
+        /* Animaciones */
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scan-line {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            animation: scanline 2s linear infinite;
+            pointer-events: none;
+            z-index: 40;
+        }
+
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         
-        /* Niveles de poder */
-        .lvl-low { border-color: var(--color-primary); color: var(--color-primary); }
-        .lvl-med { border-color: var(--color-warning); color: var(--color-warning); }
-        .lvl-crit { border-color: var(--color-alert); color: var(--color-alert); }
-        .attack-card.lvl-crit:hover, .attack-card.lvl-crit.selected { box-shadow: 0 0 20px var(--color-alert); background: rgba(50,0,0,0.3); }
-
-        /* Selector de Tiempo */
-        .time-selector { margin: 20px 0; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
-        .radio-group label {
-            cursor: pointer; padding: 10px 20px; border: 1px solid var(--color-primary); margin-right: 5px; transition: 0.3s;
+        input, button {
+            cursor: text;
         }
-        .radio-group input[type="radio"] { display: none; }
-        .radio-group input:checked + label { background: var(--color-primary); color: var(--color-dark); font-weight: bold; }
-
-        /* Terminal de Ataque Realista */
-        #terminal-container { position: relative; height: 400px; background: black; border: 3px solid var(--color-alert); overflow: hidden; }
-        #console-output {
-            height: 100%; overflow-y: scroll; padding: 15px; font-size: 0.9rem; color: var(--color-alert);
-            scrollbar-width: none; /* Firefox */
-        }
-        #console-output::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
-
-        #cve-panel {
-            position: absolute; top: 10px; right: 10px; width: 250px; height: 150px;
-            background: rgba(50,0,0,0.9); border: 1px solid var(--color-alert);
-            overflow: hidden; font-size: 0.8rem; padding: 5px;
-        }
-        .cve-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .input-group { flex-direction: column; }
-            .btn-terminal { width: 100%; }
-            header h2 { font-size: 1.8rem; }
+        button {
+            cursor: pointer;
         }
     </style>
 </head>
-<body>
-    <div class="crt-overlay"></div>
-    <div class="scanline"></div>
-    <canvas id="canvas-bg"></canvas>
+<body class="crt text-sm md:text-base selection:bg-green-500 selection:text-black">
 
-    <div id="modal-alert">
-        <div class="alert-box text-alert">
-            <h1 class="blink">⚠ ALERTA DE SEGURIDAD ⚠</h1>
-            <p>ESTA INTERFAZ ES PROPIEDAD DE LA AGENCIA CENTRAL. EL ACCESO NO AUTORIZADO ES UN DELITO FEDERAL CLASE A.<br><br>PROTOCOLOS DE HACKING OFENSIVO ACTIVOS.</p>
-            <button class="btn-terminal btn-alert" onclick="enterSystem()">[ ACCEDER AL SISTEMA ]</button>
-        </div>
-    </div>
+    <canvas id="bg-canvas"></canvas>
+    <div class="scan-line"></div>
 
-    <div class="container hidden" id="main-interface">
-        <header>
-            <h2>LEVIATHAM v5.0</h2>
-            <div style="font-size: 0.9rem; display: flex; justify-content: space-between; margin-top: 10px;">
-                <span id="user-ip">TU IP: BUSCANDO...</span>
-                <span>OPERADOR: <span class="text-warning">UNKNOWN_AGENT</span></span>
-                <span>ESTADO RED: <span style="color:var(--color-primary)">ONLINE</span></span>
+    <div class="relative z-10 container mx-auto p-4 min-h-screen flex flex-col">
+        
+        <!-- HEADER -->
+        <header class="text-center mb-8 pt-4 border-b border-green-800 pb-4 relative z-60">
+            <h1 class="text-5xl md:text-7xl font-bold mb-2 glitch-text tracking-widest" data-text="LEVIATHAN">LEVIATHAN</h1>
+            <div class="flex justify-between items-center text-xs md:text-sm text-green-600 px-4 mt-2 font-mono">
+                <span>CIA_CYBER_CMD::NODE_ALPHA</span>
+                <span class="animate-pulse text-red-500 font-bold">/// UNAUTHORIZED ACCESS DETECTED ///</span>
+                <span>V.6.6.6</span>
             </div>
         </header>
 
-        <section id="section-recon" class="panel">
-            <div class="panel-title">// FASE 1: TARGET ACQUISITION & RECON</div>
-            <div class="input-group">
-                <input type="text" id="target-ip-input" placeholder="INGRESE IP OBJETIVO (Ej: 1.1.1.1)" value="8.8.8.8">
-                <button class="btn-terminal" id="btn-start-recon" onclick="startReconProcess()">INICIAR RECONOCIMIENTO</button>
-            </div>
-
-            <div id="recon-results" class="hidden" style="margin-top: 20px;">
-                <div class="recon-grid" id="recon-data-container">
-                    </div>
-                <div class="panel-title" style="margin-top: 20px;">// ESCANEO DE PUERTOS (ACTIVO)</div>
-                <div id="port-scan-output"></div>
-                
-                <button class="btn-terminal hidden" id="btn-continue-attack" style="width: 100%; margin-top: 20px;" onclick="showAttackConfig()">[ CONTINUAR A VECTOR DE ATAQUE ]</button>
-            </div>
-        </section>
-
-        <section id="section-config" class="panel hidden">
-            <div class="panel-title">// FASE 2: ATTACK VECTOR CONFIGURATION</div>
-            <p style="margin-bottom: 15px;">SELECCIONE PAYLOAD Y DURACIÓN:</p>
-
-            <div class="attack-options-grid">
-                <div class="attack-card lvl-crit" onclick="selectAttack(this, 'DNS_AMP')">
-                    <h3>DNS AMPLIFICATION</h3>
-                    <span style="font-size:0.8rem">POTENCIA: CRÍTICA</span>
-                    <p style="font-size:0.9rem; margin-top:5px;">Usa resolvers DNS abiertos para reflejar y amplificar tráfico x70 hacia el objetivo.</p>
-                </div>
-                <div class="attack-card lvl-crit" onclick="selectAttack(this, 'UDP_FLOOD')">
-                    <h3>UDP FLOOD (L7)</h3>
-                    <span style="font-size:0.8rem">POTENCIA: ALTA</span>
-                    <p style="font-size:0.9rem; margin-top:5px;">Saturación volumétrica de ancho de banda con datagramas UDP aleatorios.</p>
-                </div>
-                <div class="attack-card lvl-med" onclick="selectAttack(this, 'TCP_SYN')">
-                    <h3>TCP SYN FLOOD</h3>
-                    <span style="font-size:0.8rem">POTENCIA: MEDIA</span>
-                    <p style="font-size:0.9rem; margin-top:5px;">Agota recursos del servidor dejando conexiones a medio abrir (Half-open).</p>
-                </div>
-                <div class="attack-card lvl-low" onclick="selectAttack(this, 'ICMP_PING')">
-                    <h3>ICMP ECHO FLOOD</h3>
-                    <span style="font-size:0.8rem">POTENCIA: BAJA</span>
-                    <p style="font-size:0.9rem; margin-top:5px;">Inundación básica de solicitudes Ping. Útil para saturación simple.</p>
-                </div>
-            </div>
-
-            <div class="time-selector panel">
-                <span style="font-weight: bold;">DURACIÓN DEL ATAQUE:</span>
-                <div class="radio-group">
-                    <input type="radio" id="t10" name="time" value="10" checked><label for="t10">10s (TEST)</label>
-                    <input type="radio" id="t30" name="time" value="30"><label for="t30">30s (TACTICAL)</label>
-                    <input type="radio" id="t60" name="time" value="60"><label for="t60">60s (SUSTAINED)</label>
-                    <input type="radio" id="t120" name="time" value="120"><label for="t120">120s (ASSAULT)</label>
-                </div>
-            </div>
-
-            <button class="btn-terminal btn-alert" id="btn-launch-attack" style="width: 100%; font-size: 1.3rem;" disabled onclick="launchAttack()">[ EJECUTAR PROTOCOLO DE ATAQUE ]</button>
-        </section>
-
-        <section id="section-terminal" class="hidden" style="margin-top: 20px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <h2 class="text-alert blink">// EJECUCIÓN EN PROCESO...</h2>
-                <h2 id="timer-display" class="text-alert">T-MINUS: 00:00:00</h2>
-            </div>
+        <!-- TÉRMINOS Y CONDICIONES (Animado) -->
+        <div id="terms-panel" class="panel p-6 mb-8 border-l-4 border-l-red-600 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-2 opacity-20 text-6xl">⚖️</div>
+            <h3 class="text-2xl text-red-500 font-bold mb-4 border-b border-red-800 pb-2 flex items-center gap-2">
+                <span class="animate-pulse">⚠</span> PROTOCOLO DE USO Y RESTRICCIONES
+            </h3>
             
-            <div id="terminal-container">
-                <div id="cve-panel">
-                    <strong>>> ESCANEO VULNERABILIDADES (CVE) <<</strong>
-                    <div id="cve-scroller" style="margin-top: 5px;"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div id="terms-text" class="text-xs md:text-sm text-green-300 font-light leading-relaxed font-mono">
+                    <!-- Texto inyectado por JS para efecto decode -->
                 </div>
-                <div id="console-output">
-                    > INICIALIZANDO LEVIATHAM ATTACK KERNEL...<br>
-                    > CARGANDO MÓDULOS DE OFUSCACIÓN... OK.<br>
-                    > ESTABLECIENDO ENLACE SATELITAL... OK.<br>
-                    <span id="attack-logs"></span>
+                <div class="flex flex-col justify-center items-center border border-red-900 bg-red-950/20 p-4">
+                    <div class="text-red-500 text-center font-bold text-lg mb-2 glitch-text" data-text="ADVERTENCIA FEDERAL">ADVERTENCIA FEDERAL</div>
+                    <p class="text-red-400 text-xs text-center">
+                        ESTA HERRAMIENTA DISPARA ATAQUES REALES SIMULADOS.<br>
+                        EL USO CONTRA OBJETIVOS GUBERNAMENTALES O CIVILES SIN ORDEN JUDICIAL RESULTARÁ EN:<br>
+                        <span class="text-white bg-red-600 px-1 mt-1 inline-block font-bold">TERMINACIÓN INMEDIATA</span>
+                    </p>
                 </div>
             </div>
-            <button class="btn-terminal btn-alert" style="width: 100%; margin-top: 20px;" onclick="emergencyStop()">[ PARADA DE EMERGENCIA ]</button>
-        </section>
+        </div>
 
+        <!-- MAIN VIEWPORT -->
+        <main id="viewport" class="flex-grow flex flex-col items-center w-full transition-all relative z-60">
+
+            <!-- SECCIÓN 1: TARGET LOCK -->
+            <section id="sec-target" class="w-full max-w-4xl panel p-8 rounded relative animate-[fadeIn_0.5s]">
+                <div class="flex items-center mb-6">
+                    <div class="w-4 h-4 bg-green-500 rounded-full animate-ping mr-3"></div>
+                    <h2 class="text-2xl font-bold tracking-widest">TARGET LOCK SYSTEM</h2>
+                </div>
+
+                <div class="mb-6 relative">
+                    <label class="text-xs text-green-600 font-bold uppercase mb-1 block">Ingrese Objetivo (IP / Dominio)</label>
+                    <div class="flex shadow-[0_0_20px_rgba(0,255,0,0.2)] relative z-50">
+                        <span class="bg-green-900/30 text-green-500 p-4 border border-green-700 flex items-center text-xl font-bold">></span>
+                        <input type="text" id="ip-input" placeholder="192.168.1.1" 
+                            class="flex-grow bg-black border-y border-r border-green-700 text-green-400 p-4 text-xl outline-none focus:bg-green-900/10 font-bold tracking-wider placeholder-green-900 cursor-text">
+                        
+                        <!-- BOTÓN X DE RESET (Oculto por defecto) -->
+                        <button onclick="resetTarget()" id="btn-reset-target" class="hidden bg-red-900/80 text-red-500 px-4 font-bold border-y border-green-700 hover:bg-red-600 hover:text-white transition-all cursor-pointer">
+                            X
+                        </button>
+
+                        <button onclick="trackTarget()" id="btn-track"
+                            class="btn-action px-8 py-4 font-bold text-lg flex items-center gap-2 hover:bg-green-500 hover:text-black">
+                            <span>⌖</span> LOCALIZAR
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Opciones de tipo -->
+                <div class="flex gap-4 mb-6 text-xs relative z-50">
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white">
+                        <input type="radio" name="ttype" checked class="accent-green-500 cursor-pointer"> IPv4 / IPv6
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white">
+                        <input type="radio" name="ttype" class="accent-green-500 cursor-pointer"> MAC ADDR (L2)
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white">
+                        <input type="radio" name="ttype" class="accent-green-500 cursor-pointer"> WEB SERVER
+                    </label>
+                </div>
+
+                <!-- API RESULTADOS (RAW DATA) -->
+                <div id="api-console" class="hidden border-t-2 border-green-600 pt-4 mt-4 bg-black p-4 h-64 overflow-y-auto font-mono text-xs relative z-50">
+                    <div class="text-green-500 mb-2 font-bold flex justify-between">
+                        <span>[+] DATA INTERCEPTED SUCCESSFULLY</span>
+                        <span class="animate-pulse">LIVE FEED</span>
+                    </div>
+                    <div id="api-output" class="space-y-1">
+                        <!-- JS inyecta datos aqui -->
+                    </div>
+                </div>
+
+                <div id="api-error" class="hidden mt-4 p-4 bg-red-900/30 border border-red-500 text-red-500 font-bold text-center animate-pulse">
+                    [!] ERROR DE CONEXIÓN CON EL NODO DE RASTREO [!]<br>
+                    <span class="text-xs font-normal">Verifique la IP o su conexión a internet. La API no respondió.</span>
+                </div>
+
+                <button id="btn-next-config" onclick="showConfig()" disabled 
+                    class="w-full mt-4 btn-action py-4 hidden font-bold text-xl tracking-[0.2em] animate-[pulse_2s_infinite] cursor-pointer relative z-100">
+                    INICIAR CONFIGURACIÓN DE VECTORES >>
+                </button>
+            </section>
+
+            <!-- SECCIÓN 2: ATTACK CONFIG -->
+            <section id="sec-config" class="hidden w-full max-w-6xl animate-[fadeIn_0.5s]">
+                <div class="panel p-6 border-t-4 border-t-green-500">
+                    <div class="flex justify-between items-end mb-8 border-b border-green-900 pb-2">
+                        <h2 class="text-3xl font-bold">ATTACK VECTOR CONFIG</h2>
+                        <div class="text-right">
+                            <div class="text-xs text-green-600">LOCKED TARGET</div>
+                            <div id="config-target-ip" class="text-xl font-bold text-white">0.0.0.0</div>
+                        </div>
+                    </div>
+
+                    <!-- VECTORES REORDENADOS -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                        
+                        <!-- 1. UDP (Bajo) -->
+                        <div class="vector-card p-4 bg-green-900/10 border-green-600" onclick="selectVector('UDP FLOOD', 'green')">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-green-400">UDP FLOOD</h4>
+                                <span class="text-[10px] border border-green-500 px-1">NIVEL 1</span>
+                            </div>
+                            <div class="h-1 bg-green-900 w-full mb-2"><div class="h-full bg-green-500 w-1/4"></div></div>
+                            <p class="text-[10px] text-gray-400">Saturación de paquetes UDP. Bajo impacto, alto ruido.</p>
+                        </div>
+
+                        <!-- 2. ICMP (Medio) -->
+                        <div class="vector-card p-4 bg-yellow-900/10 border-yellow-600" onclick="selectVector('ICMP ECHO', 'yellow')">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-yellow-400">ICMP SWARM</h4>
+                                <span class="text-[10px] border border-yellow-500 px-1">NIVEL 2</span>
+                            </div>
+                            <div class="h-1 bg-yellow-900 w-full mb-2"><div class="h-full bg-yellow-500 w-1/2"></div></div>
+                            <p class="text-[10px] text-gray-400">Ping flood coordinado. Sobrecarga de peticiones de eco.</p>
+                        </div>
+
+                        <!-- 3. TCP (Alto) -->
+                        <div class="vector-card p-4 bg-orange-900/10 border-orange-600" onclick="selectVector('TCP SYN', 'orange')">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-orange-500">TCP SYN</h4>
+                                <span class="text-[10px] border border-orange-500 px-1">NIVEL 3</span>
+                            </div>
+                            <div class="h-1 bg-orange-900 w-full mb-2"><div class="h-full bg-orange-500 w-3/4"></div></div>
+                            <p class="text-[10px] text-gray-400">Agotamiento de recursos. Llena la tabla de estados del servidor.</p>
+                        </div>
+
+                        <!-- 4. DNS (EXTREMO) -->
+                        <div class="vector-card p-4 bg-red-950/30 border-red-500 relative overflow-hidden group" onclick="selectVector('DNS AMP', 'red')">
+                            <div class="absolute inset-0 bg-red-600/10 animate-pulse"></div>
+                            <div class="flex justify-between items-center mb-2 relative z-10">
+                                <h4 class="font-bold text-red-500 text-lg">DNS AMPLIFICATION</h4>
+                                <span class="text-[10px] bg-red-600 text-black font-bold px-1 animate-pulse">EXTREMO</span>
+                            </div>
+                            <div class="h-2 bg-red-900 w-full mb-2 border border-red-600"><div class="h-full bg-red-500 w-full animate-[width_1s_infinite]"></div></div>
+                            <p class="text-[10px] text-red-300 relative z-10 font-bold">Reflexión amplificada x70 usando Resolvers públicos. DEVASTADOR.</p>
+                        </div>
+                    </div>
+
+                    <!-- Duración -->
+                    <div class="mb-8 p-4 bg-black/50 border border-green-800">
+                        <h4 class="text-xs text-green-500 mb-2 font-bold uppercase">Temporizador de Operación</h4>
+                        <div class="flex gap-4">
+                            <button onclick="setDuration(10)" class="dur-btn flex-1 py-2 border border-green-800 text-sm hover:bg-green-900 transition-colors cursor-pointer">10 MIN (TEST)</button>
+                            <button onclick="setDuration(30)" class="dur-btn flex-1 py-2 border border-green-800 text-sm hover:bg-green-900 transition-colors cursor-pointer">30 MIN (LEVE)</button>
+                            <button onclick="setDuration(60)" class="dur-btn flex-1 py-2 border border-green-800 text-sm hover:bg-green-900 transition-colors cursor-pointer">1 HORA (NORMAL)</button>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-4">
+                        <button onclick="resetSystem()" class="px-6 py-2 border border-gray-600 text-gray-500 hover:text-white cursor-pointer">CANCELAR</button>
+                        <button id="btn-launch" onclick="startSimulation()" disabled 
+                            class="px-10 py-4 border-2 border-red-800 bg-black text-red-700 font-bold text-2xl uppercase tracking-widest opacity-50 cursor-not-allowed transition-all clip-path-polygon z-100">
+                            LANCZAR ATAQUE
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: SIMULACIÓN ACTIVA -->
+            <!-- FIX: z-index 200 para tapar todo lo demás -->
+            <section id="sec-sim" class="hidden fixed inset-0 bg-black z-[200] flex flex-col p-4 overflow-hidden">
+                <!-- Header Simulación -->
+                <div class="flex justify-between items-start mb-4 border-b-2 border-red-600 pb-2 bg-black">
+                    <div>
+                        <div class="text-4xl text-red-600 font-black glitch-text" data-text="ATAQUE EN PROGRESO">ATAQUE EN PROGRESO</div>
+                        <div class="text-xs text-red-400 font-mono mt-1 flex gap-4">
+                            <span>OBJETIVO: <span id="sim-target-display" class="text-white font-bold">---</span></span>
+                            <span>VECTOR: <span id="sim-vector-display" class="text-white font-bold border px-1 border-red-500">---</span></span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div id="timer-display" class="text-6xl font-mono text-red-500 font-bold">00:00:00</div>
+                    </div>
+                </div>
+
+                <!-- Cuerpo Simulación -->
+                <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-hidden mb-20">
+                    
+                    <!-- Columna Izquierda: Logs de Paquetes (Waterfall) -->
+                    <div class="lg:col-span-8 bg-black border border-green-900 p-2 font-mono text-xs relative flex flex-col">
+                        <div class="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-black to-transparent z-10"></div>
+                        <h4 class="text-green-600 border-b border-green-800 mb-2 pb-1 flex justify-between">
+                            <span>TRAFICO DE RED (RAW PACKET DUMP)</span>
+                            <span class="animate-pulse text-red-500">LIVE CAPTURE</span>
+                        </h4>
+                        <div id="packet-log" class="flex-grow overflow-hidden flex flex-col justify-end text-[11px] leading-tight opacity-90 font-mono">
+                            <!-- Logs aqui -->
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Métricas y CVE -->
+                    <div class="lg:col-span-4 flex flex-col gap-4">
+                        <!-- CVE Scanner -->
+                        <div class="h-1/2 bg-black border border-yellow-900 p-2 font-mono overflow-hidden relative">
+                            <h4 class="text-yellow-600 border-b border-yellow-800 mb-2 pb-1">CVE VULNERABILITY SCANNER</h4>
+                            <div id="cve-log" class="text-xs text-yellow-500/80 space-y-1"></div>
+                            <div class="absolute inset-0 pointer-events-none bg-yellow-500/5 scan-line"></div>
+                        </div>
+
+                        <!-- Sending Bytes Visualizer -->
+                        <div class="h-1/2 bg-red-950/10 border border-red-900 p-4 flex flex-col justify-center items-center relative overflow-hidden">
+                            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImEiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgNDBoNDBWMEgwdi41aDF2LjVoMXYuNWgxdjE5aDF2LjVoMXYuNWgxdjE5aDF2LjVoMXYuNWgxeiIgZmlsbD0iI2ZmMDAwMCIgZmlsbC1vcGFjaXR5PSIwLjAzIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PC9zdmc+')] opacity-50 animate-[pulse_0.2s_infinite]"></div>
+                            
+                            <div class="text-red-500 text-xs tracking-[0.5em] mb-2 uppercase animate-pulse">Ancho de Banda Total</div>
+                            <div class="flex items-end gap-2 z-10">
+                                <span id="bytes-val" class="text-6xl font-bold text-white glitch-text" data-text="00.00">00.00</span>
+                                <span class="text-xl text-red-500 font-bold mb-2">TB</span>
+                            </div>
+                            
+                            <!-- Barra de progreso infinita -->
+                            <div class="w-full h-1 bg-red-900 mt-4 overflow-hidden">
+                                <div class="h-full bg-red-500 w-1/2 animate-[translateX_1s_infinite_linear]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boton Abortar -->
+                <div class="fixed bottom-0 left-0 w-full p-4 bg-black border-t-2 border-red-600 z-50 flex justify-center">
+                    <button onclick="abortSequence()" class="bg-transparent text-red-600 border-2 border-red-600 px-12 py-3 font-bold text-xl hover:bg-red-600 hover:text-black transition-all shadow-[0_0_30px_rgba(255,0,0,0.4)] uppercase tracking-widest cursor-pointer">
+                        ⚠ ABORTAR OPERACIÓN (KILL SWITCH) ⚠
+                    </button>
+                </div>
+
+                <!-- PANTALLA ABORTAR (TERMINAL) -->
+                <div id="abort-screen" class="hidden absolute inset-0 bg-black z-[210] p-8 font-mono text-lg text-red-500 flex flex-col justify-end pb-20">
+                    <div id="abort-terminal" class="space-y-1"></div>
+                </div>
+            </section>
+
+        </main>
     </div>
 
     <script>
-        // --- INICIALIZACIÓN Y EFECTOS ---
-        window.onload = function() {
-            // Obtener IP real del usuario al inicio
-            fetch('http://ip-api.com/json/')
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById('user-ip').innerText = `TU IP: ${data.query} (RUTEO SEGURO)`;
-                })
-                .catch(() => { document.getElementById('user-ip').innerText = "TU IP: OCULTA/OFFLINE"; });
+        // --- TEXTO EFECTO TYPEWRITER PARA TERMINOS ---
+        const termsText = `> INICIANDO SISTEMA DE SIMULACIÓN DE GUERRA CIBERNÉTICA...
+> CARGANDO LIBRERÍAS DE PENETRACIÓN... [OK]
+> ESTABLECIENDO TÚNEL SEGURO CON LA RED NEURONAL... [OK]
+>
+> ESTA HERRAMIENTA PERMITE SIMULAR:
+  - RASTREO DE IP GEO-ESPACIAL PRECISO (API PÚBLICA).
+  - FLOODING DE PAQUETES (UDP/TCP/ICMP).
+  - AMPLIFICACIÓN DNS (ATAQUE REFLEJADO).
+>
+> TODA ACCIÓN ES REGISTRADA EN EL LOG DEL SISTEMA LOCAL.`;
+
+        const termsContainer = document.getElementById('terms-text');
+        let i = 0;
+        function typeWriter() {
+            if (i < termsText.length) {
+                termsContainer.innerHTML += termsText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 5); // Velocidad de tipeo
+            }
+        }
+        window.onload = () => {
             initCanvas();
+            animateBg();
+            setTimeout(typeWriter, 500);
         };
 
-        function enterSystem() {
-            document.getElementById('modal-alert').style.display = 'none';
-            document.getElementById('main-interface').classList.remove('hidden');
-        }
+        // --- CANVAS FONDO (RED NEURONAL) ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
 
-        // --- CANVAS RED NEURONAL (Fondo) ---
         function initCanvas() {
-            const canvas = document.getElementById('canvas-bg');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            let nodes = [];
-            for(let i=0; i<150; i++) nodes.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5)*1.5, vy:(Math.random()-0.5)*1.5});
-            function draw() {
-                ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#0f0'; ctx.strokeStyle = 'rgba(0,255,0,0.1)';
-                nodes.forEach(node => {
-                    node.x+=node.vx; node.y+=node.vy;
-                    if(node.x<0||node.x>canvas.width) node.vx*=-1; if(node.y<0||node.y>canvas.height) node.vy*=-1;
-                    ctx.beginPath(); ctx.arc(node.x,node.y,1.5,0,Math.PI*2); ctx.fill();
-                    nodes.forEach(node2 => {
-                         if(Math.hypot(node.x-node2.x, node.y-node2.y) < 120) {
-                            ctx.beginPath(); ctx.moveTo(node.x,node.y); ctx.lineTo(node2.x,node2.y); ctx.stroke();
-                        }
-                    });
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            for(let j=0; j<60; j++) {
+                particles.push({
+                    x: Math.random()*width, y: Math.random()*height,
+                    vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5
                 });
-                requestAnimationFrame(draw);
             }
-            draw();
         }
+        window.onresize = initCanvas;
 
-        // --- LÓGICA PRINCIPAL ---
-        let targetIP = "";
-        let selectedAttack = null;
-        let attackDuration = 0;
-        let attackIntervals = [];
-        const commonPorts = [21, 22, 23, 25, 53, 80, 110, 135, 139, 143, 443, 445, 1433, 3306, 3389, 5900, 8080, 8443];
+        function animateBg() {
+            ctx.clearRect(0,0,width,height);
+            ctx.strokeStyle = 'rgba(0, 150, 0, 0.15)';
+            ctx.fillStyle = '#0f0';
+            
+            particles.forEach((p, index) => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0 || p.x > width) p.vx *= -1;
+                if(p.y < 0 || p.y > height) p.vy *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 1, 0, Math.PI*2);
+                ctx.fill();
 
-        // FASE 1: RECONOCIMIENTO REAL
-        function startReconProcess() {
-            targetIP = document.getElementById('target-ip-input').value;
-            if(!validateIP(targetIP)) { alert("ERROR: FORMATO DE IP INVÁLIDO"); return; }
-
-            const btn = document.getElementById('btn-start-recon');
-            btn.innerText = ">>> OBTENIENDO DATOS GEO-ESPACIALES <<<";
-            btn.disabled = true;
-            document.getElementById('recon-results').classList.remove('hidden');
-            const container = document.getElementById('recon-data-container');
-            container.innerHTML = '<span class="blink">CONTACTANDO SATÉLITE... ESPERE.</span>';
-
-            // LLAMADA API REAL (ip-api.com es rápida y gratuita para demo)
-            fetch(`http://ip-api.com/json/${targetIP}?fields=status,message,country,countryCode,regionName,city,zip,lat,lon,timezone,isp,org,as,query`)
-                .then(response => response.json())
-                .then(data => {
-                    if(data.status === 'fail') throw new Error(data.message);
-                    
-                    // Renderizar Datos Reales
-                    container.innerHTML = `
-                        <div class="data-field"><span class="data-label">OBJETIVO CONFIRMADO:</span><span class="data-value">${data.query}</span></div>
-                        <div class="data-field"><span class="data-label">UBICACIÓN:</span><span class="data-value">${data.city}, ${data.regionName}, ${data.country} (${data.countryCode})</span></div>
-                        <div class="data-field"><span class="data-label">COORDENADAS GPS:</span><span class="data-value">${data.lat}, ${data.lon}</span></div>
-                        <div class="data-field"><span class="data-label">PROVEEDOR (ISP):</span><span class="data-value">${data.isp}</span></div>
-                        <div class="data-field"><span class="data-label">ORGANIZACIÓN:</span><span class="data-value">${data.org}</span></div>
-                        <div class="data-field"><span class="data-label">ASN (SISTEMA AUTÓNOMO):</span><span class="data-value">${data.as}</span></div>
-                        <div class="data-field"><span class="data-label">ZONA HORARIA:</span><span class="data-value">${data.timezone}</span></div>
-                    `;
-                    btn.innerText = "RECONOCIMIENTO COMPLETO";
-                    startSimulatedPortScan();
-                })
-                .catch(error => {
-                    container.innerHTML = `<span class="text-alert">ERROR DE RECONOCIMIENTO: ${error.message}. FIREWALL DETECTADO. USANDO DATOS PARCIALES.</span>`;
-                    // Datos fallback si falla la API
-                    container.innerHTML += `
-                        <div class="data-field" style="margin-top:10px"><span class="data-label">OBJETIVO:</span><span class="data-value">${targetIP}</span></div>
-                        <div class="data-field"><span class="data-label">ESTADO:</span><span class="data-value text-warning">PROTEGIDO / DESCONOCIDO</span></div>
-                    `;
-                    startSimulatedPortScan();
+                particles.slice(index+1).forEach(p2 => {
+                    if(Math.hypot(p.x-p2.x, p.y-p2.y) < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
                 });
+            });
+            requestAnimationFrame(animateBg);
         }
 
-        function startSimulatedPortScan() {
-            const output = document.getElementById('port-scan-output');
-            output.innerHTML = "";
-            let i = 0;
-            let openPorts = [];
 
-            let scanInt = setInterval(() => {
-                const port = commonPorts[i];
-                const status = Math.random() > 0.8 ? '<span class="text-alert">[ABIERTO]</span>' : '<span style="opacity:0.6">[CERRADO]</span>';
-                output.innerHTML += `> Escaneando puerto TCP/${port}... ${status}<br>`;
-                output.scrollTop = output.scrollHeight;
-                if(status.includes('ABIERTO')) openPorts.push(port);
-                
-                i++;
-                if(i >= commonPorts.length) {
-                    clearInterval(scanInt);
-                    output.innerHTML += `<br>>> ESCANEO FINALIZADO. PUERTOS VULNERABLES: <span class="text-warning">${openPorts.join(', ') || 'NINGUNO DETECTADO'}</span> <<`;
-                    output.scrollTop = output.scrollHeight;
-                    document.getElementById('btn-continue-attack').classList.remove('hidden');
-                }
-            }, 150); // Velocidad del escaneo
-        }
+        // --- LÓGICA DE APLICACIÓN ---
+        let state = {
+            ip: '',
+            vector: null,
+            duration: 0,
+            timers: [],
+            bytes: 0
+        };
 
-        // FASE 2: CONFIGURACIÓN
-        function showAttackConfig() {
-            document.getElementById('section-recon').classList.add('hidden');
-            document.getElementById('section-config').classList.remove('hidden');
-        }
-
-        function selectAttack(element, type) {
-            document.querySelectorAll('.attack-card').forEach(c => c.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedAttack = type;
-            document.getElementById('btn-launch-attack').disabled = false;
-        }
-
-        // FASE 3: EJECUCIÓN DEL ATAQUE
-        function launchAttack() {
-            attackDuration = parseInt(document.querySelector('input[name="time"]:checked').value);
-            document.getElementById('section-config').classList.add('hidden');
-            document.getElementById('section-terminal').classList.remove('hidden');
+        // 1. TRACKEAR IP (API REAL: ipwho.is)
+        async function trackTarget() {
+            const input = document.getElementById('ip-input').value.trim();
+            if(!input) return alert("¡ERROR! DEBE INGRESAR UNA DIRECCIÓN IP OBJETIVO.");
             
-            // Activar Modo Alerta Roja Global
-            document.body.classList.add('attack-mode');
+            state.ip = input;
+            const btn = document.getElementById('btn-track');
+            const output = document.getElementById('api-output');
+            const consoleDiv = document.getElementById('api-console');
+            const errorDiv = document.getElementById('api-error');
+            const nextBtn = document.getElementById('btn-next-config');
+            const resetBtn = document.getElementById('btn-reset-target'); // Boton X
 
-            startTerminalSimulation();
-            startTimer(attackDuration);
-        }
-
-        function startTerminalSimulation() {
-            const logs = document.getElementById('attack-logs');
-            const cveScroller = document.getElementById('cve-scroller');
-            logs.innerHTML = `<br><span class="text-alert">> INICIANDO PROTOCOLO ${selectedAttack} SOBRE OBJETIVO [${targetIP}]...</span><br>`;
-
-            // 1. Generador de CVEs (Vulnerabilidades Realistas)
-            const cveList = [
-                "CVE-2024-21413 (Outlook RCE)", "CVE-2023-44487 (HTTP/2 Rapid Reset)", "CVE-2021-44228 (Log4Shell RCE)",
-                "CVE-2017-0144 (EternalBlue SMB)", "CVE-2023-38545 (curl heap buffer)", "CVE-2020-1472 (Zerologon)",
-                "CVE-2024-0001 (Zero-Day Detected)", "CVE-2019-11510 (Pulse Secure VPN)", "CVE-2014-0160 (Heartbleed SSL)"
-            ];
-            attackIntervals.push(setInterval(() => {
-                const cve = cveList[Math.floor(Math.random() * cveList.length)];
-                cveScroller.innerHTML += `<div class="cve-item text-alert blink">> DETECTADO: ${cve}</div>`;
-                if(cveScroller.children.length > 6) cveScroller.removeChild(cveScroller.firstChild);
-            }, 400));
-
-            // 2. Generador de Logs de Ataque Específicos (Realismo Técnico)
-            attackIntervals.push(setInterval(() => {
-                let logEntry = "";
-                const timestamp = new Date().toLocaleTimeString([], {hour12: false});
-                const spoofIP = `${Math.floor(Math.random()*223+1)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
-                const size = Math.floor(Math.random() * 1500) + 64;
-
-                switch(selectedAttack) {
-                    case 'DNS_AMP':
-                        const resolvers = ['8.8.8.8', '1.1.1.1', '9.9.9.9', '208.67.222.222', '4.2.2.2'];
-                        const resolver = resolvers[Math.floor(Math.random()*resolvers.length)];
-                        const ampSize = size * (Math.floor(Math.random()*50)+20);
-                        logEntry = `[${timestamp}] <span class="text-warning">DNS_AMP</span> > Enviando query 'ANY google.com' spoofed a resolver abierto [${resolver}]... > Reflejando ${ampSize} bytes hacia objetivo ${targetIP}.`;
-                        break;
-                    case 'TCP_SYN':
-                        const port = commonPorts[Math.floor(Math.random()*commonPorts.length)];
-                        logEntry = `[${timestamp}] <span class="text-warning">TCP_SYN</span> > Spoofed IP [${spoofIP}] enviando paquete SYN a ${targetIP}:${port} > (Flags: [S], Seq: ${Math.floor(Math.random()*999999)}, Win: 65535) > Conexión Half-open creada.`;
-                        break;
-                    case 'UDP_FLOOD':
-                        logEntry = `[${timestamp}] <span class="text-warning">UDP_L7</span> > Inyectando datagrama UDP de ${size} bytes a ${targetIP} puerto random > Saturando interfaz de red. PacketID: ${Math.toString(36).substring(7).toUpperCase()}`;
-                        break;
-                    case 'ICMP_PING':
-                        logEntry = `[${timestamp}] ICMP > Enviando Echo Request (Ping of Death) size=${size*10} a ${targetIP} desde botnet node [${spoofIP}] > ttl=${Math.floor(Math.random()*128)}`;
-                        break;
-                }
-                
-                logs.innerHTML += `${logEntry}<br>`;
-                document.getElementById('console-output').scrollTop = document.getElementById('console-output').scrollHeight;
-            }, 80)); // Velocidad de logs muy rápida
-        }
-
-        // --- UTILIDADES ---
-        function startTimer(duration) {
-            let timer = duration;
-            const display = document.getElementById('timer-display');
+            // Reset UI
+            btn.innerHTML = `<span class="animate-spin">⚙</span> ESCANEANDO...`;
+            consoleDiv.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            output.innerHTML = '';
             
-            attackIntervals.push(setInterval(function () {
-                let minutes = parseInt(timer / 60, 10);
-                let seconds = parseInt(timer % 60, 10);
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-                display.textContent = `T-MINUS: 00:${minutes}:${seconds}`;
+            try {
+                const req = await fetch(`https://ipwho.is/${input}`);
+                const data = await req.json();
 
-                if (--timer < 0) {
-                    stopAttack("SUCCESS");
+                if(!data.success) throw new Error("API Returned Error: " + data.message);
+
+                // Renderizar
+                function renderObject(obj, prefix = '') {
+                    for(let key in obj) {
+                        if(typeof obj[key] === 'object' && obj[key] !== null) {
+                            renderObject(obj[key], prefix + key + '.');
+                        } else {
+                            output.innerHTML += `
+                                <div class="api-row">
+                                    <span class="api-key">${prefix}${key}</span>
+                                    <span class="api-val">${obj[key]}</span>
+                                </div>
+                            `;
+                        }
+                    }
                 }
+                renderObject(data);
+
+                consoleDiv.classList.remove('hidden');
+                btn.innerHTML = `<span>✓</span> LOCALIZADO`;
+                btn.classList.add('bg-green-600', 'text-black');
+
+                // Mostrar controles
+                nextBtn.classList.remove('hidden');
+                nextBtn.disabled = false; 
+                nextBtn.style.cursor = "pointer";
+                resetBtn.classList.remove('hidden'); // Mostrar la X
+
+            } catch (e) {
+                console.error(e);
+                errorDiv.classList.remove('hidden');
+                btn.innerHTML = `<span>X</span> FALLO`;
+                btn.classList.add('bg-red-900');
+                resetBtn.classList.remove('hidden'); // Mostrar la X aun si falla
+            }
+        }
+
+        function resetTarget() {
+            const input = document.getElementById('ip-input');
+            const btn = document.getElementById('btn-track');
+            const output = document.getElementById('api-output');
+            const consoleDiv = document.getElementById('api-console');
+            const errorDiv = document.getElementById('api-error');
+            const nextBtn = document.getElementById('btn-next-config');
+            const resetBtn = document.getElementById('btn-reset-target');
+
+            input.value = '';
+            input.focus();
+            state.ip = '';
+
+            btn.innerHTML = `<span>⌖</span> LOCALIZAR`;
+            btn.classList.remove('bg-green-600', 'text-black', 'bg-red-900');
+            
+            consoleDiv.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            resetBtn.classList.add('hidden');
+            output.innerHTML = '';
+        }
+
+        // 2. CONFIGURACIÓN
+        function showConfig() {
+            document.getElementById('sec-target').classList.add('hidden');
+            document.getElementById('sec-config').classList.remove('hidden');
+            document.getElementById('config-target-ip').innerText = state.ip;
+        }
+
+        function selectVector(name, color) {
+            document.querySelectorAll('.vector-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            state.vector = { name, color };
+            checkLaunch();
+        }
+
+        function setDuration(min) {
+            document.querySelectorAll('.dur-btn').forEach(b => {
+                b.classList.remove('bg-green-500', 'text-black');
+            });
+            event.target.classList.add('bg-green-500', 'text-black');
+            state.duration = min;
+            checkLaunch();
+        }
+
+        function checkLaunch() {
+            const btn = document.getElementById('btn-launch');
+            if(state.vector && state.duration) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.classList.add('hover:bg-red-600', 'hover:text-black', 'shadow-[0_0_20px_#f00]');
+                btn.style.cursor = "pointer";
+                
+                if(state.vector.color === 'red') {
+                    btn.classList.add('animate-pulse');
+                } else {
+                    btn.classList.remove('animate-pulse');
+                }
+            }
+        }
+
+        // 3. SIMULACIÓN
+        function startSimulation() {
+            document.getElementById('sec-config').classList.add('hidden');
+            document.getElementById('sec-sim').classList.remove('hidden');
+            
+            document.getElementById('sim-target-display').innerText = state.ip;
+            const vecDisplay = document.getElementById('sim-vector-display');
+            vecDisplay.innerText = state.vector.name;
+            
+            const colors = { green: '#0f0', yellow: '#ff0', orange: '#ffa500', red: '#f00' };
+            vecDisplay.style.borderColor = colors[state.vector.color];
+            vecDisplay.style.color = colors[state.vector.color];
+
+            runTimer(state.duration * 60);
+            runAttackLoops();
+        }
+
+        function runTimer(seconds) {
+            let t = seconds;
+            const el = document.getElementById('timer-display');
+            state.timers.push(setInterval(() => {
+                const h = Math.floor(t/3600).toString().padStart(2,'0');
+                const m = Math.floor((t%3600)/60).toString().padStart(2,'0');
+                const s = (t%60).toString().padStart(2,'0');
+                el.innerText = `${h}:${m}:${s}`;
+                t--;
+                if(t<0) abortSequence();
             }, 1000));
         }
 
-        function emergencyStop() {
-            stopAttack("ABORTED");
+        function runAttackLoops() {
+            const logBox = document.getElementById('packet-log');
+            const byteEl = document.getElementById('bytes-val');
+            const cveBox = document.getElementById('cve-log');
+
+            // Bucle Rápido (Paquetes)
+            state.timers.push(setInterval(() => {
+                const line = generatePacketLog();
+                const div = document.createElement('div');
+                div.innerHTML = line;
+                logBox.appendChild(div);
+                
+                // Auto scroll
+                logBox.scrollTop = logBox.scrollHeight;
+                if(logBox.children.length > 50) logBox.removeChild(logBox.firstChild);
+
+                // Bytes
+                const multiplier = state.vector.name.includes("DNS") ? 0.05 : 0.005;
+                state.bytes += Math.random() * multiplier;
+                byteEl.innerText = state.bytes.toFixed(2);
+                byteEl.setAttribute('data-text', state.bytes.toFixed(2));
+
+            }, 40));
+
+            // Bucle Lento (CVEs)
+            state.timers.push(setInterval(() => {
+                const cves = [
+                    "CVE-2023-44487: HTTP/2 Rapid Reset",
+                    "CVE-2021-44228: Log4j RCE Triggered",
+                    "SQL Injection: Blind Boolean based",
+                    "XSS Reflected: Payload Delivered",
+                    "Buffer Overflow: Heap Corruption",
+                    "SSH Brute Force: Root dictionary"
+                ];
+                const item = cves[Math.floor(Math.random()*cves.length)];
+                const p = document.createElement('div');
+                p.innerText = `[VULN] ${item}`;
+                cveBox.appendChild(p);
+                cveBox.scrollTop = cveBox.scrollHeight;
+            }, 1500));
         }
 
-        function stopAttack(status) {
-            // Limpiar todos los intervalos activos
-            attackIntervals.forEach(clearInterval);
-            attackIntervals = [];
+        function generatePacketLog() {
+            // Helpers
+            const rByte = () => Math.floor(Math.random()*255).toString(16).padStart(2,'0');
+            const rIP = () => Math.floor(Math.random()*255);
+            const time = new Date().toISOString().split('T')[1].slice(0, -1);
+            const hexDump = `${rByte()}${rByte()} ${rByte()}${rByte()} ${rByte()}${rByte()} ${rByte()}${rByte()}`;
             
-            document.body.classList.remove('attack-mode');
-            const logs = document.getElementById('console-output');
-
-            let finalMsg = status === "SUCCESS" 
-                ? `<br><br><span style="color:var(--color-primary); font-size:1.2rem;">>>> OBJETIVO NEUTRALIZADO. Misión Cumplida. <<<</span>`
-                : `<br><br><span class="text-warning" style="font-size:1.2rem;">>>> PARADA DE EMERGENCIA EJECUTADA POR EL USUARIO. <<<</span>`;
-
-            logs.innerHTML += `
-                <br>------------------------------------------
-                > DETENIENDO INYECCIÓN DE PAQUETES... OK.
-                > CERRANDO SESIONES SPOOFED... OK.
-                > BORRANDO LOGS DEL SERVIDOR PROXY... OK.
-                ${finalMsg}
-                > Desconectando...
-            `;
-            logs.scrollTop = logs.scrollHeight;
+            const src = `${rIP()}.${rIP()}.${rIP()}.${rIP()}`;
+            const sport = Math.floor(Math.random()*65000);
+            
+            // Lógica realista según vector
+            if(state.vector.name === 'DNS AMP') {
+                const resolvers = ['8.8.8.8', '1.1.1.1', '9.9.9.9', '208.67.222.222'];
+                const res = resolvers[Math.floor(Math.random()*resolvers.length)];
+                return `<span class="text-gray-500">${time}</span> <span class="text-red-500">IP</span> ${res}.53 > ${state.ip}.${sport}: ${Math.floor(Math.random()*50000)}Refused- 0/0/0 (4096) <br>
+                        <span class="text-green-900">0x0000:</span> <span class="text-green-700">${hexDump} ${hexDump} ...</span>`;
+            
+            } else if(state.vector.name === 'TCP SYN') {
+                 return `<span class="text-gray-500">${time}</span> <span class="text-orange-500">IP</span> ${src}.${sport} > ${state.ip}.80: Flags [S], seq ${Math.floor(Math.random()*9999999)}, win 65535, length 0 <br>
+                         <span class="text-green-900">0x0000:</span> <span class="text-green-700">4500 003c ${hexDump} 4000 4006...</span>`;
+            
+            } else if(state.vector.name === 'ICMP ECHO') {
+                return `<span class="text-gray-500">${time}</span> <span class="text-yellow-500">IP</span> ${src} > ${state.ip}: ICMP echo request, id ${Math.floor(Math.random()*50000)}, seq ${Math.floor(Math.random()*1000)}, length 64`;
+            
+            } else {
+                // UDP
+                return `<span class="text-gray-500">${time}</span> <span class="text-green-500">IP</span> ${src}.${sport} > ${state.ip}.${Math.floor(Math.random()*65000)}: UDP, length ${Math.floor(Math.random()*1400)} <br>
+                        <span class="text-green-900">0x0000:</span> <span class="text-green-700">${hexDump} ${hexDump} ${hexDump}...</span>`;
+            }
         }
 
-        function validateIP(ip) {
-            return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip);
+        // 4. ABORTAR (KILL SWITCH)
+        function abortSequence() {
+            state.timers.forEach(clearInterval);
+            const screen = document.getElementById('abort-screen');
+            const term = document.getElementById('abort-terminal');
+            screen.classList.remove('hidden');
+
+            const commands = [
+                "WARNING: MANUAL KILL SWITCH ENGAGED",
+                "SIGINT sent to all child processes...",
+                "Stopping packet injection... [OK]",
+                "Flushing RAM buffers... [OK]",
+                "Shredding local logs (7 passes)... [OK]",
+                "Dropping VPN tunnel... [OK]",
+                "Resetting network adapters...",
+                "SYSTEM HALTED."
+            ];
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if(i < commands.length) {
+                    const line = document.createElement('div');
+                    line.innerText = "> " + commands[i];
+                    if(i === 0) line.className = "text-2xl font-bold blink-red mb-4";
+                    else if (i === commands.length -1) line.className = "text-white mt-4 font-bold";
+                    term.appendChild(line);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(resetSystem, 2000);
+                }
+            }, 600);
         }
+
+        function resetSystem() {
+            location.reload(); 
+        }
+
     </script>
 </body>
 </html>
