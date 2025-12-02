@@ -634,30 +634,37 @@
                 if(logBox.children.length > 30) logBox.removeChild(logBox.firstChild);
                 
                 // --- CÁLCULO DE ANCHO DE BANDA FUNCIONAL ---
-                // Sumamos los bytes del paquete "real" que se acaba de generar
                 state.totalBytes += packetData.size;
 
-                // Formatear display dinámico
+                // Definir límite de "INCALCULABLE" (1 Petabyte)
+                const PB = 1024 * 1024 * 1024 * 1024 * 1024;
+
                 let displayVal = 0;
                 let displayUnit = 'MB';
 
-                if (state.totalBytes < 1024 * 1024 * 1024) {
-                    // Menos de 1GB, mostrar MB
-                    displayVal = (state.totalBytes / (1024 * 1024)).toFixed(2);
-                    displayUnit = 'MB';
-                } else if (state.totalBytes < 1024 * 1024 * 1024 * 1024) {
-                    // Menos de 1TB, mostrar GB
-                    displayVal = (state.totalBytes / (1024 * 1024 * 1024)).toFixed(2);
-                    displayUnit = 'GB';
+                if (state.totalBytes > PB) {
+                    // MODO INCALCULABLE
+                    byteEl.innerText = "☠️"; 
+                    byteEl.setAttribute('data-text', "∞");
+                    unitEl.innerText = "INCALCULABLE";
+                    unitEl.classList.add("text-red-500", "animate-pulse");
                 } else {
-                    // Mostrar TB
-                    displayVal = (state.totalBytes / (1024 * 1024 * 1024 * 1024)).toFixed(2);
-                    displayUnit = 'TB';
+                    // MODO NORMAL
+                    unitEl.classList.remove("animate-pulse");
+                    if (state.totalBytes < 1024 * 1024 * 1024) {
+                        displayVal = (state.totalBytes / (1024 * 1024)).toFixed(2);
+                        displayUnit = 'MB';
+                    } else if (state.totalBytes < 1024 * 1024 * 1024 * 1024) {
+                        displayVal = (state.totalBytes / (1024 * 1024 * 1024)).toFixed(2);
+                        displayUnit = 'GB';
+                    } else {
+                        displayVal = (state.totalBytes / (1024 * 1024 * 1024 * 1024)).toFixed(2);
+                        displayUnit = 'TB';
+                    }
+                    byteEl.innerText = displayVal;
+                    byteEl.setAttribute('data-text', displayVal);
+                    unitEl.innerText = displayUnit;
                 }
-
-                byteEl.innerText = displayVal;
-                byteEl.setAttribute('data-text', displayVal);
-                unitEl.innerText = displayUnit;
 
             }, speed));
         }
@@ -682,15 +689,16 @@
                           `<span class="text-gray-600">   Host: ${state.ip} | Len: ${packetSize} | Status: Pending...</span>`;
                 
             } else if (state.vector && state.vector.name === 'DNS AMP') {
-                const resolvers = ['8.8.8.8', '1.1.1.1', '208.67.222.222'];
+                // *** CORRECCIÓN DNS AMP ***
+                const resolvers = ['8.8.8.8', '1.1.1.1', '208.67.222.222', '9.9.9.9'];
                 const res = resolvers[Math.floor(Math.random()*resolvers.length)];
                 const id = Math.floor(Math.random()*65535);
                 
-                packetSize = 64; // Petición pequeña
-                // Pero la "respuesta" (amplificación) sería mayor, aquí logueamos lo que enviamos
+                packetSize = 64; 
                 
-                logHtml = `<span class="text-gray-500">[${time}]</span> IP <span class="text-green-500">${spoofIP}</span> > ${res}.53: ${id}+ [1au] ANY? <span class="text-red-400">TARGET_REFLECT</span><br>` +
-                          `<span class="text-gray-600">   UDP len ${packetSize} | Spoofed Packet Sent</span>`;
+                // Aquí el log muestra explícitamente que la IP DE ORIGEN es la IP DEL OBJETIVO
+                logHtml = `<span class="text-gray-500">[${time}]</span> IP <span class="text-red-500 font-bold">${state.ip}</span> (SPOOFED) > ${res}.53: ${id}+ [1au] ANY? <span class="text-gray-400">wait_reflect</span><br>` +
+                          `<span class="text-gray-600">   Target: ${state.ip} | Reflector: ${res} | Len: ${packetSize}</span>`;
                 
             } else if (state.vector && state.vector.name === 'TCP SYN') {
                 const seq = Math.floor(Math.random() * 4294967295);
@@ -717,8 +725,7 @@
                           `<span class="text-gray-400">   LEN=${packetSize} | TTL=${ttl} | ID=${Math.floor(Math.random()*99999)} | DF</span>`;
             }
 
-            // Factor multiplicador para que la "guerra" se vea más brutal en el contador
-            // Si es un ataque masivo, simulamos que se envían MUCHOS paquetes por segundo aunque el log muestre uno.
+            // Simulación masiva de bytes
             let simulatedBytes = packetSize * (Math.random() * 100 + 50); 
             
             return { html: logHtml, size: simulatedBytes };
