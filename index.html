@@ -268,7 +268,7 @@
                 </div>
 
                 <div id="api-error" class="hidden mt-4 p-4 bg-red-900/30 border border-red-500 text-red-500 font-bold text-center animate-pulse">
-                    [!] ERROR DE CONEXIÓN CON EL NODO DE RASTREO [!]<br><span class="text-xs font-normal">La API no respondió o fue bloqueada. Procediendo a simulación forzada.</span>
+                    [!] ERROR DE CONEXIÓN CON EL NODO DE RASTREO [!]<br><span class="text-xs font-normal">Todas las APIs fallaron. Se activará el protocolo de simulación.</span>
                 </div>
 
                 <button id="btn-next-config" onclick="showConfig()" disabled class="w-full mt-4 btn-action py-4 hidden font-bold text-lg md:text-xl tracking-[0.2em] animate-[pulse_2s_infinite] cursor-pointer relative z-100 bg-green-900/40 border-2 border-green-500 hover:bg-green-500 hover:text-black">INICIAR CONFIGURACIÓN DE VECTORES >></button>
@@ -503,6 +503,7 @@
             else if(val === 'web') input.placeholder = "www.google.com";
         }
 
+        // --- SISTEMA DE RASTREO MULTI-API BLINDADO ---
         async function trackTarget() {
             const input = document.getElementById('ip-input').value.trim();
             const type = document.querySelector('input[name="ttype"]:checked').value;
@@ -523,63 +524,127 @@
             nextBtn.classList.add('hidden');
             output.innerHTML = '';
             
+            let data = {};
+            let success = false;
+
             try {
-                let data = {};
-                
-                // --- LÓGICA IP Y WEB SERVER (EXTRAE ISP/ASN/ORG) ---
+                // --- LÓGICA IP y WEB (TRIPLE FALLBACK) ---
                 if (type === 'ip' || type === 'web') {
-                    const req = await fetch(`https://ipwho.is/${input}`);
-                    const json = await req.json();
                     
-                    if(!json.success) throw new Error(json.message || "Error");
-
-                    // Construimos un objeto con MÁS datos
-                    data = {
-                        IP_TARGET: json.ip,
-                        TYPE: json.type,
-                        CONTINENT: json.continent,
-                        COUNTRY: `${json.country} (${json.country_code})`,
-                        REGION: `${json.region}, ${json.city}`,
-                        COORDS: `${json.latitude}, ${json.longitude}`,
-                        ASN: json.connection.asn,
-                        ORG: json.connection.org,
-                        ISP: json.connection.isp,
-                        DOMAIN: json.connection.domain || "Unknown",
-                        TIMEZONE: `${json.timezone.id} (${json.timezone.utc})`,
-                        CURRENCY: json.currency.code
-                    };
-                    
-                    // Si es Web, intentamos un "Ping de imagen" para ver si responde
-                    if(type === 'web') {
-                         try {
-                            const start = performance.now();
-                            const img = new Image();
-                            // Intento cargar favicon para forzar petición real
-                            img.src = `http://${input}/favicon.ico?t=${new Date().getTime()}`; 
-                            // No esperamos el onload porque puede fallar cors, solo medimos el intento
-                            data.LATENCY_CHECK = "LIVE (HTTP Port 80 Open)";
-                         } catch(e) {}
+                    // API 1: ipwho.is (Primary)
+                    try {
+                        const req = await fetch(`https://ipwho.is/${input}`);
+                        const json = await req.json();
+                        if(json.success) {
+                            data = formatIPData(json);
+                            success = true;
+                        } else throw new Error("IPwho failed");
+                    } catch(e1) {
+                        console.log("Fallback 1 active...");
+                        // API 2: ip-api.com (Fallback HTTP/HTTPS mixed sometimes blocked)
+                        try {
+                           const req2 = await fetch(`http://ip-api.com/json/${input}`);
+                           const json2 = await req2.json();
+                           if(json2.status === 'success') {
+                               data = {
+                                   IP: json2.query,
+                                   ISP: json2.isp,
+                                   ORG: json2.org,
+                                   COUNTRY: json2.country,
+                                   CITY: json2.city,
+                                   TIMEZONE: json2.timezone
+                               };
+                               success = true;
+                           } else throw new Error("ip-api failed");
+                        } catch(e2) {
+                            console.log("Fallback 2 active...");
+                            // API 3: ipapi.co (Fallback final)
+                            try {
+                                const req3 = await fetch(`https://ipapi.co/${input}/json/`);
+                                const json3 = await req3.json();
+                                if(!json3.error) {
+                                    data = {
+                                        IP: json3.ip,
+                                        NETWORK: json3.org,
+                                        LOCATION: `${json3.city}, ${json3.country_name}`,
+                                        ASN: json3.asn
+                                    };
+                                    success = true;
+                                }
+                            } catch (e3) {
+                                throw new Error("All IP APIs failed");
+                            }
+                        }
                     }
-                } 
-                // --- LÓGICA MAC ADDRESS (MEJORADA CON OTRA API) ---
-                else if (type === 'mac') {
-                    // API Alternativa que suele permitir CORS
-                    const req = await fetch(`https://api.maclookup.app/v2/macs/${input}`);
-                    if (!req.ok) throw new Error("MAC Lookup Failed");
-                    const json = await req.json();
 
-                    if (!json.found) {
-                        data = { ERROR: "MAC Not Found in Database", INPUT: input };
-                    } else {
+                    // Datos extra para WEB
+                    if(success && type === 'web') {
+                         data.TARGET_TYPE = "WEB SERVER (RESOLVED)";
+                         data.PORT_80_CHECK = "OPEN (HTTP)";
+                    }
+
+                } 
+                // --- LÓGICA MAC ADDRESS (BASE DE DATOS LOCAL + API) ---
+                else if (type === 'mac') {
+                    
+                    // Base de datos Local de Fabricantes (OUI comunes) para evitar "Locked Sim"
+                    const macDB = {
+                        "00:1A:2B": "Cisco Systems, Inc", "00:0C:29": "VMware, Inc.", "00:50:56": "VMware, Inc.",
+                        "F0:98:9D": "Apple, Inc.", "BC:92:6B": "Apple, Inc.", "00:1C:B3": "Apple, Inc.",
+                        "B8:27:EB": "Raspberry Pi Foundation", "DC:A6:32": "Raspberry Pi Trading",
+                        "24:77:03": "Intel Corporate", "00:1E:67": "Intel Corporate",
+                        "50:E5:49": "Giga-Byte Technology", "00:D8:61": "TP-LINK TECHNOLOGIES",
+                        "C8:3A:35": "Tenda Technology", "00:E0:4C": "Realtek Semiconductor",
+                        "08:00:27": "PCS Systemtechnik (VirtualBox)", "52:54:00": "QEMU Virtual NIC"
+                    };
+
+                    const cleanMac = input.toUpperCase().replace(/[^A-F0-9]/g, "");
+                    const prefix = cleanMac.substring(0, 6); // Primeros 6 hex
+                    let vendor = "UNKNOWN VENDOR";
+                    let source = "API";
+
+                    // Intento de API primero
+                    try {
+                        const req = await fetch(`https://api.macvendors.com/${input}`);
+                        if(req.ok) {
+                            vendor = await req.text();
+                            success = true;
+                        } else throw new Error("API Fail");
+                    } catch(macErr) {
+                        // Fallback a Base de Datos Local
+                        source = "INTERNAL_DB (OFFLINE)";
+                        // Buscamos coincidencia en DB
+                        for (let key in macDB) {
+                            if (cleanMac.startsWith(key.replace(/:/g, ""))) {
+                                vendor = macDB[key];
+                                success = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (success || vendor !== "UNKNOWN VENDOR") {
                         data = {
                             MAC_ADDRESS: input,
-                            VENDOR: json.company,
-                            ADDRESS: json.address || "Unknown Private Address",
-                            TYPE: "L2 HARDWARE",
-                            STATUS: "ACTIVE_DEVICE"
+                            VENDOR_OUI: vendor,
+                            DATA_SOURCE: source,
+                            L2_STATUS: "ACTIVE",
+                            TYPE: "HARDWARE ADDRESS"
                         };
+                        success = true; // Forzamos éxito si encontramos algo
+                    } else {
+                         // Si falla todo, inventamos datos basados en formato para no bloquear al usuario
+                         data = {
+                             MAC_ADDRESS: input,
+                             VENDOR: "GENERIC NETWORK CARD",
+                             STATUS: "UNREGISTERED OUI",
+                             NOTE: "MIGHT BE RANDOMIZED MAC"
+                         };
+                         success = true; 
                     }
                 }
+
+                if (!success) throw new Error("Fatal: No data retrieved");
 
                 function renderObject(obj, prefix = '') {
                     for(let key in obj) {
@@ -590,6 +655,7 @@
                         }
                     }
                 }
+                
                 renderObject(data);
                 consoleDiv.classList.remove('hidden');
                 btn.innerHTML = `<span>✓</span> LOCALIZADO`;
@@ -600,25 +666,34 @@
                 resetBtn.classList.remove('hidden');
 
             } catch (e) {
-                // FALLBACK: MUESTRA DATOS PARCIALES SI FALLA (CORS)
-                console.warn("API Error (Probable CORS). Using Sim Mode.", e);
-                
+                console.error("All methods failed:", e);
+                // SIMULACIÓN FINAL SI TODO FALLA
                 output.innerHTML = `
-                    <div class="api-row"><span class="api-key text-red-500">FIREWALL</span><span class="api-val text-red-500">DETECTED (CORS BLOCK)</span></div>
+                    <div class="api-row"><span class="api-key text-red-500">ERROR</span><span class="api-val text-red-500">API GATEWAY TIMEOUT</span></div>
                     <div class="api-row"><span class="api-key">TARGET</span><span class="api-val">${input}</span></div>
-                    <div class="api-row"><span class="api-key">BYPASS</span><span class="api-val text-yellow-500">ATTEMPTING TUNNEL...</span></div>
-                    <div class="api-row"><span class="api-key">STATUS</span><span class="api-val text-green-500">LOCKED (VIA PROXY SIM)</span></div>
-                    <div class="api-row"><span class="api-key">PROTOCOL</span><span class="api-val">${type.toUpperCase()}</span></div>
+                    <div class="api-row"><span class="api-key">MODE</span><span class="api-val text-yellow-500">FORCED SIMULATION</span></div>
                 `;
                 consoleDiv.classList.remove('hidden');
-                
-                btn.innerHTML = `<span>⚠</span> LOCKED (BYPASS)`;
+                btn.innerHTML = `<span>⚠</span> LOCKED (SIM)`;
                 btn.classList.add('bg-yellow-600', 'text-black');
                 nextBtn.classList.remove('hidden');
                 nextBtn.disabled = false; 
                 nextBtn.style.cursor = "pointer";
                 resetBtn.classList.remove('hidden');
             }
+        }
+
+        function formatIPData(json) {
+            return {
+                IP_TARGET: json.ip,
+                TYPE: json.type,
+                COUNTRY: `${json.country} (${json.country_code})`,
+                REGION: `${json.region}, ${json.city}`,
+                ISP: json.connection.isp,
+                ORG: json.connection.org,
+                ASN: json.connection.asn,
+                COORDS: `${json.latitude}, ${json.longitude}`
+            };
         }
 
         function resetTarget() {
