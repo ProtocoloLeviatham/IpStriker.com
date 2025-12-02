@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEVIATHAM | CIA CYBER WARFARE INTERFACE</title>
+    <style>
+        :root {
+            --primary: #0f0;
+            --secondary: #003300;
+            --alert: #ff0000;
+            --warning: #ffcc00;
+            --dark: #050505;
+            --scanline: rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--primary);
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- EFECTOS CRT Y FONDO --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* --- ALERTA INICIAL --- */
+        #alert-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            border: 5px solid var(--alert);
+            animation: borderFlash 1s infinite;
+        }
+
+        .alert-text {
+            color: var(--alert);
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--alert);
+            margin-bottom: 20px;
+        }
+
+        .btn-enter {
+            background: var(--dark);
+            color: var(--alert);
+            border: 2px solid var(--alert);
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .btn-enter:hover { background: var(--alert); color: black; }
+
+        /* --- UI PRINCIPAL --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+            display: none; /* Oculto hasta aceptar alerta */
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-shadow: 0 0 20px var(--primary);
+            letter-spacing: 5px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            border: 1px solid var(--secondary);
+            padding: 10px;
+        }
+
+        .btn-encrypt {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 2px 5px;
+            margin-left: 10px;
+        }
+        .btn-encrypt:hover { background: var(--primary); color: black; }
+
+        /* --- SECCIONES --- */
+        .panel {
+            border: 1px solid var(--primary);
+            background: rgba(0, 20, 0, 0.7);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px var(--secondary);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: black;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 15px;
+            font-size: 1.2rem;
+        }
+
+        .btn-action {
+            background: var(--dark);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 15px 30px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .btn-action:hover { background: var(--primary); color: black; }
+        
+        .btn-cancel {
+            border-color: var(--alert);
+            color: var(--alert);
+            width: 100%;
+            margin-top: 10px;
+            display: none;
+        }
+        .btn-cancel:hover { background: var(--alert); color: white; }
+
+        /* --- RECON DATA --- */
+        #recon-display {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        .data-point { border-left: 2px solid var(--primary); padding-left: 10px; }
+        .label { opacity: 0.7; font-size: 0.8em; }
+
+        /* --- ATTACK VECTORS --- */
+        #attack-config { display: none; }
+        .vector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .vector-card {
+            border: 1px solid #333;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+        .vector-card:hover { transform: scale(1.05); }
+        .vector-card h3 { margin-bottom: 5px; }
+        .vector-card p { font-size: 0.8rem; opacity: 0.8; }
+        
+        .low { border-color: var(--primary); color: var(--primary); }
+        .med { border-color: var(--warning); color: var(--warning); }
+        .high { border-color: var(--alert); color: var(--alert); }
+
+        /* --- ATTACK MODE --- */
+        #attack-terminal {
+            display: none;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+            background: black;
+            border: 2px solid var(--alert);
+        }
+        
+        .log-container {
+            height: 100%;
+            overflow-y: scroll;
+            padding: 10px;
+            color: var(--alert);
+            font-size: 0.8rem;
+        }
+        
+        .cve-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 200px;
+            background: rgba(50,0,0,0.8);
+            border: 1px solid var(--alert);
+            font-size: 0.7rem;
+            padding: 5px;
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes borderFlash { 0% { border-color: var(--alert); } 50% { border-color: transparent; } 100% { border-color: var(--alert); } }
+        @keyframes screenPulse { 0% { box-shadow: inset 0 0 0 red; } 50% { box-shadow: inset 0 0 50px red; } 100% { box-shadow: inset 0 0 0 red; } }
+        
+        .attack-active {
+            animation: screenPulse 1s infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .input-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="crt-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <div id="alert-modal">
+        <div class="alert-text">
+            ⚠ ACCESO RESTRINGIDO ⚠<br>
+            NIVEL DE AUTORIZACIÓN: CLASIFICADO<br>
+            <span style="font-size: 1rem; color: white; font-weight: normal;">USO EXCLUSIVO AGENCIA DE INTELIGENCIA</span>
+        </div>
+        <button class="btn-enter" onclick="enterSystem()">INICIAR PROTOCOLO</button>
+    </div>
+
+    <div class="container" id="main-ui">
+        <header>
+            <h1>LEVIATHAM</h1>
+            <p>ADVANCED WARFARE INTERFACE v4.0</p>
+        </header>
+
+        <div class="status-bar">
+            <span id="my-ip">IP DETECTADA: CARGANDO... <button class="btn-encrypt" onclick="toggleEncrypt()">ENCRIPTAR IP</button></span>
+            <span>ESTADO: <span id="sys-status" style="color: var(--primary)">ONLINE</span></span>
+            <span>LATENCIA: 12ms</span>
+        </div>
+
+        <div class="panel">
+            <h2>// TARGET LOCK BAR</h2>
+            <div class="input-group">
+                <input type="text" id="target-ip" placeholder="INGRESE IP OBJETIVO (Ej: 8.8.8.8)">
+                <button class="btn-action" onclick="startRecon()">ATACAR [INICIAR RECON]</button>
+            </div>
+        </div>
+
+        <div class="panel" id="recon-panel" style="display:none;">
+            <h2>// RECONNAISSANCE DATA</h2>
+            <div id="recon-display">
+                </div>
+            <div id="port-scan-anim" style="margin-top: 10px; color: var(--warning);">ESCANEO DE PUERTOS ACTIVO...</div>
+        </div>
+
+        <div class="panel" id="attack-config">
+            <h2>// ATTACK VECTOR CONFIG</h2>
+            <p>SELECCIONE MÉTODO DE INYECCIÓN</p>
+            <div class="vector-grid">
+                <div class="vector-card low" onclick="selectAttack('ICMP FLOOD', 'low')">
+                    <h3>ICMP FLOOD</h3>
+                    <p>Sobrecarga mediante solicitudes Echo (Ping). Saturation Level: LOW.</p>
+                </div>
+                <div class="vector-card med" onclick="selectAttack('DNS AMPLIFICATION', 'med')">
+                    <h3>DNS AMP</h3>
+                    <p>Usa resolvers abiertos para amplificar tráfico x50. Saturation Level: MEDIUM.</p>
+                </div>
+                <div class="vector-card med" onclick="selectAttack('TCP SYN FLOOD', 'med')">
+                    <h3>TCP SYN</h3>
+                    <p>Agota recursos del servidor dejando conexiones semi-abiertas. Saturation Level: HIGH.</p>
+                </div>
+                <div class="vector-card high" onclick="selectAttack('UDP FLOOD 7', 'high')">
+                    <h3>UDP FLOOD 7</h3>
+                    <p>Ataque volumétrico masivo en puertos aleatorios. Saturation Level: CRITICAL.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" id="attack-terminal">
+            <div class="cve-overlay">
+                <strong>VULNERABILIDADES (CVE)</strong>
+                <div id="cve-list">Escaneando...</div>
+            </div>
+            <div class="log-container" id="console-log">
+                > WAITING FOR COMMAND...
+            </div>
+        </div>
+
+        <button class="btn-action btn-cancel" id="btn-cancel" onclick="cancelAttack()">CANCELAR ATAQUE</button>
+
+    </div>
+
+    <script>
+        // --- EFECTO RED NEURONAL (CANVAS) ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+        for(let i=0; i<100; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2
+            });
+        }
+
+        function drawNet() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0f0';
+            ctx.strokeStyle = '#0f0';
+            
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                particles.forEach(p2 => {
+                    let d = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if(d < 100) {
+                        ctx.beginPath();
+                        ctx.lineWidth = 0.2;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+            requestAnimationFrame(drawNet);
+        }
+        drawNet();
+
+        // --- LÓGICA DE LA INTERFAZ ---
+        let realIP = "127.0.0.1";
+        let isEncrypted = false;
+        let attackInterval;
+        let cveInterval;
+
+        // Obtener IP del usuario al inicio
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => {
+                realIP = data.ip;
+                document.getElementById('my-ip').innerHTML = `IP DETECTADA: ${realIP} <button class="btn-encrypt" onclick="toggleEncrypt()">ENCRIPTAR IP</button>`;
+            })
+            .catch(() => { realIP = "Unknown"; });
+
+        function enterSystem() {
+            document.getElementById('alert-modal').style.display = 'none';
+            document.getElementById('main-ui').style.display = 'block';
+            // Play sound effect could go here
+        }
+
+        function toggleEncrypt() {
+            const display = document.getElementById('my-ip');
+            if(!isEncrypted) {
+                // Generar IP falsa
+                const fakeIP = `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+                display.innerHTML = `IP ENCRIPTADA: <span style="color:cyan">${fakeIP}</span> (SECURE)`;
+                isEncrypted = true;
+            } else {
+                display.innerHTML = `IP DETECTADA: ${realIP} <button class="btn-encrypt" onclick="toggleEncrypt()">ENCRIPTAR IP</button>`;
+                isEncrypted = false;
+            }
+        }
+
+        function startRecon() {
+            const target = document.getElementById('target-ip').value;
+            if(!target) { alert("INGRESE UNA IP VÁLIDA"); return; }
+
+            const btn = document.querySelector('.input-group .btn-action');
+            btn.innerHTML = "ESCANEANDO OBJETIVO...";
+            btn.style.background = "var(--warning)";
+            btn.style.color = "black";
+
+            // Simular petición a API Real o usar Mock
+            fetch(`https://ipapi.co/${target}/json/`)
+                .then(res => res.json())
+                .then(data => {
+                    showReconData(data);
+                })
+                .catch(err => {
+                    // Fallback si falla la API (ej: por CORS o rate limit)
+                    showReconData({
+                        ip: target,
+                        city: "Unknown (Firewall Detected)",
+                        region: "Unknown",
+                        country_name: "Classified",
+                        org: "Military/Govt Network",
+                        asn: "AS-X-FORCE"
+                    });
+                });
+        }
+
+        function showReconData(data) {
+            const panel = document.getElementById('recon-panel');
+            const display = document.getElementById('recon-display');
+            panel.style.display = 'block';
+            
+            // Si la API falla devuelve undefined, manejamos eso
+            const safeData = (val) => val ? val : "HIDDEN";
+
+            display.innerHTML = `
+                <div class="data-point"><span class="label">IP TARGET:</span><br><strong>${safeData(data.ip)}</strong></div>
+                <div class="data-point"><span class="label">PAÍS:</span><br><strong>${safeData(data.country_name)}</strong></div>
+                <div class="data-point"><span class="label">CIUDAD:</span><br><strong>${safeData(data.city)}</strong></div>
+                <div class="data-point"><span class="label">ISP/ORG:</span><br><strong>${safeData(data.org)}</strong></div>
+                <div class="data-point"><span class="label">ZONA HORARIA:</span><br><strong>${safeData(data.timezone)}</strong></div>
+                <div class="data-point"><span class="label">LAT/LON:</span><br><strong>${safeData(data.latitude)} / ${safeData(data.longitude)}</strong></div>
+            `;
+
+            // Simulación de escaneo de puertos (Esto es fake visual)
+            let ports = [21, 22, 80, 443, 3306, 8080];
+            let portText = document.getElementById('port-scan-anim');
+            let found = [];
+            
+            let i = 0;
+            let scanInterval = setInterval(() => {
+                portText.innerText = `ESCANEANDO PUERTO: ${ports[i]}...`;
+                if(Math.random() > 0.3) found.push(ports[i]); // 70% chance de encontrar open
+                i++;
+                if(i >= ports.length) {
+                    clearInterval(scanInterval);
+                    portText.innerHTML = `<span style="color:var(--primary)">PUERTOS ABIERTOS DETECTADOS: ${found.join(', ')}</span>`;
+                    // Activar siguiente fase
+                    document.getElementById('attack-config').style.display = 'block';
+                    window.scrollTo(0, document.body.scrollHeight);
+                }
+            }, 500);
+        }
+
+        function selectAttack(name, level) {
+            const terminal = document.getElementById('attack-terminal');
+            terminal.style.display = 'block';
+            document.getElementById('btn-cancel').style.display = 'block';
+            
+            // Efecto visual de parpadeo rojo en toda la pantalla
+            document.body.classList.add('attack-active');
+
+            const log = document.getElementById('console-log');
+            log.innerHTML = `> INITIATING ${name} PROTOCOL...<br>> TARGET LOCKED.<br>> BYPASSING FIREWALL... SUCCESS.<br>`;
+            
+            // Loop de ataque
+            let packets = 0;
+            attackInterval = setInterval(() => {
+                packets += Math.floor(Math.random() * 500);
+                const time = new Date().toLocaleTimeString();
+                log.innerHTML += `[${time}] SENDING ${Math.floor(Math.random()*1024)} BYTES TO TARGET > PACKET_ID: ${Math.floor(Math.random()*999999)} [ACK]<br>`;
+                log.scrollTop = log.scrollHeight; // Auto scroll
+            }, 100);
+
+            // Loop de CVEs
+            const cves = ["CVE-2024-3094", "CVE-2023-44487", "CVE-2021-44228 (Log4Shell)", "CVE-2017-0144 (EternalBlue)", "ZERO-DAY FOUND!"];
+            cveInterval = setInterval(() => {
+                const randCVE = cves[Math.floor(Math.random() * cves.length)];
+                document.getElementById('cve-list').innerHTML += `<div style="color:var(--alert)">${randCVE} - EXPLOITABLE</div>`;
+                if(document.getElementById('cve-list').childElementCount > 5) {
+                    document.getElementById('cve-list').innerHTML = "";
+                }
+            }, 800);
+
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function cancelAttack() {
+            const btn = document.getElementById('btn-cancel');
+            btn.innerText = "ABORTANDO...";
+            
+            setTimeout(() => {
+                clearInterval(attackInterval);
+                clearInterval(cveInterval);
+                document.body.classList.remove('attack-active');
+                
+                const log = document.getElementById('console-log');
+                log.innerHTML += `<br><span style="color:var(--primary)">> ATTACK ABORTED BY USER.<br>> CLEANING LOGS...<br>> CONNECTION CLOSED.</span>`;
+                log.scrollTop = log.scrollHeight;
+                
+                btn.innerText = "ATAQUE CANCELADO";
+                btn.style.borderColor = "var(--primary)";
+                btn.style.color = "var(--primary)";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
