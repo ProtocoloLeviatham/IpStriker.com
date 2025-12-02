@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEVIATHAN | ADVANCED WARFARE</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -14,7 +12,7 @@
             --primary: #00ff00;
             --danger: #ff0000;
             --dark: #050505;
-            --glass: rgba(0, 20, 0, 0.9);
+            --glass: rgba(0, 20, 0, 0.95);
         }
 
         body {
@@ -116,11 +114,13 @@
             cursor: pointer;
             position: relative;
             z-index: 60;
+            background: rgba(0, 10, 0, 0.6);
         }
         .vector-card:hover {
             opacity: 1;
             transform: scale(1.02);
             z-index: 70;
+            border-color: var(--primary);
         }
         .vector-card.selected {
             opacity: 1;
@@ -136,20 +136,13 @@
         /* API Data Grid */
         .api-row {
             display: grid;
-            grid-template-columns: 140px 1fr;
+            grid-template-columns: 100px 1fr;
             border-bottom: 1px solid #003300;
-            padding: 2px 0;
+            padding: 4px 0;
             font-size: 0.75rem;
         }
         .api-key { color: #00aa00; font-weight: bold; text-transform: uppercase; }
-        .api-val { color: #ccffcc; word-break: break-all; }
-
-        /* Decodificación de texto */
-        .decode-text span {
-            opacity: 0;
-            animation: reveal 0.01s forwards;
-        }
-        @keyframes reveal { to { opacity: 1; } }
+        .api-val { color: #ccffcc; word-break: break-all; text-align: right;}
 
         /* Animaciones */
         @keyframes scanline {
@@ -166,13 +159,26 @@
             z-index: 40;
         }
 
+        /* Grid Pattern Background for graphs */
+        .bg-grid-pattern {
+            background-image: linear-gradient(rgba(255, 0, 0, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         
-        input, button {
-            cursor: text;
-        }
-        button {
-            cursor: pointer;
+        input, button { cursor: text; }
+        button { cursor: pointer; }
+        
+        .log-line {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin-bottom: 2px;
+            border-bottom: 1px solid #111;
+            padding-bottom: 2px;
+            line-height: 1.1;
         }
     </style>
 </head>
@@ -183,264 +189,194 @@
 
     <div class="relative z-10 container mx-auto p-4 min-h-screen flex flex-col">
         
-        <!-- HEADER -->
-        <header class="text-center mb-8 pt-4 border-b border-green-800 pb-4 relative z-60">
-            <h1 class="text-5xl md:text-7xl font-bold mb-2 glitch-text tracking-widest" data-text="LEVIATHAN">LEVIATHAN</h1>
-            <div class="flex justify-between items-center text-xs md:text-sm text-green-600 px-4 mt-2 font-mono">
+        <header class="text-center mb-4 pt-4 border-b border-green-800 pb-4 relative z-60">
+            <h1 class="text-4xl md:text-7xl font-bold mb-2 glitch-text tracking-widest" data-text="LEVIATHAN">LEVIATHAN</h1>
+            <div class="flex flex-col md:flex-row justify-between items-center text-[10px] md:text-sm text-green-600 px-4 mt-2 font-mono gap-1">
                 <span>CIA_CYBER_CMD::NODE_ALPHA</span>
                 <span class="animate-pulse text-red-500 font-bold">/// UNAUTHORIZED ACCESS DETECTED ///</span>
                 <span>V.6.6.6</span>
             </div>
         </header>
 
-        <!-- TÉRMINOS Y CONDICIONES (Animado) -->
-        <div id="terms-panel" class="panel p-6 mb-8 border-l-4 border-l-red-600 relative overflow-hidden group">
+        <div id="terms-panel" class="panel p-4 mb-6 border-l-4 border-l-red-600 relative overflow-hidden group">
             <div class="absolute top-0 right-0 p-2 opacity-20 text-6xl">⚖️</div>
-            <h3 class="text-2xl text-red-500 font-bold mb-4 border-b border-red-800 pb-2 flex items-center gap-2">
-                <span class="animate-pulse">⚠</span> PROTOCOLO DE USO Y RESTRICCIONES
+            <h3 class="text-xl text-red-500 font-bold mb-2 border-b border-red-800 pb-2 flex items-center gap-2">
+                <span class="animate-pulse">⚠</span> PROTOCOLO DE USO
             </h3>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div id="terms-text" class="text-xs md:text-sm text-green-300 font-light leading-relaxed font-mono">
-                    <!-- Texto inyectado por JS para efecto decode -->
-                </div>
-                <div class="flex flex-col justify-center items-center border border-red-900 bg-red-950/20 p-4">
-                    <div class="text-red-500 text-center font-bold text-lg mb-2 glitch-text" data-text="ADVERTENCIA FEDERAL">ADVERTENCIA FEDERAL</div>
-                    <p class="text-red-400 text-xs text-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div id="terms-text" class="text-[10px] md:text-sm text-green-300 font-light leading-relaxed font-mono h-24 md:h-auto overflow-y-auto"></div>
+                <div class="hidden md:flex flex-col justify-center items-center border border-red-900 bg-red-950/20 p-2">
+                    <div class="text-red-500 text-center font-bold text-lg mb-1 glitch-text" data-text="ADVERTENCIA FEDERAL">ADVERTENCIA FEDERAL</div>
+                    <p class="text-red-400 text-[10px] text-center">
                         ESTA HERRAMIENTA DISPARA ATAQUES REALES SIMULADOS.<br>
-                        EL USO CONTRA OBJETIVOS GUBERNAMENTALES O CIVILES SIN ORDEN JUDICIAL RESULTARÁ EN:<br>
+                        USO EXCLUSIVO PARA PRUEBAS DE PENETRACIÓN AUTORIZADAS.<br>
                         <span class="text-white bg-red-600 px-1 mt-1 inline-block font-bold">TERMINACIÓN INMEDIATA</span>
                     </p>
                 </div>
             </div>
         </div>
 
-        <!-- MAIN VIEWPORT -->
         <main id="viewport" class="flex-grow flex flex-col items-center w-full transition-all relative z-60">
 
-            <!-- SECCIÓN 1: TARGET LOCK -->
-            <section id="sec-target" class="w-full max-w-4xl panel p-8 rounded relative animate-[fadeIn_0.5s]">
-                <div class="flex items-center mb-6">
-                    <div class="w-4 h-4 bg-green-500 rounded-full animate-ping mr-3"></div>
-                    <h2 class="text-2xl font-bold tracking-widest">TARGET LOCK SYSTEM</h2>
+            <section id="sec-target" class="w-full max-w-4xl panel p-6 md:p-8 rounded relative animate-[fadeIn_0.5s]">
+                <div class="flex items-center mb-4">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-ping mr-3"></div>
+                    <h2 class="text-xl md:text-2xl font-bold tracking-widest">TARGET LOCK SYSTEM</h2>
                 </div>
 
                 <div class="mb-6 relative">
-                    <label class="text-xs text-green-600 font-bold uppercase mb-1 block">Ingrese Objetivo (IP / Dominio)</label>
-                    <div class="flex shadow-[0_0_20px_rgba(0,255,0,0.2)] relative z-50">
-                        <span class="bg-green-900/30 text-green-500 p-4 border border-green-700 flex items-center text-xl font-bold">></span>
-                        <input type="text" id="ip-input" placeholder="192.168.1.1" 
-                            class="flex-grow bg-black border-y border-r border-green-700 text-green-400 p-4 text-xl outline-none focus:bg-green-900/10 font-bold tracking-wider placeholder-green-900 cursor-text">
+                    <label class="text-[10px] text-green-600 font-bold uppercase mb-1 block">Ingrese Objetivo (IP / Dominio)</label>
+                    
+                    <div class="flex flex-col md:flex-row shadow-[0_0_20px_rgba(0,255,0,0.2)] relative z-50 gap-2 md:gap-0">
+                        <span class="bg-green-900/30 text-green-500 p-3 md:p-4 border border-green-700 items-center justify-center text-xl font-bold hidden md:flex">></span>
                         
-                        <!-- BOTÓN X DE RESET (Oculto por defecto) -->
-                        <button onclick="resetTarget()" id="btn-reset-target" class="hidden bg-red-900/80 text-red-500 px-4 font-bold border-y border-green-700 hover:bg-red-600 hover:text-white transition-all cursor-pointer">
-                            X
-                        </button>
-
-                        <button onclick="trackTarget()" id="btn-track"
-                            class="btn-action px-8 py-4 font-bold text-lg flex items-center gap-2 hover:bg-green-500 hover:text-black">
-                            <span>⌖</span> LOCALIZAR
-                        </button>
+                        <input type="text" id="ip-input" placeholder="192.168.1.1" 
+                            class="w-full flex-grow bg-black border border-green-700 text-green-400 p-3 md:p-4 text-lg md:text-xl outline-none focus:bg-green-900/10 font-bold tracking-wider placeholder-green-900 cursor-text">
+                        
+                        <div class="flex w-full md:w-auto">
+                            <button onclick="resetTarget()" id="btn-reset-target" class="hidden bg-red-900/80 text-red-500 px-4 font-bold border border-green-700 hover:bg-red-600 hover:text-white transition-all cursor-pointer mr-2 md:mr-0 md:border-l-0">X</button>
+                            <button onclick="trackTarget()" id="btn-track" class="w-full md:w-auto btn-action px-4 md:px-8 py-3 md:py-4 font-bold text-lg flex items-center justify-center gap-2 hover:bg-green-500 hover:text-black whitespace-nowrap">
+                                <span>⌖</span> LOCALIZAR
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Opciones de tipo -->
-                <div class="flex gap-4 mb-6 text-xs relative z-50">
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-white">
-                        <input type="radio" name="ttype" checked class="accent-green-500 cursor-pointer"> IPv4 / IPv6
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-white">
-                        <input type="radio" name="ttype" class="accent-green-500 cursor-pointer"> MAC ADDR (L2)
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-white">
-                        <input type="radio" name="ttype" class="accent-green-500 cursor-pointer"> WEB SERVER
-                    </label>
+                <div class="flex flex-wrap gap-2 md:gap-4 mb-6 text-xs relative z-50 justify-center md:justify-start">
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded"><input type="radio" name="ttype" checked class="accent-green-500 cursor-pointer"> IPv4 / IPv6</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded"><input type="radio" name="ttype" class="accent-green-500 cursor-pointer"> MAC ADDR (L2)</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded"><input type="radio" name="ttype" class="accent-green-500 cursor-pointer"> WEB SERVER</label>
                 </div>
 
-                <!-- API RESULTADOS (RAW DATA) -->
-                <div id="api-console" class="hidden border-t-2 border-green-600 pt-4 mt-4 bg-black p-4 h-64 overflow-y-auto font-mono text-xs relative z-50">
+                <div id="api-console" class="hidden border-t-2 border-green-600 pt-4 mt-4 bg-black p-4 h-48 md:h-64 overflow-y-auto font-mono text-xs relative z-50">
                     <div class="text-green-500 mb-2 font-bold flex justify-between">
-                        <span>[+] DATA INTERCEPTED SUCCESSFULLY</span>
-                        <span class="animate-pulse">LIVE FEED</span>
+                        <span>[+] DATA INTERCEPTED SUCCESSFULLY</span><span class="animate-pulse">LIVE FEED</span>
                     </div>
-                    <div id="api-output" class="space-y-1">
-                        <!-- JS inyecta datos aqui -->
-                    </div>
+                    <div id="api-output" class="space-y-1"></div>
                 </div>
 
                 <div id="api-error" class="hidden mt-4 p-4 bg-red-900/30 border border-red-500 text-red-500 font-bold text-center animate-pulse">
-                    [!] ERROR DE CONEXIÓN CON EL NODO DE RASTREO [!]<br>
-                    <span class="text-xs font-normal">Verifique la IP o su conexión a internet. La API no respondió.</span>
+                    [!] ERROR DE CONEXIÓN CON EL NODO DE RASTREO [!]<br><span class="text-xs font-normal">Verifique la IP o su conexión a internet. La API no respondió.</span>
                 </div>
 
-                <button id="btn-next-config" onclick="showConfig()" disabled 
-                    class="w-full mt-4 btn-action py-4 hidden font-bold text-xl tracking-[0.2em] animate-[pulse_2s_infinite] cursor-pointer relative z-100">
-                    INICIAR CONFIGURACIÓN DE VECTORES >>
-                </button>
+                <button id="btn-next-config" onclick="showConfig()" disabled class="w-full mt-4 btn-action py-4 hidden font-bold text-lg md:text-xl tracking-[0.2em] animate-[pulse_2s_infinite] cursor-pointer relative z-100 bg-green-900/40 border-2 border-green-500 hover:bg-green-500 hover:text-black">INICIAR CONFIGURACIÓN DE VECTORES >></button>
             </section>
 
-            <!-- SECCIÓN 2: ATTACK CONFIG -->
-            <section id="sec-config" class="hidden w-full max-w-6xl animate-[fadeIn_0.5s]">
-                <div class="panel p-6 border-t-4 border-t-green-500">
-                    <div class="flex justify-between items-end mb-8 border-b border-green-900 pb-2">
-                        <h2 class="text-3xl font-bold">ATTACK VECTOR CONFIG</h2>
-                        <div class="text-right">
+            <section id="sec-config" class="hidden w-full max-w-6xl animate-[fadeIn_0.5s] mb-20">
+                <div class="panel p-4 md:p-6 border-t-4 border-t-green-500">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-green-900 pb-2">
+                        <h2 class="text-2xl md:text-3xl font-bold">ATTACK VECTOR CONFIG</h2>
+                        <div class="text-left md:text-right mt-2 md:mt-0">
                             <div class="text-xs text-green-600">LOCKED TARGET</div>
-                            <div id="config-target-ip" class="text-xl font-bold text-white">0.0.0.0</div>
+                            <div id="config-target-ip" class="text-lg md:text-xl font-bold text-white">0.0.0.0</div>
                         </div>
                     </div>
 
-                    <!-- VECTORES REORDENADOS -->
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                        
-                        <!-- 1. UDP (Bajo) -->
-                        <div class="vector-card p-4 bg-green-900/10 border-green-600" onclick="selectVector('UDP FLOOD', 'green')">
-                            <div class="flex justify-between items-center mb-2">
-                                <h4 class="font-bold text-green-400">UDP FLOOD</h4>
-                                <span class="text-[10px] border border-green-500 px-1">NIVEL 1</span>
-                            </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
+                        <div class="vector-card p-3 border-green-600" onclick="selectVector('UDP FLOOD', 'green')">
+                            <div class="flex justify-between items-center mb-2"><h4 class="font-bold text-green-400 text-sm">UDP FLOOD</h4><span class="text-[9px] border border-green-500 px-1">L4</span></div>
                             <div class="h-1 bg-green-900 w-full mb-2"><div class="h-full bg-green-500 w-1/4"></div></div>
-                            <p class="text-[10px] text-gray-400">Saturación de paquetes UDP. Bajo impacto, alto ruido.</p>
+                            <p class="text-[9px] text-gray-400">Volcado de datagramas UDP aleatorios. Saturación de ancho de banda.</p>
                         </div>
-
-                        <!-- 2. ICMP (Medio) -->
-                        <div class="vector-card p-4 bg-yellow-900/10 border-yellow-600" onclick="selectVector('ICMP ECHO', 'yellow')">
-                            <div class="flex justify-between items-center mb-2">
-                                <h4 class="font-bold text-yellow-400">ICMP SWARM</h4>
-                                <span class="text-[10px] border border-yellow-500 px-1">NIVEL 2</span>
-                            </div>
+                        <div class="vector-card p-3 border-yellow-600" onclick="selectVector('ICMP ECHO', 'yellow')">
+                            <div class="flex justify-between items-center mb-2"><h4 class="font-bold text-yellow-400 text-sm">ICMP SWARM</h4><span class="text-[9px] border border-yellow-500 px-1">L3</span></div>
                             <div class="h-1 bg-yellow-900 w-full mb-2"><div class="h-full bg-yellow-500 w-1/2"></div></div>
-                            <p class="text-[10px] text-gray-400">Ping flood coordinado. Sobrecarga de peticiones de eco.</p>
+                            <p class="text-[9px] text-gray-400">Ping flood masivo. Sobrecarga de peticiones de eco al router.</p>
                         </div>
-
-                        <!-- 3. TCP (Alto) -->
-                        <div class="vector-card p-4 bg-orange-900/10 border-orange-600" onclick="selectVector('TCP SYN', 'orange')">
-                            <div class="flex justify-between items-center mb-2">
-                                <h4 class="font-bold text-orange-500">TCP SYN</h4>
-                                <span class="text-[10px] border border-orange-500 px-1">NIVEL 3</span>
-                            </div>
+                        <div class="vector-card p-3 border-orange-600" onclick="selectVector('TCP SYN', 'orange')">
+                            <div class="flex justify-between items-center mb-2"><h4 class="font-bold text-orange-500 text-sm">TCP SYN</h4><span class="text-[9px] border border-orange-500 px-1">L4</span></div>
                             <div class="h-1 bg-orange-900 w-full mb-2"><div class="h-full bg-orange-500 w-3/4"></div></div>
-                            <p class="text-[10px] text-gray-400">Agotamiento de recursos. Llena la tabla de estados del servidor.</p>
+                            <p class="text-[9px] text-gray-400">Agotamiento de sockets. Llena la tabla de estados del servidor.</p>
                         </div>
-
-                        <!-- 4. DNS (EXTREMO) -->
-                        <div class="vector-card p-4 bg-red-950/30 border-red-500 relative overflow-hidden group" onclick="selectVector('DNS AMP', 'red')">
-                            <div class="absolute inset-0 bg-red-600/10 animate-pulse"></div>
-                            <div class="flex justify-between items-center mb-2 relative z-10">
-                                <h4 class="font-bold text-red-500 text-lg">DNS AMPLIFICATION</h4>
-                                <span class="text-[10px] bg-red-600 text-black font-bold px-1 animate-pulse">EXTREMO</span>
-                            </div>
-                            <div class="h-2 bg-red-900 w-full mb-2 border border-red-600"><div class="h-full bg-red-500 w-full animate-[width_1s_infinite]"></div></div>
-                            <p class="text-[10px] text-red-300 relative z-10 font-bold">Reflexión amplificada x70 usando Resolvers públicos. DEVASTADOR.</p>
+                        <div class="vector-card p-3 border-red-500 relative overflow-hidden group" onclick="selectVector('DNS AMP', 'red')">
+                            <div class="flex justify-between items-center mb-2 relative z-10"><h4 class="font-bold text-red-500 text-sm">DNS AMP</h4><span class="text-[9px] bg-red-600 text-black font-bold px-1">L4+</span></div>
+                            <div class="h-1 bg-red-900 w-full mb-2"><div class="h-full bg-red-500 w-full animate-pulse"></div></div>
+                            <p class="text-[9px] text-red-300 relative z-10">Reflexión amplificada x70 usando Resolvers públicos.</p>
+                        </div>
+                        <div class="vector-card p-3 border-purple-500 relative overflow-hidden group" onclick="selectVector('LAYER 7 HTTP-FLOOD', 'purple')">
+                             <div class="absolute inset-0 bg-purple-600/10 animate-pulse"></div>
+                            <div class="flex justify-between items-center mb-2 relative z-10"><h4 class="font-bold text-purple-400 text-sm">LAYER 7</h4><span class="text-[9px] bg-purple-600 text-black font-bold px-1 animate-pulse">HTTP</span></div>
+                            <div class="h-1 bg-purple-900 w-full mb-2"><div class="h-full bg-purple-500 w-full"></div></div>
+                            <p class="text-[9px] text-purple-300 relative z-10">Peticiones GET/POST masivas simulando tráfico humano real.</p>
                         </div>
                     </div>
 
-                    <!-- Duración -->
                     <div class="mb-8 p-4 bg-black/50 border border-green-800">
-                        <h4 class="text-xs text-green-500 mb-2 font-bold uppercase">Temporizador de Operación</h4>
-                        <div class="flex gap-4">
-                            <button onclick="setDuration(10)" class="dur-btn flex-1 py-2 border border-green-800 text-sm hover:bg-green-900 transition-colors cursor-pointer">10 MIN (TEST)</button>
-                            <button onclick="setDuration(30)" class="dur-btn flex-1 py-2 border border-green-800 text-sm hover:bg-green-900 transition-colors cursor-pointer">30 MIN (LEVE)</button>
-                            <button onclick="setDuration(60)" class="dur-btn flex-1 py-2 border border-green-800 text-sm hover:bg-green-900 transition-colors cursor-pointer">1 HORA (NORMAL)</button>
+                        <h4 class="text-xs text-green-500 mb-2 font-bold uppercase">Temporizador de Operación (TIEMPO REAL)</h4>
+                        <div class="flex flex-col md:flex-row gap-2 md:gap-4">
+                            <button onclick="setDuration(10)" class="dur-btn flex-1 py-3 border border-green-800 text-sm hover:bg-green-900 transition-colors cursor-pointer font-bold">10 MIN (TEST)</button>
+                            <button onclick="setDuration(30)" class="dur-btn flex-1 py-3 border border-green-800 text-sm hover:bg-green-900 transition-colors cursor-pointer font-bold">30 MIN (LEVE)</button>
+                            <button onclick="setDuration(60)" class="dur-btn flex-1 py-3 border border-green-800 text-sm hover:bg-green-900 transition-colors cursor-pointer font-bold">1 HORA (FULL)</button>
                         </div>
                     </div>
 
-                    <div class="flex justify-end gap-4">
-                        <button onclick="resetSystem()" class="px-6 py-2 border border-gray-600 text-gray-500 hover:text-white cursor-pointer">CANCELAR</button>
-                        <button id="btn-launch" onclick="startSimulation()" disabled 
-                            class="px-10 py-4 border-2 border-red-800 bg-black text-red-700 font-bold text-2xl uppercase tracking-widest opacity-50 cursor-not-allowed transition-all clip-path-polygon z-100">
-                            LANCZAR ATAQUE
-                        </button>
+                    <div class="flex flex-col md:flex-row justify-end gap-4">
+                        <button onclick="resetSystem()" class="order-2 md:order-1 px-6 py-3 border border-gray-600 text-gray-500 hover:text-white cursor-pointer w-full md:w-auto">CANCELAR</button>
+                        <button id="btn-launch" onclick="startSimulation()" disabled class="order-1 md:order-2 w-full md:w-auto px-10 py-4 border-2 border-red-800 bg-black text-red-700 font-bold text-xl uppercase tracking-widest opacity-50 cursor-not-allowed transition-all clip-path-polygon z-100">LANZAR ATAQUE</button>
                     </div>
                 </div>
             </section>
 
-            <!-- SECCIÓN 3: SIMULACIÓN ACTIVA -->
-            <!-- FIX: z-index 200 para tapar todo lo demás -->
-            <section id="sec-sim" class="hidden fixed inset-0 bg-black z-[200] flex flex-col p-4 overflow-hidden">
-                <!-- Header Simulación -->
-                <div class="flex justify-between items-start mb-4 border-b-2 border-red-600 pb-2 bg-black">
+            <section id="sec-sim" class="hidden fixed inset-0 bg-black z-[200] flex flex-col p-2 md:p-4 overflow-hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start mb-2 border-b-2 border-red-600 pb-2 bg-black shrink-0">
                     <div>
-                        <div class="text-4xl text-red-600 font-black glitch-text" data-text="ATAQUE EN PROGRESO">ATAQUE EN PROGRESO</div>
-                        <div class="text-xs text-red-400 font-mono mt-1 flex gap-4">
+                        <div class="text-2xl md:text-4xl text-red-600 font-black glitch-text" data-text="ATAQUE EN PROGRESO">ATAQUE EN PROGRESO</div>
+                        <div class="text-[10px] md:text-xs text-red-400 font-mono mt-1 flex flex-wrap gap-2 md:gap-4">
                             <span>OBJETIVO: <span id="sim-target-display" class="text-white font-bold">---</span></span>
                             <span>VECTOR: <span id="sim-vector-display" class="text-white font-bold border px-1 border-red-500">---</span></span>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div id="timer-display" class="text-6xl font-mono text-red-500 font-bold">00:00:00</div>
+                    <div class="text-right mt-2 md:mt-0">
+                        <div id="timer-display" class="text-4xl md:text-6xl font-mono text-red-500 font-bold">00:00:00</div>
                     </div>
                 </div>
 
-                <!-- Cuerpo Simulación -->
-                <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-hidden mb-20">
-                    
-                    <!-- Columna Izquierda: Logs de Paquetes (Waterfall) -->
-                    <div class="lg:col-span-8 bg-black border border-green-900 p-2 font-mono text-xs relative flex flex-col">
+                <div class="flex-grow flex flex-col lg:grid lg:grid-cols-12 gap-2 md:gap-4 overflow-hidden mb-16 md:mb-20">
+                    <div class="lg:col-span-8 bg-black border border-green-900 p-2 font-mono text-xs relative flex flex-col h-2/3 lg:h-auto">
                         <div class="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-black to-transparent z-10"></div>
-                        <h4 class="text-green-600 border-b border-green-800 mb-2 pb-1 flex justify-between">
-                            <span>TRAFICO DE RED (RAW PACKET DUMP)</span>
-                            <span class="animate-pulse text-red-500">LIVE CAPTURE</span>
+                        <h4 class="text-green-600 border-b border-green-800 mb-2 pb-1 flex justify-between shrink-0">
+                            <span>TERMINAL: TRAFICO SALIENTE (RAW)</span><span class="animate-pulse text-red-500">LIVE</span>
                         </h4>
-                        <div id="packet-log" class="flex-grow overflow-hidden flex flex-col justify-end text-[11px] leading-tight opacity-90 font-mono">
-                            <!-- Logs aqui -->
-                        </div>
+                        <div id="packet-log" class="flex-grow overflow-hidden flex flex-col justify-end text-[10px] md:text-[11px] leading-tight opacity-90 font-mono text-green-400"></div>
                     </div>
 
-                    <!-- Columna Derecha: Métricas y CVE -->
-                    <div class="lg:col-span-4 flex flex-col gap-4">
-                        <!-- CVE Scanner -->
-                        <div class="h-1/2 bg-black border border-yellow-900 p-2 font-mono overflow-hidden relative">
-                            <h4 class="text-yellow-600 border-b border-yellow-800 mb-2 pb-1">CVE VULNERABILITY SCANNER</h4>
-                            <div id="cve-log" class="text-xs text-yellow-500/80 space-y-1"></div>
-                            <div class="absolute inset-0 pointer-events-none bg-yellow-500/5 scan-line"></div>
-                        </div>
-
-                        <!-- Sending Bytes Visualizer -->
-                        <div class="h-1/2 bg-red-950/10 border border-red-900 p-4 flex flex-col justify-center items-center relative overflow-hidden">
-                            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImEiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgNDBoNDBWMEgwdi41aDF2LjVoMXYuNWgxdjE5aDF2LjVoMXYuNWgxdjE5aDF2LjVoMXYuNWgxeiIgZmlsbD0iI2ZmMDAwMCIgZmlsbC1vcGFjaXR5PSIwLjAzIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PC9zdmc+')] opacity-50 animate-[pulse_0.2s_infinite]"></div>
-                            
-                            <div class="text-red-500 text-xs tracking-[0.5em] mb-2 uppercase animate-pulse">Ancho de Banda Total</div>
+                    <div class="lg:col-span-4 flex flex-col gap-2 md:gap-4 h-1/3 lg:h-auto">
+                        
+                        <div class="h-full bg-red-950/10 border border-red-900 p-2 flex flex-col justify-center items-center relative overflow-hidden shrink-0 bg-grid-pattern">
+                            <div class="absolute inset-0 bg-red-500/5 animate-pulse"></div>
+                            <div class="text-red-500 text-[10px] tracking-[0.2em] mb-1 uppercase animate-pulse z-10">ANCHO DE BANDA ENVIADO</div>
                             <div class="flex items-end gap-2 z-10">
-                                <span id="bytes-val" class="text-6xl font-bold text-white glitch-text" data-text="00.00">00.00</span>
-                                <span class="text-xl text-red-500 font-bold mb-2">TB</span>
+                                <span id="bytes-val" class="text-3xl md:text-5xl font-bold text-white glitch-text" data-text="00.00">00.00</span>
+                                <span class="text-sm md:text-xl text-red-500 font-bold mb-1">TB</span>
                             </div>
-                            
-                            <!-- Barra de progreso infinita -->
-                            <div class="w-full h-1 bg-red-900 mt-4 overflow-hidden">
+                            <div class="w-full h-1 bg-red-900 mt-2 overflow-hidden z-10">
                                 <div class="h-full bg-red-500 w-1/2 animate-[translateX_1s_infinite_linear]"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Boton Abortar -->
-                <div class="fixed bottom-0 left-0 w-full p-4 bg-black border-t-2 border-red-600 z-50 flex justify-center">
-                    <button onclick="abortSequence()" class="bg-transparent text-red-600 border-2 border-red-600 px-12 py-3 font-bold text-xl hover:bg-red-600 hover:text-black transition-all shadow-[0_0_30px_rgba(255,0,0,0.4)] uppercase tracking-widest cursor-pointer">
-                        ⚠ ABORTAR OPERACIÓN (KILL SWITCH) ⚠
-                    </button>
+                <div class="fixed bottom-0 left-0 w-full p-2 md:p-4 bg-black border-t-2 border-red-600 z-50 flex justify-center">
+                    <button onclick="abortSequence()" class="w-full md:w-auto bg-transparent text-red-600 border-2 border-red-600 px-4 md:px-12 py-2 md:py-3 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-black transition-all shadow-[0_0_30px_rgba(255,0,0,0.4)] uppercase tracking-widest cursor-pointer">⚠️ ABORTAR (KILL SWITCH) ⚠️</button>
                 </div>
 
-                <!-- PANTALLA ABORTAR (TERMINAL) -->
-                <div id="abort-screen" class="hidden absolute inset-0 bg-black z-[210] p-8 font-mono text-lg text-red-500 flex flex-col justify-end pb-20">
+                <div id="abort-screen" class="hidden absolute inset-0 bg-black z-[210] p-4 md:p-8 font-mono text-sm md:text-lg text-red-500 flex flex-col justify-end pb-20">
                     <div id="abort-terminal" class="space-y-1"></div>
                 </div>
             </section>
-
         </main>
     </div>
 
     <script>
-        // --- TEXTO EFECTO TYPEWRITER PARA TERMINOS ---
         const termsText = `> INICIANDO SISTEMA DE SIMULACIÓN DE GUERRA CIBERNÉTICA...
 > CARGANDO LIBRERÍAS DE PENETRACIÓN... [OK]
 > ESTABLECIENDO TÚNEL SEGURO CON LA RED NEURONAL... [OK]
->
 > ESTA HERRAMIENTA PERMITE SIMULAR:
   - RASTREO DE IP GEO-ESPACIAL PRECISO (API PÚBLICA).
   - FLOODING DE PAQUETES (UDP/TCP/ICMP).
   - AMPLIFICACIÓN DNS (ATAQUE REFLEJADO).
->
+  - LAYER 7 HTTP FLOOD (SATURACIÓN DE SERVIDORES WEB).
 > TODA ACCIÓN ES REGISTRADA EN EL LOG DEL SISTEMA LOCAL.`;
 
         const termsContainer = document.getElementById('terms-text');
@@ -449,7 +385,7 @@
             if (i < termsText.length) {
                 termsContainer.innerHTML += termsText.charAt(i);
                 i++;
-                setTimeout(typeWriter, 5); // Velocidad de tipeo
+                setTimeout(typeWriter, 5); 
             }
         }
         window.onload = () => {
@@ -458,7 +394,6 @@
             setTimeout(typeWriter, 500);
         };
 
-        // --- CANVAS FONDO (RED NEURONAL) ---
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
@@ -480,16 +415,13 @@
             ctx.clearRect(0,0,width,height);
             ctx.strokeStyle = 'rgba(0, 150, 0, 0.15)';
             ctx.fillStyle = '#0f0';
-            
             particles.forEach((p, index) => {
                 p.x += p.vx; p.y += p.vy;
                 if(p.x < 0 || p.x > width) p.vx *= -1;
                 if(p.y < 0 || p.y > height) p.vy *= -1;
-                
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, 1, 0, Math.PI*2);
                 ctx.fill();
-
                 particles.slice(index+1).forEach(p2 => {
                     if(Math.hypot(p.x-p2.x, p.y-p2.y) < 100) {
                         ctx.beginPath();
@@ -502,17 +434,8 @@
             requestAnimationFrame(animateBg);
         }
 
+        let state = { ip: '', vector: null, duration: 0, timers: [], bytes: 0 };
 
-        // --- LÓGICA DE APLICACIÓN ---
-        let state = {
-            ip: '',
-            vector: null,
-            duration: 0,
-            timers: [],
-            bytes: 0
-        };
-
-        // 1. TRACKEAR IP (API REAL: ipwho.is)
         async function trackTarget() {
             const input = document.getElementById('ip-input').value.trim();
             if(!input) return alert("¡ERROR! DEBE INGRESAR UNA DIRECCIÓN IP OBJETIVO.");
@@ -523,9 +446,8 @@
             const consoleDiv = document.getElementById('api-console');
             const errorDiv = document.getElementById('api-error');
             const nextBtn = document.getElementById('btn-next-config');
-            const resetBtn = document.getElementById('btn-reset-target'); // Boton X
+            const resetBtn = document.getElementById('btn-reset-target');
 
-            // Reset UI
             btn.innerHTML = `<span class="animate-spin">⚙</span> ESCANEANDO...`;
             consoleDiv.classList.add('hidden');
             errorDiv.classList.add('hidden');
@@ -535,42 +457,31 @@
             try {
                 const req = await fetch(`https://ipwho.is/${input}`);
                 const data = await req.json();
-
                 if(!data.success) throw new Error("API Returned Error: " + data.message);
 
-                // Renderizar
                 function renderObject(obj, prefix = '') {
                     for(let key in obj) {
                         if(typeof obj[key] === 'object' && obj[key] !== null) {
                             renderObject(obj[key], prefix + key + '.');
                         } else {
-                            output.innerHTML += `
-                                <div class="api-row">
-                                    <span class="api-key">${prefix}${key}</span>
-                                    <span class="api-val">${obj[key]}</span>
-                                </div>
-                            `;
+                            output.innerHTML += `<div class="api-row"><span class="api-key">${prefix}${key}</span><span class="api-val">${obj[key]}</span></div>`;
                         }
                     }
                 }
                 renderObject(data);
-
                 consoleDiv.classList.remove('hidden');
                 btn.innerHTML = `<span>✓</span> LOCALIZADO`;
                 btn.classList.add('bg-green-600', 'text-black');
-
-                // Mostrar controles
                 nextBtn.classList.remove('hidden');
                 nextBtn.disabled = false; 
                 nextBtn.style.cursor = "pointer";
-                resetBtn.classList.remove('hidden'); // Mostrar la X
-
+                resetBtn.classList.remove('hidden');
             } catch (e) {
                 console.error(e);
                 errorDiv.classList.remove('hidden');
                 btn.innerHTML = `<span>X</span> FALLO`;
                 btn.classList.add('bg-red-900');
-                resetBtn.classList.remove('hidden'); // Mostrar la X aun si falla
+                resetBtn.classList.remove('hidden');
             }
         }
 
@@ -586,10 +497,8 @@
             input.value = '';
             input.focus();
             state.ip = '';
-
             btn.innerHTML = `<span>⌖</span> LOCALIZAR`;
             btn.classList.remove('bg-green-600', 'text-black', 'bg-red-900');
-            
             consoleDiv.classList.add('hidden');
             errorDiv.classList.add('hidden');
             nextBtn.classList.add('hidden');
@@ -597,7 +506,6 @@
             output.innerHTML = '';
         }
 
-        // 2. CONFIGURACIÓN
         function showConfig() {
             document.getElementById('sec-target').classList.add('hidden');
             document.getElementById('sec-config').classList.remove('hidden');
@@ -627,8 +535,7 @@
                 btn.classList.remove('opacity-50', 'cursor-not-allowed');
                 btn.classList.add('hover:bg-red-600', 'hover:text-black', 'shadow-[0_0_20px_#f00]');
                 btn.style.cursor = "pointer";
-                
-                if(state.vector.color === 'red') {
+                if(state.vector.color === 'red' || state.vector.color === 'purple') {
                     btn.classList.add('animate-pulse');
                 } else {
                     btn.classList.remove('animate-pulse');
@@ -636,19 +543,15 @@
             }
         }
 
-        // 3. SIMULACIÓN
         function startSimulation() {
             document.getElementById('sec-config').classList.add('hidden');
             document.getElementById('sec-sim').classList.remove('hidden');
-            
             document.getElementById('sim-target-display').innerText = state.ip;
             const vecDisplay = document.getElementById('sim-vector-display');
             vecDisplay.innerText = state.vector.name;
-            
-            const colors = { green: '#0f0', yellow: '#ff0', orange: '#ffa500', red: '#f00' };
+            const colors = { green: '#0f0', yellow: '#ff0', orange: '#ffa500', red: '#f00', purple: '#a855f7' };
             vecDisplay.style.borderColor = colors[state.vector.color];
             vecDisplay.style.color = colors[state.vector.color];
-
             runTimer(state.duration * 60);
             runAttackLoops();
         }
@@ -669,100 +572,85 @@
         function runAttackLoops() {
             const logBox = document.getElementById('packet-log');
             const byteEl = document.getElementById('bytes-val');
-            const cveBox = document.getElementById('cve-log');
-
-            // Bucle Rápido (Paquetes)
+            // Eliminada la referencia a cve-log
+            const speed = state.vector.name.includes("HTTP") ? 100 : 20; // Más rápido para ver tráfico
+            
             state.timers.push(setInterval(() => {
                 const line = generatePacketLog();
                 const div = document.createElement('div');
+                div.className = "log-line";
                 div.innerHTML = line;
                 logBox.appendChild(div);
+                if(logBox.children.length > 30) logBox.removeChild(logBox.firstChild);
                 
-                // Auto scroll
-                logBox.scrollTop = logBox.scrollHeight;
-                if(logBox.children.length > 50) logBox.removeChild(logBox.firstChild);
-
-                // Bytes
                 const multiplier = state.vector.name.includes("DNS") ? 0.05 : 0.005;
                 state.bytes += Math.random() * multiplier;
                 byteEl.innerText = state.bytes.toFixed(2);
                 byteEl.setAttribute('data-text', state.bytes.toFixed(2));
+            }, speed));
 
-            }, 40));
-
-            // Bucle Lento (CVEs)
-            state.timers.push(setInterval(() => {
-                const cves = [
-                    "CVE-2023-44487: HTTP/2 Rapid Reset",
-                    "CVE-2021-44228: Log4j RCE Triggered",
-                    "SQL Injection: Blind Boolean based",
-                    "XSS Reflected: Payload Delivered",
-                    "Buffer Overflow: Heap Corruption",
-                    "SSH Brute Force: Root dictionary"
-                ];
-                const item = cves[Math.floor(Math.random()*cves.length)];
-                const p = document.createElement('div');
-                p.innerText = `[VULN] ${item}`;
-                cveBox.appendChild(p);
-                cveBox.scrollTop = cveBox.scrollHeight;
-            }, 1500));
+            // Eliminado el bucle de CVE
         }
 
         function generatePacketLog() {
-            // Helpers
-            const rByte = () => Math.floor(Math.random()*255).toString(16).padStart(2,'0');
-            const rIP = () => Math.floor(Math.random()*255);
             const time = new Date().toISOString().split('T')[1].slice(0, -1);
-            const hexDump = `${rByte()}${rByte()} ${rByte()}${rByte()} ${rByte()}${rByte()} ${rByte()}${rByte()}`;
+            const sport = Math.floor(Math.random() * 65535);
+            // IP de origen simulada (Spoofed en algunos casos)
+            const spoofIP = `${Math.floor(Math.random()*223)+1}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+
+            // FORMATOS REALES DE HERRAMIENTAS DE RED (Como tcpdump / hping3)
             
-            const src = `${rIP()}.${rIP()}.${rIP()}.${rIP()}`;
-            const sport = Math.floor(Math.random()*65000);
-            
-            // Lógica realista según vector
-            if(state.vector.name === 'DNS AMP') {
-                const resolvers = ['8.8.8.8', '1.1.1.1', '9.9.9.9', '208.67.222.222'];
+            if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
+                const paths = ['/','/login','/api/v1/user','/search?q=query','/admin','/wp-login.php','/static/app.js'];
+                const methods = ['GET', 'POST', 'HEAD'];
+                const agents = ['Mozilla/5.0 (Windows NT 10.0)', 'curl/7.81.0', 'Apache-HttpClient/4.5'];
+                const method = methods[Math.floor(Math.random()*methods.length)];
+                const path = paths[Math.floor(Math.random()*paths.length)];
+                const agent = agents[Math.floor(Math.random()*agents.length)];
+                
+                // Simulación de envío de petición REAL
+                return `<span class="text-gray-500">${time}</span> <span class="text-purple-400">SENDING >></span> ${method} ${state.ip}${path} HTTP/1.1<br><span class="text-gray-600">   Host: ${state.ip} | User-Agent: ${agent}</span><br><span class="text-green-500">   Bytes sent: ${Math.floor(Math.random()*500 + 200)} | Keep-Alive: on</span>`;
+                
+            } else if (state.vector && state.vector.name === 'DNS AMP') {
+                const resolvers = ['8.8.8.8', '1.1.1.1', '208.67.222.222', '9.9.9.9'];
                 const res = resolvers[Math.floor(Math.random()*resolvers.length)];
-                return `<span class="text-gray-500">${time}</span> <span class="text-red-500">IP</span> ${res}.53 > ${state.ip}.${sport}: ${Math.floor(Math.random()*50000)}Refused- 0/0/0 (4096) <br>
-                        <span class="text-green-900">0x0000:</span> <span class="text-green-700">${hexDump} ${hexDump} ...</span>`;
-            
-            } else if(state.vector.name === 'TCP SYN') {
-                 return `<span class="text-gray-500">${time}</span> <span class="text-orange-500">IP</span> ${src}.${sport} > ${state.ip}.80: Flags [S], seq ${Math.floor(Math.random()*9999999)}, win 65535, length 0 <br>
-                         <span class="text-green-900">0x0000:</span> <span class="text-green-700">4500 003c ${hexDump} 4000 4006...</span>`;
-            
-            } else if(state.vector.name === 'ICMP ECHO') {
-                return `<span class="text-gray-500">${time}</span> <span class="text-yellow-500">IP</span> ${src} > ${state.ip}: ICMP echo request, id ${Math.floor(Math.random()*50000)}, seq ${Math.floor(Math.random()*1000)}, length 64`;
-            
+                const id = Math.floor(Math.random()*65535);
+                // Formato tcpdump para DNS
+                return `<span class="text-gray-500">${time}</span> IP <span class="text-green-500">SPOOFED_SRC ${state.ip}</span> > ${res}.53: ${id}+ [1au] ANY? example.com. (45)<br><span class="text-gray-600">   Request sent via UDP. Waiting for amplification...</span>`;
+                
+            } else if (state.vector && state.vector.name === 'TCP SYN') {
+                const seq = Math.floor(Math.random() * 4294967295);
+                const win = Math.floor(Math.random() * 65535);
+                // Formato real de hping3 / tcpdump
+                return `<span class="text-gray-500">${time}</span> IP ${spoofIP}.${sport} > ${state.ip}.80: Flags <span class="text-orange-500">[S]</span>, seq ${seq}, win ${win}, length 0<br><span class="text-gray-600">   Sending SYN packet...</span>`;
+                
+            } else if (state.vector && state.vector.name === 'ICMP ECHO') {
+                const id = Math.floor(Math.random()*65535);
+                const seq = Math.floor(Math.random()*1000);
+                // Formato ping flood
+                const bytes = 1000 + Math.floor(Math.random()*5000);
+                return `<span class="text-gray-500">${time}</span> IP ${spoofIP} > ${state.ip}: ICMP echo request, id ${id}, seq ${seq}, length ${bytes}<br><span class="text-yellow-500">   SENDING ${bytes} BYTES DATA CHUNK...</span>`;
+                
             } else {
-                // UDP
-                return `<span class="text-gray-500">${time}</span> <span class="text-green-500">IP</span> ${src}.${sport} > ${state.ip}.${Math.floor(Math.random()*65000)}: UDP, length ${Math.floor(Math.random()*1400)} <br>
-                        <span class="text-green-900">0x0000:</span> <span class="text-green-700">${hexDump} ${hexDump} ${hexDump}...</span>`;
+                // UDP FLOOD (El "normal" que pediste)
+                const bytes = 512 + Math.floor(Math.random()*2048);
+                const ttl = 64 + Math.floor(Math.random()*64);
+                return `<span class="text-gray-500">${time}</span> <span class="text-green-500">SENDING UDP ></span> ${state.ip}:${Math.floor(Math.random()*65535)} <br><span class="text-gray-400">   DATA: ${bytes} bytes | TTL=${ttl} | ID=${Math.floor(Math.random()*99999)}</span><br><span class="text-green-800">   Raw: </span><span class="text-green-600">X...X...X...X... [PAYLOAD FLUSHED]</span>`;
             }
         }
 
-        // 4. ABORTAR (KILL SWITCH)
         function abortSequence() {
             state.timers.forEach(clearInterval);
             const screen = document.getElementById('abort-screen');
             const term = document.getElementById('abort-terminal');
             screen.classList.remove('hidden');
-
-            const commands = [
-                "WARNING: MANUAL KILL SWITCH ENGAGED",
-                "SIGINT sent to all child processes...",
-                "Stopping packet injection... [OK]",
-                "Flushing RAM buffers... [OK]",
-                "Shredding local logs (7 passes)... [OK]",
-                "Dropping VPN tunnel... [OK]",
-                "Resetting network adapters...",
-                "SYSTEM HALTED."
-            ];
-
+            const commands = ["WARNING: MANUAL KILL SWITCH ENGAGED", "SIGINT sent to all child processes...", "Stopping packet injection... [OK]", "Flushing RAM buffers... [OK]", "Shredding local logs... [OK]", "Dropping VPN tunnel... [OK]", "SYSTEM HALTED."];
             let i = 0;
             const interval = setInterval(() => {
                 if(i < commands.length) {
                     const line = document.createElement('div');
                     line.innerText = "> " + commands[i];
-                    if(i === 0) line.className = "text-2xl font-bold blink-red mb-4";
+                    if(i === 0) line.className = "text-xl md:text-2xl font-bold blink-red mb-4";
                     else if (i === commands.length -1) line.className = "text-white mt-4 font-bold";
                     term.appendChild(line);
                     i++;
@@ -773,10 +661,7 @@
             }, 600);
         }
 
-        function resetSystem() {
-            location.reload(); 
-        }
-
+        function resetSystem() { location.reload(); }
     </script>
 </body>
 </html>
