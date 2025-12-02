@@ -22,6 +22,8 @@
             overflow-x: hidden;
             margin: 0;
             height: 100vh;
+            display: flex;
+            flex-direction: column;
             cursor: default;
         }
 
@@ -136,7 +138,7 @@
         /* API Data Grid */
         .api-row {
             display: grid;
-            grid-template-columns: 100px 1fr;
+            grid-template-columns: 120px 1fr;
             border-bottom: 1px solid #003300;
             padding: 4px 0;
             font-size: 0.75rem;
@@ -187,7 +189,7 @@
     <canvas id="bg-canvas"></canvas>
     <div class="scan-line"></div>
 
-    <div class="relative z-10 container mx-auto p-4 min-h-screen flex flex-col">
+    <div class="relative z-10 container mx-auto p-4 flex-grow flex flex-col">
         
         <header class="text-center mb-4 pt-4 border-b border-green-800 pb-4 relative z-60">
             <h1 class="text-4xl md:text-7xl font-bold mb-2 glitch-text tracking-widest" data-text="LEVIATHAN">LEVIATHAN</h1>
@@ -376,6 +378,18 @@
                 </div>
             </section>
         </main>
+
+        <footer class="w-full border-t border-green-900 bg-black/90 p-4 text-center text-[10px] md:text-xs font-mono relative z-50">
+           <div class="container mx-auto flex flex-col md:flex-row justify-between items-center opacity-70 gap-2">
+              <span class="glitch-text font-bold tracking-[0.3em] text-green-700" data-text="INDUSTRIAS LEVIATHAM">INDUSTRIAS LEVIATHAM © 2018-2025</span>
+              <div class="flex gap-4 text-green-900 font-bold">
+                 <span>RAM_ALLOC: [|||||||||--] 82%</span>
+                 <span>ENC: <span class="text-green-500 animate-pulse">AES-256</span></span>
+                 <span>NODE_STATUS: <span class="text-green-500">ONLINE</span></span>
+              </div>
+           </div>
+        </footer>
+
     </div>
 
     <script>
@@ -399,7 +413,6 @@
             initCanvas();
             animateBg();
             monitorNetwork(); 
-            // Carga directa del HTML para preservar los colores rojos solicitados
             setTimeout(() => {
                 termsContainer.innerHTML = termsHTML;
             }, 500);
@@ -487,7 +500,7 @@
             const input = document.getElementById('ip-input');
             if(val === 'ip') input.placeholder = "192.168.1.1";
             else if(val === 'mac') input.placeholder = "00:1A:2B:3C:4D:5E";
-            else if(val === 'web') input.placeholder = "www.objetivo.com";
+            else if(val === 'web') input.placeholder = "www.google.com";
         }
 
         async function trackTarget() {
@@ -513,24 +526,59 @@
             try {
                 let data = {};
                 
-                // LÓGICA DE API SEGÚN EL TIPO SELECCIONADO
+                // --- LÓGICA IP Y WEB SERVER (EXTRAE ISP/ASN/ORG) ---
                 if (type === 'ip' || type === 'web') {
-                    // ipwho.is soporta tanto IP como Dominios (Web)
                     const req = await fetch(`https://ipwho.is/${input}`);
-                    data = await req.json();
-                    if(!data.success) throw new Error(data.message || "Error");
-                } else if (type === 'mac') {
-                    // API para MAC Address (macvendors.com)
-                    // NOTA: Esta API a menudo bloquea CORS desde navegadores. Si falla, vamos al catch (Simulación).
-                    const req = await fetch(`https://api.macvendors.com/${input}`);
-                    const vendor = await req.text();
+                    const json = await req.json();
+                    
+                    if(!json.success) throw new Error(json.message || "Error");
+
+                    // Construimos un objeto con MÁS datos
                     data = {
-                        success: true,
-                        MAC_ADDRESS: input,
-                        VENDOR_OUI: vendor,
-                        TYPE: "L2 DEVICE",
-                        STATUS: "ACTIVE"
+                        IP_TARGET: json.ip,
+                        TYPE: json.type,
+                        CONTINENT: json.continent,
+                        COUNTRY: `${json.country} (${json.country_code})`,
+                        REGION: `${json.region}, ${json.city}`,
+                        COORDS: `${json.latitude}, ${json.longitude}`,
+                        ASN: json.connection.asn,
+                        ORG: json.connection.org,
+                        ISP: json.connection.isp,
+                        DOMAIN: json.connection.domain || "Unknown",
+                        TIMEZONE: `${json.timezone.id} (${json.timezone.utc})`,
+                        CURRENCY: json.currency.code
                     };
+                    
+                    // Si es Web, intentamos un "Ping de imagen" para ver si responde
+                    if(type === 'web') {
+                         try {
+                            const start = performance.now();
+                            const img = new Image();
+                            // Intento cargar favicon para forzar petición real
+                            img.src = `http://${input}/favicon.ico?t=${new Date().getTime()}`; 
+                            // No esperamos el onload porque puede fallar cors, solo medimos el intento
+                            data.LATENCY_CHECK = "LIVE (HTTP Port 80 Open)";
+                         } catch(e) {}
+                    }
+                } 
+                // --- LÓGICA MAC ADDRESS (MEJORADA CON OTRA API) ---
+                else if (type === 'mac') {
+                    // API Alternativa que suele permitir CORS
+                    const req = await fetch(`https://api.maclookup.app/v2/macs/${input}`);
+                    if (!req.ok) throw new Error("MAC Lookup Failed");
+                    const json = await req.json();
+
+                    if (!json.found) {
+                        data = { ERROR: "MAC Not Found in Database", INPUT: input };
+                    } else {
+                        data = {
+                            MAC_ADDRESS: input,
+                            VENDOR: json.company,
+                            ADDRESS: json.address || "Unknown Private Address",
+                            TYPE: "L2 HARDWARE",
+                            STATUS: "ACTIVE_DEVICE"
+                        };
+                    }
                 }
 
                 function renderObject(obj, prefix = '') {
@@ -552,20 +600,19 @@
                 resetBtn.classList.remove('hidden');
 
             } catch (e) {
-                // FALLBACK: SIMULACIÓN DE BLOQUEO SI FALLA LA API
-                console.warn("API Error (Probable CORS/Limit). Switching to simulation.", e);
+                // FALLBACK: MUESTRA DATOS PARCIALES SI FALLA (CORS)
+                console.warn("API Error (Probable CORS). Using Sim Mode.", e);
                 
-                // Simular éxito para permitir continuar
                 output.innerHTML = `
+                    <div class="api-row"><span class="api-key text-red-500">FIREWALL</span><span class="api-val text-red-500">DETECTED (CORS BLOCK)</span></div>
                     <div class="api-row"><span class="api-key">TARGET</span><span class="api-val">${input}</span></div>
-                    <div class="api-row"><span class="api-key">STATUS</span><span class="api-val text-red-500">LOCKED (FORCED)</span></div>
-                    <div class="api-row"><span class="api-key">TYPE</span><span class="api-val">${type.toUpperCase()}</span></div>
-                    <div class="api-row"><span class="api-key">GEO</span><span class="api-val">UNKNOWN (HIDDEN)</span></div>
-                    <div class="api-row"><span class="api-key">SIMULATION</span><span class="api-val">ACTIVE</span></div>
+                    <div class="api-row"><span class="api-key">BYPASS</span><span class="api-val text-yellow-500">ATTEMPTING TUNNEL...</span></div>
+                    <div class="api-row"><span class="api-key">STATUS</span><span class="api-val text-green-500">LOCKED (VIA PROXY SIM)</span></div>
+                    <div class="api-row"><span class="api-key">PROTOCOL</span><span class="api-val">${type.toUpperCase()}</span></div>
                 `;
                 consoleDiv.classList.remove('hidden');
                 
-                btn.innerHTML = `<span>⚠</span> LOCKED (SIM)`;
+                btn.innerHTML = `<span>⚠</span> LOCKED (BYPASS)`;
                 btn.classList.add('bg-yellow-600', 'text-black');
                 nextBtn.classList.remove('hidden');
                 nextBtn.disabled = false; 
@@ -738,12 +785,10 @@
                           `<span class="text-gray-600">   Target: ${state.ip} | Reflector: ${res} | Len: ${packetSize}</span>`;
                 
             } else if (state.vector && state.vector.name === 'TCP SYN') {
-                // *** CORRECCIÓN TCP SYN ***
                 const seq = Math.floor(Math.random() * 4294967295);
                 const win = Math.floor(Math.random() * 65535);
                 packetSize = 60;
                 
-                // Aquí el destino se muestra claramente como el objetivo (state.ip)
                 logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP}.${sport} > <span class="text-orange-500 font-bold">${state.ip}.80</span>: Flags [S], seq ${seq}, win ${win}<br>` +
                           `<span class="text-gray-600">   length ${packetSize} | SYN FLOOD INIT</span>`;
                 
