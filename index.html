@@ -229,7 +229,7 @@
                 </div>
 
                 <div class="mb-6 relative">
-                    <label class="text-[10px] text-green-600 font-bold uppercase mb-1 block">Ingrese Objetivo (IP / Dominio)</label>
+                    <label class="text-[10px] text-green-600 font-bold uppercase mb-1 block">Ingrese Objetivo (IP / Dominio / MAC)</label>
                     
                     <div class="flex flex-col md:flex-row shadow-[0_0_20px_rgba(0,255,0,0.2)] relative z-50 gap-2 md:gap-0">
                         <span class="bg-green-900/30 text-green-500 p-3 md:p-4 border border-green-700 items-center justify-center text-xl font-bold hidden md:flex">></span>
@@ -247,9 +247,15 @@
                 </div>
 
                 <div class="flex flex-wrap gap-2 md:gap-4 mb-6 text-xs relative z-50 justify-center md:justify-start">
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded"><input type="radio" name="ttype" checked class="accent-green-500 cursor-pointer"> IPv4 / IPv6</label>
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded"><input type="radio" name="ttype" class="accent-green-500 cursor-pointer"> MAC ADDR (L2)</label>
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded"><input type="radio" name="ttype" class="accent-green-500 cursor-pointer"> WEB SERVER</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded">
+                        <input type="radio" name="ttype" value="ip" checked class="accent-green-500 cursor-pointer" onchange="updatePlaceholder(this.value)"> IPv4 / IPv6
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded">
+                        <input type="radio" name="ttype" value="mac" class="accent-green-500 cursor-pointer" onchange="updatePlaceholder(this.value)"> MAC ADDR (L2)
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded">
+                        <input type="radio" name="ttype" value="web" class="accent-green-500 cursor-pointer" onchange="updatePlaceholder(this.value)"> WEB SERVER
+                    </label>
                 </div>
 
                 <div id="api-console" class="hidden border-t-2 border-green-600 pt-4 mt-4 bg-black p-4 h-48 md:h-64 overflow-y-auto font-mono text-xs relative z-50">
@@ -260,7 +266,7 @@
                 </div>
 
                 <div id="api-error" class="hidden mt-4 p-4 bg-red-900/30 border border-red-500 text-red-500 font-bold text-center animate-pulse">
-                    [!] ERROR DE CONEXIÓN CON EL NODO DE RASTREO [!]<br><span class="text-xs font-normal">Verifique la IP o su conexión a internet. La API no respondió.</span>
+                    [!] ERROR DE CONEXIÓN CON EL NODO DE RASTREO [!]<br><span class="text-xs font-normal">La API no respondió o fue bloqueada. Procediendo a simulación forzada.</span>
                 </div>
 
                 <button id="btn-next-config" onclick="showConfig()" disabled class="w-full mt-4 btn-action py-4 hidden font-bold text-lg md:text-xl tracking-[0.2em] animate-[pulse_2s_infinite] cursor-pointer relative z-100 bg-green-900/40 border-2 border-green-500 hover:bg-green-500 hover:text-black">INICIAR CONFIGURACIÓN DE VECTORES >></button>
@@ -373,30 +379,30 @@
     </div>
 
     <script>
-        const termsText = `> INICIANDO SISTEMA DE SIMULACIÓN DE GUERRA CIBERNÉTICA...
-> CARGANDO LIBRERÍAS DE PENETRACIÓN... [OK]
-> ESTABLECIENDO TÚNEL SEGURO CON LA RED NEURONAL... [OK]
-> ESTA HERRAMIENTA PERMITE SIMULAR:
-  - RASTREO DE IP GEO-ESPACIAL PRECISO (API PÚBLICA).
-  - FLOODING DE PAQUETES (UDP/TCP/ICMP).
-  - AMPLIFICACIÓN DNS (ATAQUE REFLEJADO).
-  - LAYER 7 HTTP FLOOD (SATURACIÓN DE SERVIDORES WEB).
-> TODA ACCIÓN ES REGISTRADA EN EL LOG DEL SISTEMA LOCAL.`;
+        // HTML DIRECTO PARA SOPORTAR COLORES EN EL TEXTO
+        const termsHTML = `
+            <div class="mb-2">> INICIANDO SISTEMA DE SIMULACIÓN DE GUERRA CIBERNÉTICA... [OK]</div>
+            <div class="mb-2">> DESCRIPCIÓN DE ARSENAL DISPONIBLE:</div>
+            <ul class="list-none pl-2 space-y-1">
+                <li><span class="text-green-500 font-bold">1. UDP FLOOD (L4):</span> Envío masivo de paquetes basura. Causa <span class="text-red-500 font-bold animate-pulse">SATURACIÓN DE ANCHO DE BANDA</span>.</li>
+                <li><span class="text-yellow-500 font-bold">2. ICMP SWARM (L3):</span> Sobrecarga de peticiones Echo. Provoca <span class="text-red-500 font-bold animate-pulse">COLAPSO DEL ROUTER</span>.</li>
+                <li><span class="text-orange-500 font-bold">3. TCP SYN (L4):</span> Inicia conexiones falsas sin cerrarlas. Genera <span class="text-red-500 font-bold animate-pulse">AGOTAMIENTO DE RECURSOS (RAM/CPU)</span>.</li>
+                <li><span class="text-red-500 font-bold">4. DNS AMP (Reflejado):</span> Usa servidores públicos para multiplicar el ataque x70. <span class="text-red-500 font-bold animate-pulse">DAÑO CRÍTICO ESTRUCTURAL</span>.</li>
+                <li><span class="text-purple-500 font-bold">5. LAYER 7 HTTP:</span> Simula tráfico humano real. Indetectable por firewalls simples. <span class="text-red-500 font-bold animate-pulse">CAÍDA DE SERVICIO WEB</span>.</li>
+            </ul>
+            <div class="mt-2 text-gray-400">> TODA ACCIÓN ES REGISTRADA LOCALMENTE.</div>
+        `;
 
         const termsContainer = document.getElementById('terms-text');
-        let i = 0;
-        function typeWriter() {
-            if (i < termsText.length) {
-                termsContainer.innerHTML += termsText.charAt(i);
-                i++;
-                setTimeout(typeWriter, 5); 
-            }
-        }
+        
         window.onload = () => {
             initCanvas();
             animateBg();
-            monitorNetwork(); // INICIA MONITOR DE RED REAL
-            setTimeout(typeWriter, 500);
+            monitorNetwork(); 
+            // Carga directa del HTML para preservar los colores rojos solicitados
+            setTimeout(() => {
+                termsContainer.innerHTML = termsHTML;
+            }, 500);
         };
 
         const canvas = document.getElementById('bg-canvas');
@@ -439,7 +445,6 @@
             requestAnimationFrame(animateBg);
         }
 
-        // --- MONITOR DE RED REAL ---
         function monitorNetwork() {
             const statsEl = document.getElementById('real-network-stats');
             const simPingEl = document.getElementById('real-ping-display');
@@ -447,7 +452,6 @@
             async function checkPing() {
                 const start = performance.now();
                 try {
-                    // Fetch pequeño a un recurso global fiable para medir latencia
                     await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' });
                     const end = performance.now();
                     const ping = Math.round(end - start);
@@ -464,7 +468,6 @@
                     statsEl.innerText = statusText;
                     if(simPingEl) simPingEl.innerText = `LATENCIA REAL SISTEMA: ${ping} ms`;
                     
-                    // Colorear según latencia
                     if(ping < 50) statsEl.className = "text-xs text-green-500 border border-green-800 px-2 py-1 bg-black/50";
                     else if(ping < 150) statsEl.className = "text-xs text-yellow-500 border border-yellow-800 px-2 py-1 bg-black/50";
                     else statsEl.className = "text-xs text-red-500 border border-red-800 px-2 py-1 bg-black/50";
@@ -474,16 +477,24 @@
                     statsEl.className = "text-xs text-red-600 border border-red-800 px-2 py-1 bg-black/50";
                 }
             }
-            // Revisar cada 2 segundos
             setInterval(checkPing, 2000);
             checkPing();
         }
 
         let state = { ip: '', vector: null, duration: 0, timers: [], totalBytes: 0 };
 
+        function updatePlaceholder(val) {
+            const input = document.getElementById('ip-input');
+            if(val === 'ip') input.placeholder = "192.168.1.1";
+            else if(val === 'mac') input.placeholder = "00:1A:2B:3C:4D:5E";
+            else if(val === 'web') input.placeholder = "www.objetivo.com";
+        }
+
         async function trackTarget() {
             const input = document.getElementById('ip-input').value.trim();
-            if(!input) return alert("¡ERROR! DEBE INGRESAR UNA DIRECCIÓN IP OBJETIVO.");
+            const type = document.querySelector('input[name="ttype"]:checked').value;
+
+            if(!input) return alert("¡ERROR! DEBE INGRESAR UN OBJETIVO.");
             
             state.ip = input;
             const btn = document.getElementById('btn-track');
@@ -500,9 +511,27 @@
             output.innerHTML = '';
             
             try {
-                const req = await fetch(`https://ipwho.is/${input}`);
-                const data = await req.json();
-                if(!data.success) throw new Error("API Returned Error: " + data.message);
+                let data = {};
+                
+                // LÓGICA DE API SEGÚN EL TIPO SELECCIONADO
+                if (type === 'ip' || type === 'web') {
+                    // ipwho.is soporta tanto IP como Dominios (Web)
+                    const req = await fetch(`https://ipwho.is/${input}`);
+                    data = await req.json();
+                    if(!data.success) throw new Error(data.message || "Error");
+                } else if (type === 'mac') {
+                    // API para MAC Address (macvendors.com)
+                    // NOTA: Esta API a menudo bloquea CORS desde navegadores. Si falla, vamos al catch (Simulación).
+                    const req = await fetch(`https://api.macvendors.com/${input}`);
+                    const vendor = await req.text();
+                    data = {
+                        success: true,
+                        MAC_ADDRESS: input,
+                        VENDOR_OUI: vendor,
+                        TYPE: "L2 DEVICE",
+                        STATUS: "ACTIVE"
+                    };
+                }
 
                 function renderObject(obj, prefix = '') {
                     for(let key in obj) {
@@ -521,11 +550,26 @@
                 nextBtn.disabled = false; 
                 nextBtn.style.cursor = "pointer";
                 resetBtn.classList.remove('hidden');
+
             } catch (e) {
-                console.error(e);
-                errorDiv.classList.remove('hidden');
-                btn.innerHTML = `<span>X</span> FALLO`;
-                btn.classList.add('bg-red-900');
+                // FALLBACK: SIMULACIÓN DE BLOQUEO SI FALLA LA API
+                console.warn("API Error (Probable CORS/Limit). Switching to simulation.", e);
+                
+                // Simular éxito para permitir continuar
+                output.innerHTML = `
+                    <div class="api-row"><span class="api-key">TARGET</span><span class="api-val">${input}</span></div>
+                    <div class="api-row"><span class="api-key">STATUS</span><span class="api-val text-red-500">LOCKED (FORCED)</span></div>
+                    <div class="api-row"><span class="api-key">TYPE</span><span class="api-val">${type.toUpperCase()}</span></div>
+                    <div class="api-row"><span class="api-key">GEO</span><span class="api-val">UNKNOWN (HIDDEN)</span></div>
+                    <div class="api-row"><span class="api-key">SIMULATION</span><span class="api-val">ACTIVE</span></div>
+                `;
+                consoleDiv.classList.remove('hidden');
+                
+                btn.innerHTML = `<span>⚠</span> LOCKED (SIM)`;
+                btn.classList.add('bg-yellow-600', 'text-black');
+                nextBtn.classList.remove('hidden');
+                nextBtn.disabled = false; 
+                nextBtn.style.cursor = "pointer";
                 resetBtn.classList.remove('hidden');
             }
         }
@@ -543,7 +587,7 @@
             input.focus();
             state.ip = '';
             btn.innerHTML = `<span>⌖</span> LOCALIZAR`;
-            btn.classList.remove('bg-green-600', 'text-black', 'bg-red-900');
+            btn.classList.remove('bg-green-600', 'text-black', 'bg-red-900', 'bg-yellow-600');
             consoleDiv.classList.add('hidden');
             errorDiv.classList.add('hidden');
             nextBtn.classList.add('hidden');
@@ -633,23 +677,20 @@
                 logBox.appendChild(div);
                 if(logBox.children.length > 30) logBox.removeChild(logBox.firstChild);
                 
-                // --- CÁLCULO DE ANCHO DE BANDA FUNCIONAL ---
+                // --- CÁLCULO DE ANCHO DE BANDA ---
                 state.totalBytes += packetData.size;
 
-                // Definir límite de "INCALCULABLE" (1 Petabyte)
                 const PB = 1024 * 1024 * 1024 * 1024 * 1024;
 
                 let displayVal = 0;
                 let displayUnit = 'MB';
 
                 if (state.totalBytes > PB) {
-                    // MODO INCALCULABLE
                     byteEl.innerText = "☠️"; 
                     byteEl.setAttribute('data-text', "∞");
                     unitEl.innerText = "INCALCULABLE";
                     unitEl.classList.add("text-red-500", "animate-pulse");
                 } else {
-                    // MODO NORMAL
                     unitEl.classList.remove("animate-pulse");
                     if (state.totalBytes < 1024 * 1024 * 1024) {
                         displayVal = (state.totalBytes / (1024 * 1024)).toFixed(2);
@@ -683,49 +724,44 @@
                 const paths = ['/','/login','/api/v1/user','/search?q=query','/admin','/static/app.js'];
                 const path = paths[Math.floor(Math.random()*paths.length)];
                 
-                packetSize = Math.floor(Math.random() * 1500) + 400; // ~400B a 2KB
+                packetSize = Math.floor(Math.random() * 1500) + 400; 
                 
                 logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-purple-400">OUTBOUND >></span> ${method} ${state.ip}${path} HTTP/1.1<br>` +
                           `<span class="text-gray-600">   Host: ${state.ip} | Len: ${packetSize} | Status: Pending...</span>`;
                 
             } else if (state.vector && state.vector.name === 'DNS AMP') {
-                // *** CORRECCIÓN DNS AMP ***
                 const resolvers = ['8.8.8.8', '1.1.1.1', '208.67.222.222', '9.9.9.9'];
                 const res = resolvers[Math.floor(Math.random()*resolvers.length)];
                 const id = Math.floor(Math.random()*65535);
-                
                 packetSize = 64; 
-                
-                // Aquí el log muestra explícitamente que la IP DE ORIGEN es la IP DEL OBJETIVO
                 logHtml = `<span class="text-gray-500">[${time}]</span> IP <span class="text-red-500 font-bold">${state.ip}</span> (SPOOFED) > ${res}.53: ${id}+ [1au] ANY? <span class="text-gray-400">wait_reflect</span><br>` +
                           `<span class="text-gray-600">   Target: ${state.ip} | Reflector: ${res} | Len: ${packetSize}</span>`;
                 
             } else if (state.vector && state.vector.name === 'TCP SYN') {
+                // *** CORRECCIÓN TCP SYN ***
                 const seq = Math.floor(Math.random() * 4294967295);
                 const win = Math.floor(Math.random() * 65535);
-                packetSize = 60; // Header TCP típico
+                packetSize = 60;
                 
-                logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP}.${sport} > ${state.ip}.80: Flags <span class="text-orange-500">[S]</span>, seq ${seq}, win ${win}<br>` +
+                // Aquí el destino se muestra claramente como el objetivo (state.ip)
+                logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP}.${sport} > <span class="text-orange-500 font-bold">${state.ip}.80</span>: Flags [S], seq ${seq}, win ${win}<br>` +
                           `<span class="text-gray-600">   length ${packetSize} | SYN FLOOD INIT</span>`;
                 
             } else if (state.vector && state.vector.name === 'ICMP ECHO') {
                 const id = Math.floor(Math.random()*65535);
                 const seq = Math.floor(Math.random()*1000);
-                packetSize = 1024 + Math.floor(Math.random() * 4000); // Ping de la muerte o flood
+                packetSize = 1024 + Math.floor(Math.random() * 4000); 
                 
                 logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP} > ${state.ip}: ICMP echo request, id ${id}, seq ${seq}<br>` +
                           `<span class="text-yellow-500">   PAYLOAD: ${packetSize} bytes data buffer sent.</span>`;
                 
             } else {
-                // UDP FLOOD DEFAULT
-                packetSize = 512 + Math.floor(Math.random()*60000); // Paquetes grandes
+                packetSize = 512 + Math.floor(Math.random()*60000); 
                 const ttl = 64 + Math.floor(Math.random()*64);
-                
                 logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-green-500">UDP/IP ></span> ${state.ip}:${Math.floor(Math.random()*65535)} <br>` +
                           `<span class="text-gray-400">   LEN=${packetSize} | TTL=${ttl} | ID=${Math.floor(Math.random()*99999)} | DF</span>`;
             }
 
-            // Simulación masiva de bytes
             let simulatedBytes = packetSize * (Math.random() * 100 + 50); 
             
             return { html: logHtml, size: simulatedBytes };
