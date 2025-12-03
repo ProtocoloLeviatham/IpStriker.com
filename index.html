@@ -174,37 +174,45 @@
         input, button { cursor: text; }
         button { cursor: pointer; }
         
-        /* --- NUEVO ESTILO DE TERMINAL LINUX --- */
+        /* --- NUEVO ESTILO DE TERMINAL LINUX v2 --- */
         .terminal-line {
             font-family: 'Fira Code', 'Courier New', monospace;
             white-space: pre-wrap;
             word-break: break-all;
-            margin-bottom: 3px;
-            padding-left: 6px;
+            margin-bottom: 2px;
+            padding-left: 4px;
             border-left: 2px solid transparent;
-            line-height: 1.3;
+            line-height: 1.4;
             font-size: 11px;
-            animation: termSlide 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            /* Animación más lenta y fluida */
+            animation: termSlide 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             opacity: 0;
-            transform: translateY(5px);
+            transform: translateY(10px);
         }
         .terminal-line:hover {
             border-left-color: var(--primary);
             background: rgba(0, 255, 0, 0.05);
         }
         @keyframes termSlide {
-            to { opacity: 1; transform: translateY(0); }
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
         
-        /* Sintaxis de colores para logs */
-        .ts-time { color: #666; font-weight: bold; }
-        .ts-proc { color: #888; }
+        /* Sintaxis de colores para logs MEJORADA */
+        .ts-time { color: #666; font-weight: bold; font-size: 0.9em; }
+        .ts-proc { color: #888; font-style: italic; }
+        
+        .ts-ip { color: #00ffff; font-weight: bold; } /* Cyan para IPs */
+        .ts-port { color: #ffa500; } /* Naranja para puertos */
+        .ts-proto { color: #d8b4fe; font-weight: bold; } /* Purpura para Protocolos */
+        
         .ts-info { color: #3b82f6; } /* Azul */
-        .ts-warn { color: #eab308; } /* Amarillo */
-        .ts-err { color: #ef4444; font-weight: bold; } /* Rojo */
+        .ts-warn { color: #facc15; font-weight: bold;} /* Amarillo fuerte */
+        .ts-err { color: #ef4444; font-weight: bold; background: rgba(255,0,0,0.1); padding: 0 2px;} /* Rojo con fondo */
         .ts-suc { color: #22c55e; } /* Verde */
-        .ts-dim { color: #444; }
-        .ts-val { color: #d8b4fe; } /* Purpura claro */
+        
+        .ts-dim { color: #555; }
+        .ts-data { color: #a8a29e; }
 
         /* Ticker Animation */
         .ticker-wrap {
@@ -239,7 +247,7 @@
                     CALCULANDO RED...
                 </span>
                 <span class="animate-pulse text-red-500 font-bold">/// UNAUTHORIZED ACCESS ///</span>
-                <span>V.6.7.0</span>
+                <span>V.6.8.0</span>
             </div>
         </header>
 
@@ -422,7 +430,7 @@
         <footer class="w-full border-t border-green-900 bg-black/95 p-2 text-[10px] md:text-xs font-mono relative z-50 overflow-hidden">
             <div class="ticker-wrap border-b border-green-900 mb-2 pb-1 bg-black text-green-700">
                 <div class="ticker">
-                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.7.0 STABLE +++
+                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.8.0 STABLE +++
                 </div>
             </div>
 
@@ -593,7 +601,6 @@
             let isMacMode = (type === 'mac');
 
             try {
-                // 1. RESOLUCIÓN DNS PARA DOMINIOS (WEB MODE)
                 let targetIP = input;
                 if (type === 'web') {
                     if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(input)) {
@@ -608,7 +615,6 @@
                     }
                 }
 
-                // 2. MODO MAC ADDRESS (BASE LOCAL + API)
                 if (type === 'mac') {
                     if (input.includes('.') && !input.includes(':')) {
                          finalData["WARNING"] = "DOMAIN DETECTED IN MAC INPUT";
@@ -646,7 +652,6 @@
                     }
                 }
 
-                // 3. MODO IP / WEB (RECOLECCIÓN MASIVA DE DATOS)
                 if (!isMacMode) {
                     const p1 = fetch(`https://ipapi.co/${targetIP}/json/`).then(r=>r.json()).catch(e=>({}));
                     const p2 = fetch(`https://ipwho.is/${targetIP}`).then(r=>r.json()).catch(e=>({}));
@@ -681,9 +686,8 @@
                     }
                 }
 
-                // DEFINICIÓN DINÁMICA DE GENERADOR DE LOGS (SCOPE COMPARTIDO)
+                // DEFINICIÓN DE GENERADOR DE LOGS MASIVO
                 window.generatePacketLog = function() {
-                    // TIMESTAMP KERNEL STYLE
                     const now = performance.now();
                     const kTime = (now / 1000).toFixed(6);
                     const ts = `<span class="ts-time">[ ${kTime.padStart(11, ' ')} ]</span>`;
@@ -695,73 +699,106 @@
                     let log = "";
                     let size = 64;
 
-                    // --- GENERADOR AVANZADO DE LOGS ---
+                    // --- GENERADOR MEJORADO Y VARIADO ---
                     
                     if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
-                        const methods = ["GET", "POST", "HEAD", "PUT"];
-                        const agents = ["Mozilla/5.0 (Windows NT)", "curl/7.68.0", "Go-http-client/1.1", "Python/3.9", "Apache-HttpClient"];
-                        const paths = ["/login", "/", "/api/v1/status", "/admin/config.php", "/static/js/app.js", "/search?q=test"];
-                        const codes = ["200 OK", "404 Not Found", "503 Service Unavailable", "502 Bad Gateway", "301 Moved"];
+                        const methods = ["GET", "POST", "HEAD", "PUT", "DELETE"];
+                        const agents = ["Mozilla/5.0", "curl/7.68", "Apache-HttpClient", "Python-requests", "Go-http-client"];
+                        const paths = ["/login", "/", "/api/auth", "/admin", "/wp-login.php", "/search", "/cart", "/checkout", "/assets/app.js"];
+                        const target = `<span class="ts-ip">${state.ip}</span>`;
+                        const src = `<span class="ts-ip">${spoof}</span>`;
                         
-                        const r = Math.random();
-                        if (r < 0.2) {
-                            log = `${ts} <span class="ts-proc">nginx[${pid}]:</span> <span class="ts-info">${state.ip}</span> - - [${new Date().toUTCString()}] "${methods[0]} ${paths[Math.floor(Math.random()*paths.length)]} HTTP/1.1" 200 ${Math.floor(Math.random()*5000)} "-" "${agents[0]}"`;
-                        } else if (r < 0.4) {
-                            log = `${ts} <span class="ts-warn">[WARN]</span> Flood detected from <span class="ts-err">${spoof}</span>. Rate limiting initiated.`;
-                        } else if (r < 0.6) {
-                            log = `${ts} <span class="ts-info">OUTBOUND >></span> ${methods[Math.floor(Math.random()*methods.length)]} ${state.ip}${paths[Math.floor(Math.random()*paths.length)]} | <span class="ts-val">Thread-${pid}</span>`;
-                        } else if (r < 0.8) {
-                            log = `${ts} <span class="ts-err">CONNECTION REFUSED</span> ${state.ip}:80 (Target overload)`;
-                        } else {
-                            log = `${ts} <span class="ts-suc">SSL/TLS Handshake</span> with ${state.ip} success. Cipher: AES256-SHA.`;
-                        }
+                        const scenarios = [
+                            `${ts} <span class="ts-proc">nginx[${pid}]:</span> ${src} - - [${new Date().toUTCString()}] "${methods[0]} ${paths[Math.floor(Math.random()*paths.length)]} HTTP/1.1" 200 ${Math.floor(Math.random()*5000)} "-" "${agents[0]}"`,
+                            `${ts} <span class="ts-warn">[WAF]</span> Blocked SQL Injection attempt from ${src} to ${target}`,
+                            `${ts} <span class="ts-info">OUTBOUND</span> >> ${methods[1]} ${target}${paths[1]} | Payload: <span class="ts-data">${Math.random().toString(36).substring(7)}</span>`,
+                            `${ts} <span class="ts-err">CONNECTION TIMEOUT</span> ${target}:443 (Server Unreachable)`,
+                            `${ts} <span class="ts-suc">SSL Handshake</span> with ${target} success. TLSv1.3`,
+                            `${ts} <span class="ts-proc">httpd[${pid}]:</span> [error] [client ${src}] ModSecurity: Access denied with code 403`,
+                            `${ts} <span class="ts-info">Slowloris:</span> Holding socket open... (Thread-${pid})`,
+                            `${ts} <span class="ts-warn">[DOS]</span> High request rate detected from ${src}. Throttling.`,
+                            `${ts} <span class="ts-info">GET</span> ${target}/static/image.jpg HTTP/2 | 200 OK | 45ms`,
+                            `${ts} <span class="ts-err">502 Bad Gateway</span> received from ${target}. Load balancer failing.`
+                        ];
+                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = Math.floor(Math.random() * 2000) + 200;
 
                     } else if (state.vector && state.vector.name === 'TCP SYN') {
-                        const flags = ["[S]", "[S,.]", "[R]", "[P,.]", "[F]"];
-                        const r = Math.random();
-                        if (r < 0.3) {
-                            log = `${ts} <span class="ts-proc">KERNEL:</span> TCP: ${spoof}:${sport} > <span class="ts-warn">${state.ip}:80</span> Flags ${flags[Math.floor(Math.random()*flags.length)]}, seq ${Math.floor(Math.random()*99999999)}, win 65535, length 0`;
-                        } else if (r < 0.6) {
-                            log = `${ts} <span class="ts-info">netfilter:</span> IN=eth0 OUT= MAC=ff:ff:ff:ff:ff:ff SRC=${spoof} DST=${state.ip} PROTO=TCP SPT=${sport} DPT=80 WINDOW=512 RES=0x00 SYN URGP=0`;
-                        } else {
-                            log = `${ts} <span class="ts-err">TCP: request_sock_TCP:</span> Possible SYN flooding on port 80. Sending cookies.`;
-                        }
+                        const target = `<span class="ts-ip">${state.ip}</span>`;
+                        const src = `<span class="ts-ip">${spoof}</span>`;
+                        const port = `<span class="ts-port">80</span>`;
+                        
+                        const scenarios = [
+                            `${ts} <span class="ts-proc">KERNEL:</span> TCP: ${src}:${sport} > ${target}:${port} Flags <span class="ts-warn">[S]</span>, seq ${Math.floor(Math.random()*999999)}, win 65535, len 0`,
+                            `${ts} <span class="ts-info">netfilter:</span> DROP IN=eth0 OUT= MAC=ff:ff:ff:ff:ff:ff SRC=${src} DST=${target} PROTO=TCP SPT=${sport} DPT=80 SYN`,
+                            `${ts} <span class="ts-err">TCP:</span> Possible SYN flooding on port 80. Sending cookies.`,
+                            `${ts} <span class="ts-info">tcpreplay:</span> Sending packet ${pid} to ${target}`,
+                            `${ts} <span class="ts-proc">firewall:</span> [BLOCK] Suspicious SYN packet from ${src}`,
+                            `${ts} <span class="ts-info">TCP:</span> ${target}:${port} > ${src}:${sport} Flags [R.], seq 0, win 0`,
+                            `${ts} <span class="ts-warn">sock:</span> TCP connection reset by peer ${target}`,
+                            `${ts} <span class="ts-data">Raw:</span> 4500 003c 1a2b 4000 4006 .... (SYN Payload)`,
+                            `${ts} <span class="ts-info">Handshake:</span> SYN SENT -> Waiting ACK... (Timeout)`,
+                            `${ts} <span class="ts-suc">ZOMBIE:</span> Bot ${src} joined the swarm. Target: ${target}`
+                        ];
+                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 60;
 
                     } else if (state.vector && state.vector.name === 'DNS AMP') {
-                        const resolvers = ["8.8.8.8", "1.1.1.1", "208.67.222.222", "9.9.9.9"];
-                        const types = ["ANY", "TXT", "A", "AAAA"];
-                        const res = resolvers[Math.floor(Math.random()*resolvers.length)];
+                        const resolvers = ["8.8.8.8", "1.1.1.1", "9.9.9.9", "208.67.222.222"];
+                        const res = `<span class="ts-ip">${resolvers[Math.floor(Math.random()*resolvers.length)]}</span>`;
+                        const target = `<span class="ts-ip">${state.ip}</span>`;
                         
-                        const r = Math.random();
-                        if (r < 0.4) {
-                            log = `${ts} <span class="ts-info">IP (tos 0x0, ttl 64, id ${pid})</span> <span class="ts-err">${state.ip}</span> > ${res}: ${pid}+ [1au] ${types[Math.floor(Math.random()*types.length)]}? . (41)`;
-                        } else if (r < 0.7) {
-                            log = `${ts} <span class="ts-suc">REFLECT:</span> Received ${Math.floor(Math.random()*4000)} bytes from ${res} directed to <span class="ts-warn">${state.ip}</span>`;
-                        } else {
-                            log = `${ts} <span class="ts-dim">udp sum ok</span>: ${state.ip} > ${res} domain [b2&3=0x1] [9873q]`;
-                        }
+                        const scenarios = [
+                            `${ts} <span class="ts-info">IP</span> ${target} (SPOOFED) > ${res}: ${pid}+ <span class="ts-proto">ANY?</span> . (41)`,
+                            `${ts} <span class="ts-suc">REFLECT:</span> Received ${Math.floor(Math.random()*4000)} bytes from ${res} -> ${target}`,
+                            `${ts} <span class="ts-warn">named[${pid}]:</span> client ${target}#${sport}: query (cache) './NS/IN' denied`,
+                            `${ts} <span class="ts-info">DNS:</span> Standard query response 0x${Math.floor(Math.random()*9999).toString(16)} TXT (Amplified)`,
+                            `${ts} <span class="ts-err">udp sum bad:</span> ${target} > ${res} domain [b2&3=0x1]`,
+                            `${ts} <span class="ts-info">DrDoS:</span> Amplification factor x74. Target saturated.`,
+                            `${ts} <span class="ts-proc">resolver:</span> Querying ${res} for "gov" IN ANY`,
+                            `${ts} <span class="ts-warn">[ALERT]</span> Large DNS response packet detected (3400 bytes)`,
+                            `${ts} <span class="ts-info">IP</span> ${res} > ${target}: ${pid}* 4/0/1 . NS a.root-servers.net`,
+                            `${ts} <span class="ts-suc">Traffic:</span> Injected 400pps via open resolver ${res}`
+                        ];
+                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 1200;
 
                     } else if (state.vector && state.vector.name === 'ICMP ECHO') {
-                        const r = Math.random();
-                        if (r < 0.5) {
-                            log = `${ts} <span class="ts-info">IP ${spoof} > ${state.ip}:</span> ICMP echo request, id ${pid}, seq ${Math.floor(Math.random()*1000)}, length 64`;
-                        } else if (r < 0.8) {
-                            log = `${ts} <span class="ts-warn">frag needed</span> and DF set (mtu 1500) ICMP ${state.ip} > ${spoof}: destination unreachable`;
-                        } else {
-                            log = `${ts} <span class="ts-info">PING</span> ${state.ip} (${state.ip}) 56(84) bytes of data.`;
-                        }
+                        const target = `<span class="ts-ip">${state.ip}</span>`;
+                        const src = `<span class="ts-ip">${spoof}</span>`;
+                        
+                        const scenarios = [
+                            `${ts} <span class="ts-info">IP</span> ${src} > ${target}: ICMP echo request, id ${pid}, seq ${Math.floor(Math.random()*1000)}, length 64`,
+                            `${ts} <span class="ts-warn">frag needed</span> and DF set (mtu 1500) ICMP ${target} > ${src}: destination unreachable`,
+                            `${ts} <span class="ts-info">PING</span> ${target} (${target}) 56(84) bytes of data.`,
+                            `${ts} <span class="ts-err">Request timeout</span> for icmp_seq ${Math.floor(Math.random()*100)}`,
+                            `${ts} <span class="ts-info">IP</span> ${target} > ${src}: ICMP echo reply, id ${pid}, seq ${Math.floor(Math.random()*1000)}`,
+                            `${ts} <span class="ts-proc">kernel:</span> ICMP: redirect from ${target} on eth0`,
+                            `${ts} <span class="ts-warn">Flood:</span> Sending 10000 pings/sec to ${target}`,
+                            `${ts} <span class="ts-info">Traceroute:</span> ${target}: hops=30, time=45ms`,
+                            `${ts} <span class="ts-err">ICMP:</span> Destination Host Unreachable from ${src}`,
+                            `${ts} <span class="ts-data">Packet:</span> Type=8 Code=0 Checksum=0x${Math.floor(Math.random()*9999).toString(16)}`
+                        ];
+                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 84;
 
                     } else { // UDP
-                        const r = Math.random();
-                        if (r < 0.5) {
-                            log = `${ts} <span class="ts-dim">0x0000:</span> 4500 05dc ${Math.floor(Math.random()*9999)} 0000 4011 .... ${state.ip.split('.').map(n=>parseInt(n).toString(16).padStart(2,'0')).join('')}`;
-                        } else {
-                            log = `${ts} <span class="ts-info">UDP:</span> Packet injected. Len=${Math.floor(Math.random()*1400)} Source=${spoof} Dest=${state.ip}`;
-                        }
+                        const target = `<span class="ts-ip">${state.ip}</span>`;
+                        const src = `<span class="ts-ip">${spoof}</span>`;
+                        
+                        const scenarios = [
+                            `${ts} <span class="ts-dim">0x0000:</span> 4500 05dc ${Math.floor(Math.random()*9999)} 0000 4011 .... ${state.ip.split('.').map(n=>parseInt(n).toString(16).padStart(2,'0')).join('')}`,
+                            `${ts} <span class="ts-info">UDP:</span> Packet injected. Len=${Math.floor(Math.random()*1400)} Src=${src} Dst=${target}`,
+                            `${ts} <span class="ts-warn">[DROP]</span> UDP Fragment offset wrong. Dropped by kernel.`,
+                            `${ts} <span class="ts-info">IP</span> ${src}.${sport} > ${target}.${Math.floor(Math.random()*65535)}: UDP, length 1400`,
+                            `${ts} <span class="ts-err">ICMP</span> ${target} udp port ${Math.floor(Math.random()*65535)} unreachable`,
+                            `${ts} <span class="ts-suc">Bandwidth:</span> Saturating uplink... 500Mbps sent`,
+                            `${ts} <span class="ts-info">Payload:</span> Junk data sent to ${target}`,
+                            `${ts} <span class="ts-proc">eth0:</span> TX bytes:${Math.floor(Math.random()*999999)} packets:${Math.floor(Math.random()*500)}`,
+                            `${ts} <span class="ts-warn">Congestion:</span> Network buffer full. Dropping frames.`,
+                            `${ts} <span class="ts-data">Binary:</span> 01010110 11001010 10101010 11110000 [Flooding]`
+                        ];
+                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 1000;
                     }
 
