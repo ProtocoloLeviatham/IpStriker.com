@@ -6,7 +6,7 @@
     <title>LEVIATHAN | ADVANCED WARFARE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -14,15 +14,6 @@
             --danger: #ff0000;
             --dark: #050505;
             --glass: rgba(0, 20, 0, 0.95);
-            /* Colores Terminal Linux Realista */
-            --term-gray: #6b7280;
-            --term-white: #e5e7eb;
-            --term-red: #ef4444;
-            --term-green: #22c55e;
-            --term-yellow: #eab308;
-            --term-blue: #3b82f6;
-            --term-purple: #a855f7;
-            --term-cyan: #06b6d4;
         }
 
         body {
@@ -49,23 +40,43 @@
             pointer-events: none;
         }
         
-        .glitch-text { position: relative; }
+        .glitch-text {
+            position: relative;
+        }
         .glitch-text::before, .glitch-text::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark);
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark);
         }
         .glitch-text::before {
-            left: 2px; text-shadow: -1px 0 red; animation: glitch-anim-1 2s infinite linear alternate-reverse; clip-path: inset(0 0 0 0);
+            left: 2px;
+            text-shadow: -1px 0 red;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+            clip-path: inset(0 0 0 0);
         }
         .glitch-text::after {
-            left: -2px; text-shadow: -1px 0 blue; animation: glitch-anim-2 3s infinite linear alternate-reverse; clip-path: inset(0 0 0 0);
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+            clip-path: inset(0 0 0 0);
         }
+
         @keyframes glitch-anim-1 {
-            0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); } 40% { clip-path: inset(40% 0 50% 0); }
-            60% { clip-path: inset(80% 0 5% 0); } 80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 20% 0); }
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
         }
         @keyframes glitch-anim-2 {
-            0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(30% 0 20% 0); } 40% { clip-path: inset(90% 0 10% 0); }
-            60% { clip-path: inset(15% 0 80% 0); } 80% { clip-path: inset(55% 0 10% 0); } 100% { clip-path: inset(40% 0 30% 0); }
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(30% 0 20% 0); }
+            40% { clip-path: inset(90% 0 10% 0); }
+            60% { clip-path: inset(15% 0 80% 0); }
+            80% { clip-path: inset(55% 0 10% 0); }
+            100% { clip-path: inset(40% 0 30% 0); }
         }
 
         /* --- UI COMPONENTES --- */
@@ -121,21 +132,20 @@
         }
 
         /* Scrollbars */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #001100; }
+        ::-webkit-scrollbar-thumb { background: #0f0; }
 
         /* API Data Grid */
         .api-row {
             display: grid;
-            grid-template-columns: 160px 1fr;
-            border-bottom: 1px solid #1a1a1a;
+            grid-template-columns: 140px 1fr;
+            border-bottom: 1px solid #003300;
             padding: 4px 0;
             font-size: 0.70rem;
         }
-        .api-key { color: var(--term-green); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-family: 'Fira Code', monospace; }
-        .api-val { color: var(--term-white); word-break: break-all; text-align: right; font-family: 'Fira Code', monospace; }
+        .api-key { color: #00aa00; font-weight: bold; text-transform: uppercase; }
+        .api-val { color: #ccffcc; word-break: break-all; text-align: right;}
 
         /* Animaciones */
         @keyframes scanline {
@@ -152,7 +162,7 @@
             z-index: 40;
         }
 
-        /* Grid Pattern */
+        /* Grid Pattern Background for graphs */
         .bg-grid-pattern {
             background-image: linear-gradient(rgba(255, 0, 0, 0.1) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
@@ -164,74 +174,54 @@
         input, button { cursor: text; }
         button { cursor: pointer; }
         
-        /* --- ESTILO DE TERMINAL LINUX V.PROFESSIONAL --- */
+        /* --- NUEVO ESTILO DE TERMINAL LINUX --- */
         .terminal-line {
-            font-family: 'Fira Code', 'Roboto Mono', monospace;
+            font-family: 'Fira Code', 'Courier New', monospace;
             white-space: pre-wrap;
             word-break: break-all;
-            margin-bottom: 1px;
-            padding-left: 4px;
+            margin-bottom: 3px;
+            padding-left: 6px;
             border-left: 2px solid transparent;
-            line-height: 1.4;
+            line-height: 1.3;
             font-size: 11px;
-            color: #d1d5db;
-            animation: termFade 0.4s ease-out forwards;
+            animation: termSlide 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             opacity: 0;
+            transform: translateY(5px);
         }
-        .terminal-line:hover { background: rgba(255, 255, 255, 0.05); }
-        @keyframes termFade {
-            from { opacity: 0; transform: translateY(4px); }
+        .terminal-line:hover {
+            border-left-color: var(--primary);
+            background: rgba(0, 255, 0, 0.05);
+        }
+        @keyframes termSlide {
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* SINTAXIS DE LOGS (REALISMO) */
-        .ts-time { color: var(--term-gray); margin-right: 8px; font-size: 0.9em; user-select: none; }
-        .ts-proc { color: var(--term-white); font-weight: bold; }
-        
-        /* TARGET TAG MEJORADO (Estilo Etiqueta Militar/Tactico) */
-        .target-tag {
-            background-color: rgba(139, 0, 0, 0.4);
-            border: 1px solid #ef4444;
-            color: #fff;
-            padding: 0 4px;
-            font-weight: bold;
-            font-family: 'Share Tech Mono', monospace;
-            letter-spacing: 0.5px;
-        }
-
-        .ts-ip { color: var(--term-cyan); } 
-        .ts-port { color: var(--term-yellow); }
-        .ts-info { color: var(--term-blue); } 
-        .ts-warn { color: var(--term-yellow); font-weight: bold;} 
-        .ts-err { color: var(--term-red); font-weight: bold; background: rgba(255,0,0,0.1); padding: 0 2px;} 
-        .ts-suc { color: var(--term-green); } 
-        .ts-dim { color: #4b5563; }
-        .ts-data { color: #a3a3a3; font-style: italic; }
-
-        /* KILL SWITCH BUTTON MEJORADO */
-        .kill-switch-btn {
-            background: repeating-linear-gradient(45deg, rgba(255, 0, 0, 0.1), rgba(255, 0, 0, 0.1) 10px, rgba(0, 0, 0, 0.2) 10px, rgba(0, 0, 0, 0.2) 20px), rgba(0,0,0,0.8);
-            border: 2px solid #ef4444;
-            color: #ef4444;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
-        }
-        .kill-switch-btn:hover {
-            background: #ef4444; color: #000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.6); text-shadow: none;
-        }
+        /* Sintaxis de colores para logs */
+        .ts-time { color: #666; font-weight: bold; }
+        .ts-proc { color: #888; }
+        .ts-info { color: #3b82f6; } /* Azul */
+        .ts-warn { color: #eab308; } /* Amarillo */
+        .ts-err { color: #ef4444; font-weight: bold; } /* Rojo */
+        .ts-suc { color: #22c55e; } /* Verde */
+        .ts-dim { color: #444; }
+        .ts-val { color: #d8b4fe; } /* Purpura claro */
 
         /* Ticker Animation */
-        .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
-        .ticker { display: inline-block; padding-left: 100%; animation: ticker 30s linear infinite; }
-        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-
-        /* ANIMACIÓN DE APAGADO REALISTA */
-        @keyframes crtOff {
-            0% { transform: scale(1, 1); opacity: 1; filter: brightness(1); }
-            40% { transform: scale(1, 0.002); opacity: 1; filter: brightness(3); }
-            100% { transform: scale(0, 0); opacity: 0; filter: brightness(0); }
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
         }
-        .shutdown-effect { animation: crtOff 0.5s ease-in-out forwards; pointer-events: none; }
+        .ticker {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 30s linear infinite;
+        }
+        @keyframes ticker {
+            0%   { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
     </style>
 </head>
 <body class="crt text-sm md:text-base selection:bg-green-500 selection:text-black">
@@ -245,9 +235,11 @@
             <h1 class="text-4xl md:text-7xl font-bold mb-2 glitch-text tracking-widest" data-text="LEVIATHAN">LEVIATHAN</h1>
             <div class="flex flex-col md:flex-row justify-between items-center text-[10px] md:text-sm text-green-600 px-4 mt-2 font-mono gap-1">
                 <span>CIA_CYBER_CMD::NODE_ALPHA</span>
-                <span id="real-network-stats" class="text-xs text-yellow-500 border border-yellow-800 px-2 py-1 bg-black/50">CALCULANDO RED...</span>
+                <span id="real-network-stats" class="text-xs text-yellow-500 border border-yellow-800 px-2 py-1 bg-black/50">
+                    CALCULANDO RED...
+                </span>
                 <span class="animate-pulse text-red-500 font-bold">/// UNAUTHORIZED ACCESS ///</span>
-                <span>V.7.5.0</span>
+                <span>V.6.7.0</span>
             </div>
         </header>
 
@@ -256,11 +248,16 @@
             <h3 class="text-xl text-red-500 font-bold mb-2 border-b border-red-800 pb-2 flex items-center gap-2">
                 <span class="animate-pulse">⚠</span> PROTOCOLO DE USO
             </h3>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div id="terms-text" class="text-[10px] md:text-sm text-green-300 font-light leading-relaxed font-mono h-24 md:h-auto overflow-y-auto"></div>
                 <div class="hidden md:flex flex-col justify-center items-center border border-red-900 bg-red-950/20 p-2">
                     <div class="text-red-500 text-center font-bold text-lg mb-1 glitch-text" data-text="ADVERTENCIA FEDERAL">ADVERTENCIA FEDERAL</div>
-                    <p class="text-red-400 text-[10px] text-center">ESTA HERRAMIENTA DISPARA ATAQUES REALES SIMULADOS.<br>USO EXCLUSIVO PARA PRUEBAS DE PENETRACIÓN AUTORIZADAS.<br><span class="text-white bg-red-600 px-1 mt-1 inline-block font-bold">TERMINACIÓN INMEDIATA</span></p>
+                    <p class="text-red-400 text-[10px] text-center">
+                        ESTA HERRAMIENTA DISPARA ATAQUES REALES SIMULADOS.<br>
+                        USO EXCLUSIVO PARA PRUEBAS DE PENETRACIÓN AUTORIZADAS.<br>
+                        <span class="text-white bg-red-600 px-1 mt-1 inline-block font-bold">TERMINACIÓN INMEDIATA</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -275,24 +272,38 @@
 
                 <div class="mb-6 relative">
                     <label class="text-[10px] text-green-600 font-bold uppercase mb-1 block">Ingrese Objetivo (IP / Dominio / MAC)</label>
+                    
                     <div class="flex flex-col md:flex-row shadow-[0_0_20px_rgba(0,255,0,0.2)] relative z-50 gap-2 md:gap-0">
                         <span class="bg-green-900/30 text-green-500 p-3 md:p-4 border border-green-700 items-center justify-center text-xl font-bold hidden md:flex">></span>
-                        <input type="text" id="ip-input" placeholder="192.168.1.1" class="w-full flex-grow bg-black border border-green-700 text-green-400 p-3 md:p-4 text-lg md:text-xl outline-none focus:bg-green-900/10 font-bold tracking-wider placeholder-green-900 cursor-text">
+                        
+                        <input type="text" id="ip-input" placeholder="192.168.1.1" 
+                            class="w-full flex-grow bg-black border border-green-700 text-green-400 p-3 md:p-4 text-lg md:text-xl outline-none focus:bg-green-900/10 font-bold tracking-wider placeholder-green-900 cursor-text">
+                        
                         <div class="flex w-full md:w-auto">
                             <button onclick="resetTarget()" id="btn-reset-target" class="hidden bg-red-900/80 text-red-500 px-4 font-bold border border-green-700 hover:bg-red-600 hover:text-white transition-all cursor-pointer mr-2 md:mr-0 md:border-l-0">X</button>
-                            <button onclick="trackTarget()" id="btn-track" class="w-full md:w-auto btn-action px-4 md:px-8 py-3 md:py-4 font-bold text-lg flex items-center justify-center gap-2 hover:bg-green-500 hover:text-black whitespace-nowrap"><span>⌖</span> LOCALIZAR</button>
+                            <button onclick="trackTarget()" id="btn-track" class="w-full md:w-auto btn-action px-4 md:px-8 py-3 md:py-4 font-bold text-lg flex items-center justify-center gap-2 hover:bg-green-500 hover:text-black whitespace-nowrap">
+                                <span>⌖</span> LOCALIZAR
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex flex-wrap gap-2 md:gap-4 mb-6 text-xs relative z-50 justify-center md:justify-start">
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded"><input type="radio" name="ttype" value="ip" checked class="accent-green-500 cursor-pointer" onchange="updatePlaceholder(this.value)"> IPv4 / IPv6</label>
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded"><input type="radio" name="ttype" value="mac" class="accent-green-500 cursor-pointer" onchange="updatePlaceholder(this.value)"> MAC ADDR (L2)</label>
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded"><input type="radio" name="ttype" value="web" class="accent-green-500 cursor-pointer" onchange="updatePlaceholder(this.value)"> WEB SERVER</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded">
+                        <input type="radio" name="ttype" value="ip" checked class="accent-green-500 cursor-pointer" onchange="updatePlaceholder(this.value)"> IPv4 / IPv6
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded">
+                        <input type="radio" name="ttype" value="mac" class="accent-green-500 cursor-pointer" onchange="updatePlaceholder(this.value)"> MAC ADDR (L2)
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white bg-green-900/20 p-2 border border-green-800 rounded">
+                        <input type="radio" name="ttype" value="web" class="accent-green-500 cursor-pointer" onchange="updatePlaceholder(this.value)"> WEB SERVER
+                    </label>
                 </div>
 
-                <div id="api-console" class="hidden border-t-2 border-green-600 pt-4 mt-4 bg-black p-4 h-80 overflow-y-auto font-mono text-xs relative z-50">
-                    <div class="text-green-500 mb-2 font-bold flex justify-between"><span>[+] FULL OSINT INTELLIGENCE DUMP (40+ FIELDS)</span><span class="animate-pulse">LIVE FEED</span></div>
+                <div id="api-console" class="hidden border-t-2 border-green-600 pt-4 mt-4 bg-black p-4 h-64 md:h-80 overflow-y-auto font-mono text-xs relative z-50">
+                    <div class="text-green-500 mb-2 font-bold flex justify-between">
+                        <span>[+] FULL DATA DUMP INTERCEPTED</span><span class="animate-pulse">LIVE FEED</span>
+                    </div>
                     <div id="api-output" class="space-y-1"></div>
                 </div>
 
@@ -353,7 +364,7 @@
 
                     <div class="flex flex-col md:flex-row justify-end gap-4">
                         <button onclick="resetSystem()" class="order-2 md:order-1 px-6 py-3 border border-gray-600 text-gray-500 hover:text-white cursor-pointer w-full md:w-auto">CANCELAR</button>
-                        <button id="btn-launch" onclick="startSimulation()" disabled class="order-1 md:order-2 w-full md:w-auto px-10 py-4 font-bold text-xl uppercase tracking-widest cursor-not-allowed kill-switch-btn z-100 opacity-50">LANZAR ATAQUE</button>
+                        <button id="btn-launch" onclick="startSimulation()" disabled class="order-1 md:order-2 w-full md:w-auto px-10 py-4 border-2 border-red-800 bg-black text-red-700 font-bold text-xl uppercase tracking-widest opacity-50 cursor-not-allowed transition-all clip-path-polygon z-100">LANZAR ATAQUE</button>
                     </div>
                 </div>
             </section>
@@ -382,6 +393,7 @@
                     </div>
 
                     <div class="lg:col-span-4 flex flex-col gap-2 md:gap-4 h-1/3 lg:h-auto">
+                        
                         <div class="h-full bg-red-950/10 border border-red-900 p-2 flex flex-col justify-center items-center relative overflow-hidden shrink-0 bg-grid-pattern">
                             <div class="absolute inset-0 bg-red-500/5 animate-pulse"></div>
                             <div class="text-red-500 text-[10px] tracking-[0.2em] mb-1 uppercase animate-pulse z-10">ANCHO DE BANDA ENVIADO</div>
@@ -398,10 +410,10 @@
                 </div>
 
                 <div class="fixed bottom-0 left-0 w-full p-2 md:p-4 bg-black border-t-2 border-red-600 z-50 flex justify-center">
-                    <button onclick="abortSequence()" class="w-full md:w-auto kill-switch-btn px-4 md:px-12 py-2 md:py-3 font-bold text-lg md:text-xl uppercase tracking-widest cursor-pointer relative overflow-hidden">⚠️ ABORTAR (KILL SWITCH) ⚠️</button>
+                    <button onclick="abortSequence()" class="w-full md:w-auto bg-transparent text-red-600 border-2 border-red-600 px-4 md:px-12 py-2 md:py-3 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-black transition-all shadow-[0_0_30px_rgba(255,0,0,0.4)] uppercase tracking-widest cursor-pointer">⚠️ ABORTAR (KILL SWITCH) ⚠️</button>
                 </div>
 
-                <div id="abort-screen" class="hidden absolute inset-0 bg-black z-[210] p-4 font-mono text-xs md:text-sm text-gray-400 flex flex-col justify-end pb-10 overflow-hidden">
+                <div id="abort-screen" class="hidden absolute inset-0 bg-black z-[210] p-4 md:p-8 font-mono text-sm md:text-lg text-red-500 flex flex-col justify-end pb-20">
                     <div id="abort-terminal" class="space-y-1"></div>
                 </div>
             </section>
@@ -409,13 +421,17 @@
 
         <footer class="w-full border-t border-green-900 bg-black/95 p-2 text-[10px] md:text-xs font-mono relative z-50 overflow-hidden">
             <div class="ticker-wrap border-b border-green-900 mb-2 pb-1 bg-black text-green-700">
-                <div class="ticker">+++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.7.5.0 STABLE +++</div>
+                <div class="ticker">
+                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.7.0 STABLE +++
+                </div>
             </div>
+
             <div class="container mx-auto flex flex-col md:flex-row justify-between items-center opacity-80 gap-2">
                 <div class="flex flex-col items-center md:items-start">
                     <span class="glitch-text font-bold tracking-[0.2em] text-green-500 text-sm" data-text="INDUSTRIAS LEVIATHAM">INDUSTRIAS LEVIATHAM © 2018-2025</span>
                     <span class="text-[9px] text-gray-500">MILITARY GRADE CYBER WARFARE SUITE</span>
                 </div>
+                
                 <div class="flex gap-4 text-green-900 font-bold border border-green-900/50 p-1 px-2 bg-green-900/10">
                     <span class="text-green-600">RAM: <span class="text-green-400">16.4 GB</span></span>
                     <span class="text-green-600">CLIENT_IP: <span id="client-ip-display" class="text-red-400">DETECTING...</span></span>
@@ -427,300 +443,521 @@
     </div>
 
     <script>
-        const termsHTML = `<div class="mb-2">> INICIANDO SISTEMA DE SIMULACIÓN DE GUERRA CIBERNÉTICA... [OK]</div><div class="mb-2">> DESCRIPCIÓN DE ARSENAL DISPONIBLE:</div><ul class="list-none pl-2 space-y-1"><li><span class="text-green-500 font-bold">1. UDP FLOOD (L4):</span> Envío masivo de paquetes basura. Causa <span class="text-red-500 font-bold animate-pulse">SATURACIÓN DE ANCHO DE BANDA</span>.</li><li><span class="text-yellow-500 font-bold">2. ICMP SWARM (L3):</span> Sobrecarga de peticiones Echo. Provoca <span class="text-red-500 font-bold animate-pulse">COLAPSO DEL ROUTER</span>.</li><li><span class="text-orange-500 font-bold">3. TCP SYN (L4):</span> Inicia conexiones falsas sin cerrarlas. Genera <span class="text-red-500 font-bold animate-pulse">AGOTAMIENTO DE RECURSOS (RAM/CPU)</span>.</li><li><span class="text-red-500 font-bold">4. DNS AMP (Reflejado):</span> Usa servidores públicos para multiplicar el ataque x70. <span class="text-red-500 font-bold animate-pulse">DAÑO CRÍTICO ESTRUCTURAL</span>.</li><li><span class="text-purple-500 font-bold">5. LAYER 7 HTTP:</span> Simula tráfico humano real. Indetectable por firewalls simples. <span class="text-red-500 font-bold animate-pulse">CAÍDA DE SERVICIO WEB</span>.</li></ul><div class="mt-2 text-gray-400">> TODA ACCIÓN ES REGISTRADA LOCALMENTE.</div>`;
+        const termsHTML = `
+            <div class="mb-2">> INICIANDO SISTEMA DE SIMULACIÓN DE GUERRA CIBERNÉTICA... [OK]</div>
+            <div class="mb-2">> DESCRIPCIÓN DE ARSENAL DISPONIBLE:</div>
+            <ul class="list-none pl-2 space-y-1">
+                <li><span class="text-green-500 font-bold">1. UDP FLOOD (L4):</span> Envío masivo de paquetes basura. Causa <span class="text-red-500 font-bold animate-pulse">SATURACIÓN DE ANCHO DE BANDA</span>.</li>
+                <li><span class="text-yellow-500 font-bold">2. ICMP SWARM (L3):</span> Sobrecarga de peticiones Echo. Provoca <span class="text-red-500 font-bold animate-pulse">COLAPSO DEL ROUTER</span>.</li>
+                <li><span class="text-orange-500 font-bold">3. TCP SYN (L4):</span> Inicia conexiones falsas sin cerrarlas. Genera <span class="text-red-500 font-bold animate-pulse">AGOTAMIENTO DE RECURSOS (RAM/CPU)</span>.</li>
+                <li><span class="text-red-500 font-bold">4. DNS AMP (Reflejado):</span> Usa servidores públicos para multiplicar el ataque x70. <span class="text-red-500 font-bold animate-pulse">DAÑO CRÍTICO ESTRUCTURAL</span>.</li>
+                <li><span class="text-purple-500 font-bold">5. LAYER 7 HTTP:</span> Simula tráfico humano real. Indetectable por firewalls simples. <span class="text-red-500 font-bold animate-pulse">CAÍDA DE SERVICIO WEB</span>.</li>
+            </ul>
+            <div class="mt-2 text-gray-400">> TODA ACCIÓN ES REGISTRADA LOCALMENTE.</div>
+        `;
+
         const termsContainer = document.getElementById('terms-text');
         
-        window.onload = () => { initCanvas(); animateBg(); monitorNetwork(); startClock(); detectClientIP(); setTimeout(() => { termsContainer.innerHTML = termsHTML; }, 500); };
-        function startClock() { setInterval(() => { const now = new Date(); document.getElementById('utc-clock').innerText = now.toISOString().split('T')[1].split('.')[0] + " Z"; }, 1000); }
-        async function detectClientIP() { try { const req = await fetch('https://api.ipify.org?format=json'); const data = await req.json(); document.getElementById('client-ip-display').innerText = data.ip; } catch(e) { document.getElementById('client-ip-display').innerText = "HIDDEN/VPN"; } }
+        window.onload = () => {
+            initCanvas();
+            animateBg();
+            monitorNetwork(); 
+            startClock();
+            detectClientIP();
+            setTimeout(() => {
+                termsContainer.innerHTML = termsHTML;
+            }, 500);
+        };
 
-        const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
+        function startClock() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('utc-clock').innerText = now.toISOString().split('T')[1].split('.')[0] + " Z";
+            }, 1000);
+        }
+
+        async function detectClientIP() {
+            try {
+                const req = await fetch('https://api.ipify.org?format=json');
+                const data = await req.json();
+                document.getElementById('client-ip-display').innerText = data.ip;
+            } catch(e) {
+                document.getElementById('client-ip-display').innerText = "HIDDEN/VPN";
+            }
+        }
+
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
         let width, height, particles = [];
-        function initCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; particles = []; for(let j=0; j<60; j++) { particles.push({ x: Math.random()*width, y: Math.random()*height, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5 }); } }
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            for(let j=0; j<60; j++) {
+                particles.push({
+                    x: Math.random()*width, y: Math.random()*height,
+                    vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5
+                });
+            }
+        }
         window.onresize = initCanvas;
-        function animateBg() { ctx.clearRect(0,0,width,height); ctx.strokeStyle = 'rgba(0, 150, 0, 0.15)'; ctx.fillStyle = '#0f0'; particles.forEach((p, index) => { p.x += p.vx; p.y += p.vy; if(p.x < 0 || p.x > width) p.vx *= -1; if(p.y < 0 || p.y > height) p.vy *= -1; ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2); ctx.fill(); particles.slice(index+1).forEach(p2 => { if(Math.hypot(p.x-p2.x, p.y-p2.y) < 100) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); } }); }); requestAnimationFrame(animateBg); }
+
+        function animateBg() {
+            ctx.clearRect(0,0,width,height);
+            ctx.strokeStyle = 'rgba(0, 150, 0, 0.15)';
+            ctx.fillStyle = '#0f0';
+            particles.forEach((p, index) => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0 || p.x > width) p.vx *= -1;
+                if(p.y < 0 || p.y > height) p.vy *= -1;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 1, 0, Math.PI*2);
+                ctx.fill();
+                particles.slice(index+1).forEach(p2 => {
+                    if(Math.hypot(p.x-p2.x, p.y-p2.y) < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+            requestAnimationFrame(animateBg);
+        }
 
         function monitorNetwork() {
-            const statsEl = document.getElementById('real-network-stats'); const simPingEl = document.getElementById('real-ping-display');
+            const statsEl = document.getElementById('real-network-stats');
+            const simPingEl = document.getElementById('real-ping-display');
+
             async function checkPing() {
                 const start = performance.now();
-                try { await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' }); const end = performance.now(); const ping = Math.round(end - start); let connType = 'UNKNOWN'; if (navigator.connection) { connType = navigator.connection.effectiveType ? navigator.connection.effectiveType.toUpperCase() : 'WIFI/ETH'; if(navigator.connection.downlink) { connType += ` | BW: ~${navigator.connection.downlink}Mbps`; } } const statusText = `NET: ${connType} | RTT: ${ping}ms`; statsEl.innerText = statusText; if(simPingEl) simPingEl.innerText = `LATENCIA REAL SISTEMA: ${ping} ms`; if(ping < 50) statsEl.className = "text-xs text-green-500 border border-green-800 px-2 py-1 bg-black/50"; else if(ping < 150) statsEl.className = "text-xs text-yellow-500 border border-yellow-800 px-2 py-1 bg-black/50"; else statsEl.className = "text-xs text-red-500 border border-red-800 px-2 py-1 bg-black/50"; } catch (e) { statsEl.innerText = "NET: OFFLINE / BLOCKED"; statsEl.className = "text-xs text-red-600 border border-red-800 px-2 py-1 bg-black/50"; }
-            } setInterval(checkPing, 2000); checkPing();
+                try {
+                    await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' });
+                    const end = performance.now();
+                    const ping = Math.round(end - start);
+                    
+                    let connType = 'UNKNOWN';
+                    if (navigator.connection) {
+                        connType = navigator.connection.effectiveType ? navigator.connection.effectiveType.toUpperCase() : 'WIFI/ETH';
+                        if(navigator.connection.downlink) {
+                           connType += ` | BW: ~${navigator.connection.downlink}Mbps`;
+                        }
+                    }
+
+                    const statusText = `NET: ${connType} | RTT: ${ping}ms`;
+                    statsEl.innerText = statusText;
+                    if(simPingEl) simPingEl.innerText = `LATENCIA REAL SISTEMA: ${ping} ms`;
+                    
+                    if(ping < 50) statsEl.className = "text-xs text-green-500 border border-green-800 px-2 py-1 bg-black/50";
+                    else if(ping < 150) statsEl.className = "text-xs text-yellow-500 border border-yellow-800 px-2 py-1 bg-black/50";
+                    else statsEl.className = "text-xs text-red-500 border border-red-800 px-2 py-1 bg-black/50";
+
+                } catch (e) {
+                    statsEl.innerText = "NET: OFFLINE / BLOCKED";
+                    statsEl.className = "text-xs text-red-600 border border-red-800 px-2 py-1 bg-black/50";
+                }
+            }
+            setInterval(checkPing, 2000);
+            checkPing();
         }
 
         let state = { ip: '', vector: null, duration: 0, timers: [], totalBytes: 0 };
-        function updatePlaceholder(val) { const input = document.getElementById('ip-input'); if(val === 'ip') input.placeholder = "192.168.1.1"; else if(val === 'mac') input.placeholder = "00:1A:2B:3C:4D:5E"; else if(val === 'web') input.placeholder = "www.google.com"; }
+
+        function updatePlaceholder(val) {
+            const input = document.getElementById('ip-input');
+            if(val === 'ip') input.placeholder = "192.168.1.1";
+            else if(val === 'mac') input.placeholder = "00:1A:2B:3C:4D:5E";
+            else if(val === 'web') input.placeholder = "www.google.com";
+        }
 
         async function trackTarget() {
-            const input = document.getElementById('ip-input').value.trim(); const type = document.querySelector('input[name="ttype"]:checked').value;
+            const input = document.getElementById('ip-input').value.trim();
+            const type = document.querySelector('input[name="ttype"]:checked').value;
+
             if(!input) return alert("¡ERROR! DEBE INGRESAR UN OBJETIVO.");
-            state.ip = input; const btn = document.getElementById('btn-track'); const output = document.getElementById('api-output'); const consoleDiv = document.getElementById('api-console'); const nextBtn = document.getElementById('btn-next-config'); const resetBtn = document.getElementById('btn-reset-target');
-            btn.innerHTML = `<span class="animate-spin">⚙</span> INITIALIZING...`; consoleDiv.classList.add('hidden'); nextBtn.classList.add('hidden'); output.innerHTML = '';
-            let finalData = {}; let isMacMode = (type === 'mac');
+            
+            state.ip = input;
+            const btn = document.getElementById('btn-track');
+            const output = document.getElementById('api-output');
+            const consoleDiv = document.getElementById('api-console');
+            const nextBtn = document.getElementById('btn-next-config');
+            const resetBtn = document.getElementById('btn-reset-target');
+
+            btn.innerHTML = `<span class="animate-spin">⚙</span> INITIALIZING...`;
+            consoleDiv.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            output.innerHTML = '';
+            
+            let finalData = {};
+            let isMacMode = (type === 'mac');
+
             try {
+                // 1. RESOLUCIÓN DNS PARA DOMINIOS (WEB MODE)
                 let targetIP = input;
-                if (type === 'web') { if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(input)) { try { const dnsReq = await fetch(`https://dns.google/resolve?name=${input}&type=A`); const dnsJson = await dnsReq.json(); if (dnsJson.Answer) { targetIP = dnsJson.Answer[dnsJson.Answer.length - 1].data; finalData["[DNS] RESOLVED_IP"] = targetIP; } } catch (e) {} } }
-                if (type === 'mac') { if (input.includes('.') && !input.includes(':')) { finalData["WARNING"] = "DOMAIN DETECTED IN MAC INPUT"; finalData["AUTO_CORRECT"] = "VIRTUALIZING NIC..."; finalData["MAC_ADDRESS"] = "52:54:00:" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString(); finalData["VENDOR"] = "Virtual Bridge (Auto-Generated)"; finalData["STATUS"] = "ACTIVE (TUNNELED)"; } else { const macDB = { "00:1A:2B": "Cisco Systems", "00:0C:29": "VMware", "F0:98:9D": "Apple", "B8:27:EB": "Raspberry Pi", "24:77:03": "Intel", "50:E5:49": "Giga-Byte", "00:D8:61": "TP-LINK", "C8:3A:35": "Tenda", "00:E0:4C": "Realtek", "D8:50:E6": "Asus", "FC:AA:14": "Giga-Byte", "00:25:90": "Super Micro" }; const clean = input.toUpperCase().replace(/[^A-F0-9]/g, "").substring(0,6); try { const req = await fetch(`https://api.maclookup.app/v2/macs/${input}`); if(req.ok) { const json = await req.json(); if(json.found) finalData["VENDOR"] = json.company; } } catch(e) {} if(!finalData["VENDOR"]) { for(let key in macDB) { if(clean.startsWith(key.replace(/:/g,""))) finalData["VENDOR"] = macDB[key]; } } if(!finalData["VENDOR"]) finalData["VENDOR"] = "PRIVATE / UNKNOWN OUI"; finalData["MAC_ADDR"] = input; finalData["L2_PROTOCOL"] = "ETHERNET II"; finalData["FRAME_CHECK"] = "VALID"; } }
-                if (!isMacMode) { 
-                    // EXTRACTION DE DATOS MASIVA (6 APIS EN PARALELO + CALCULOS LOCALES)
-                    const p1 = fetch(`https://ipapi.co/${targetIP}/json/`).then(r=>r.json()).catch(e=>({})); 
-                    const p2 = fetch(`https://ipwho.is/${targetIP}`).then(r=>r.json()).catch(e=>({})); 
-                    const p3 = fetch(`https://api.databat.io/v1/ip/${targetIP}`).then(r=>r.json()).catch(e=>({})); 
-                    const p4 = fetch(`https://api.bgpview.io/ip/${targetIP}`).then(r=>r.json()).catch(e=>({})); 
-                    const p5 = fetch(`https://networkcalc.com/api/ip/${targetIP}`).then(r=>r.json()).catch(e=>({}));
-                    const p6 = fetch(`https://freeipapi.com/api/json/${targetIP}`).then(r=>r.json()).catch(e=>({}));
-                    const p7 = fetch(`https://api.iplocation.net/?ip=${targetIP}`).then(r=>r.json()).catch(e=>({}));
-
-                    const [d1, d2, d3, d4, d5, d6, d7] = await Promise.all([p1, p2, p3, p4, p5, p6, p7]); 
-                    
-                    finalData["[ID] TARGET"] = targetIP; 
-                    finalData["[ID] TYPE"] = d2.type || "IPv4";
-                    
-                    // GEO INTELLIGENCE
-                    finalData["[GEO] CONTINENT"] = d2.continent || d6.continent || "Unknown";
-                    finalData["[GEO] COUNTRY"] = `${d2.country || d1.country_name} ${d2.flag?.emoji || ''}`;
-                    finalData["[GEO] REGION"] = d2.region || d1.region;
-                    finalData["[GEO] CITY"] = d2.city || d1.city;
-                    finalData["[GEO] ZIP"] = d2.postal || d1.postal;
-                    finalData["[GEO] COORDS"] = `${d2.latitude || d1.latitude}, ${d2.longitude || d1.longitude}`;
-                    finalData["[GEO] TIMEZONE"] = d2.timezone?.id || d1.timezone;
-                    finalData["[GEO] UTC OFF"] = d2.timezone?.utc || d1.utc_offset;
-                    finalData["[GEO] CURRENCY"] = `${d2.currency?.name} (${d2.currency?.symbol})`;
-                    finalData["[GEO] CALLING"] = `+${d2.calling_code || d1.country_calling_code}`;
-                    
-                    // NETWORK INTELLIGENCE
-                    finalData["[NET] ASN"] = d2.connection?.asn || d1.asn || d7.asn; 
-                    finalData["[NET] ISP"] = d2.connection?.isp || d1.org || d7.isp; 
-                    finalData["[NET] ORG"] = d2.connection?.org || d1.org; 
-                    finalData["[NET] RANGE"] = d1.network || d5.address?.cidr || "Unknown";
-                    
-                    // BGP DATA
-                    if(d4.data && d4.data.prefixes) {
-                        finalData["[BGP] PREFIX"] = d4.data.prefixes[0]?.prefix;
-                        finalData["[BGP] NAME"] = d4.data.prefixes[0]?.name;
-                        finalData["[BGP] DESC"] = d4.data.prefixes[0]?.description;
-                        finalData["[BGP] RIR"] = d4.data.rir_allocation?.rir_name;
+                if (type === 'web') {
+                    if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(input)) {
+                        try {
+                            const dnsReq = await fetch(`https://dns.google/resolve?name=${input}&type=A`);
+                            const dnsJson = await dnsReq.json();
+                            if (dnsJson.Answer) {
+                                targetIP = dnsJson.Answer[dnsJson.Answer.length - 1].data; 
+                                finalData["[DNS] RESOLVED_IP"] = targetIP;
+                            }
+                        } catch (e) {}
                     }
-
-                    // CALCULATION DATA (Local logic mostly to ensure data presence)
-                    if(d5.address) {
-                        finalData["[CALC] BINARY"] = d5.address.binary;
-                        finalData["[CALC] HEX"] = "0x" + targetIP.split('.').map(x => parseInt(x).toString(16).padStart(2,'0')).join('').toUpperCase();
-                        finalData["[CALC] INT"] = targetIP.split('.').reduce((ip, octet) => (ip << 8) + parseInt(octet, 10), 0) >>> 0;
-                        finalData["[CALC] MASK"] = d5.address.netmask_txt;
-                        finalData["[CALC] CLASS"] = d5.address.class;
-                    } else {
-                        // Fallback calc
-                        finalData["[CALC] HEX"] = "0x" + targetIP.split('.').map(x => parseInt(x).toString(16).padStart(2,'0')).join('').toUpperCase();
-                    }
-
-                    // SECURITY SCORING
-                    finalData["[SEC] VPN"] = d2.security?.vpn ? "YES" : "NO"; 
-                    finalData["[SEC] PROXY"] = d2.security?.proxy ? "YES" : "NO"; 
-                    finalData["[SEC] TOR"] = d2.security?.tor ? "YES" : "NO"; 
-                    finalData["[SEC] HOSTING"] = d2.security?.hosting ? "YES" : "NO";
-                    
-                    if (type === 'web') { 
-                        finalData["[WEB] SERVER"] = "nginx/1.18.0 (Ubuntu) [Est]"; 
-                        finalData["[WEB] PORTS"] = "80, 443 (OPEN)"; 
-                    } 
                 }
 
-                window.generatePacketLog = function() {
-                    const now = new Date(); const timeStr = now.toLocaleTimeString('es-AR', { hour12: false }) + "." + now.getMilliseconds().toString().padStart(3, '0'); const ts = `<span class="ts-time">${timeStr}</span>`;
-                    const sport = Math.floor(Math.random() * 65535); const pid = Math.floor(Math.random() * 32000); const spoof = `${Math.floor(Math.random()*223)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
-                    const targetTag = `<span class="target-tag">${state.ip}</span>`;
-                    let log = "", size = 64;
-
-                    // --- GENERADOR MASIVO DE LOGS v7.5 ---
-                    // 100+ Variaciones de logs para realismo total
-                    if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
-                        const methods = ["GET", "POST", "HEAD", "PUT", "OPTIONS", "DELETE", "PATCH"];
-                        const agents = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "curl/7.68.0", "Go-http-client/1.1", "Python/3.9", "Apache-HttpClient/4.5.13", "Mediapartners-Google", "sqlmap/1.5.2"];
-                        const paths = ["/login", "/", "/api/v1/auth", "/admin", "/wp-login.php", "/search", "/assets/main.css", "/images/logo.png", "/robots.txt", "/.env", "/backup.sql", "/config.php"];
-                        const method = methods[Math.floor(Math.random()*methods.length)];
+                // 2. MODO MAC ADDRESS (BASE LOCAL + API)
+                if (type === 'mac') {
+                    if (input.includes('.') && !input.includes(':')) {
+                         finalData["WARNING"] = "DOMAIN DETECTED IN MAC INPUT";
+                         finalData["AUTO_CORRECT"] = "VIRTUALIZING NIC...";
+                         finalData["MAC_ADDRESS"] = "52:54:00:" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString();
+                         finalData["VENDOR"] = "Virtual Bridge (Auto-Generated)";
+                         finalData["STATUS"] = "ACTIVE (TUNNELED)";
+                    } else {
+                        const macDB = {
+                            "00:1A:2B": "Cisco Systems", "00:0C:29": "VMware", "F0:98:9D": "Apple",
+                            "B8:27:EB": "Raspberry Pi", "24:77:03": "Intel", "50:E5:49": "Giga-Byte",
+                            "00:D8:61": "TP-LINK", "C8:3A:35": "Tenda", "00:E0:4C": "Realtek",
+                            "D8:50:E6": "Asus", "FC:AA:14": "Giga-Byte", "00:25:90": "Super Micro"
+                        };
+                        const clean = input.toUpperCase().replace(/[^A-F0-9]/g, "").substring(0,6);
                         
-                        const scenarios = [
-                            `${ts} <span class="ts-proc">nginx[${pid}]:</span> ${spoof} - - [${new Date().toUTCString()}] "${method} ${paths[Math.floor(Math.random()*paths.length)]} HTTP/1.1" 200 ${Math.floor(Math.random()*5000)} "-" "${agents[0]}" to ${targetTag}`,
-                            `${ts} <span class="ts-warn">[WAF]</span> ModSecurity: Access denied with code 403 (phase 2). Pattern match "SQLi" at ARGS:id. Target: ${targetTag}`,
-                            `${ts} <span class="ts-info">OUTBOUND</span> >> ${methods[1]} ${targetTag}${paths[1]} | Payload: <span class="ts-data">${Math.random().toString(36).substring(7)}</span> | Keep-Alive`,
-                            `${ts} <span class="ts-err">CONNECTION TIMEOUT</span> ${targetTag}:443 (Upstream Server Unreachable)`,
-                            `${ts} <span class="ts-suc">SSL Handshake</span> with ${targetTag} success. Protocol: TLSv1.3 Cipher: TLS_AES_256_GCM_SHA384`,
-                            `${ts} <span class="ts-proc">httpd[${pid}]:</span> [core:error] [pid ${pid}] (70007)The timeout specified has expired: [client ${spoof}] AH00524: Handler for fastcgi-script returned invalid result`,
-                            `${ts} <span class="ts-info">Slowloris:</span> Holding socket open to ${targetTag}... (Thread-${pid}) - 24s elapsed`,
-                            `${ts} <span class="ts-warn">[DOS]</span> High request rate detected from ${spoof} targeting ${targetTag}. Throttling via iptables.`,
-                            `${ts} <span class="ts-info">GET</span> ${targetTag}/static/image.jpg HTTP/2 | 200 OK | 45ms | Cache: MISS`,
-                            `${ts} <span class="ts-err">502 Bad Gateway</span> received from ${targetTag}. Reverse proxy error.`,
-                            `${ts} <span class="ts-dim">DEBUG:</span> Header injection: X-Forwarded-For: ${spoof} -> ${targetTag}`,
-                            `${ts} <span class="ts-proc">botnet:</span> Executing challenge-response bypass on ${targetTag}. Cookie acquired.`,
-                            `${ts} <span class="ts-info">POST</span> ${targetTag}/xmlrpc.php | 200 OK | Body: 450 bytes`,
-                            `${ts} <span class="ts-err">CRITICAL:</span> Target ${targetTag} dropped 450 packets in last 1s`,
-                            `${ts} <span class="ts-info">HEAD</span> ${targetTag}/.git/HEAD | 403 Forbidden`,
-                            `${ts} <span class="ts-warn">[IPS]</span> Signature detected: Apache Struts RCE attempt against ${targetTag}`,
-                            `${ts} <span class="ts-proc">varnish:</span> Backend unhealthy. Fetch failed for ${targetTag}`,
-                            `${ts} <span class="ts-dim">Socket:</span> Pipe broken. Write failed to ${targetTag}`,
-                            `${ts} <span class="ts-info">DDOS:</span> Layer 7 flood rate: 15,000 req/s on ${targetTag}`,
-                            `${ts} <span class="ts-err">504 Gateway Time-out</span> nginx/1.18.0`,
-                            `${ts} <span class="ts-warn">[Cloudflare]</span> Challenge solving initiated for ${targetTag}`,
-                            `${ts} <span class="ts-info">HTTP/3</span> QUIC stream opened to ${targetTag}:443`,
-                            `${ts} <span class="ts-proc">auditd:</span> execve("/bin/sh", ["sh", "-c", "curl ${targetTag} | bash"], ...)`,
-                            `${ts} <span class="ts-err">Error:</span> ECONNRESET (Connection reset by peer) from ${targetTag}`,
-                            `${ts} <span class="ts-info">User-Agent:</span> Rotated to: Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)`,
-                            `${ts} <span class="ts-suc">Thread-${pid}:</span> 1000 requests sent. 0 failures.`,
-                            `${ts} <span class="ts-dim">Proxy:</span> Chaining request via 192.168.x.x -> ${targetTag}`
-                        ];
-                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
+                        try {
+                            const req = await fetch(`https://api.maclookup.app/v2/macs/${input}`);
+                            if(req.ok) {
+                                const json = await req.json();
+                                if(json.found) finalData["VENDOR"] = json.company;
+                            }
+                        } catch(e) {}
+
+                        if(!finalData["VENDOR"]) {
+                             for(let key in macDB) {
+                                 if(clean.startsWith(key.replace(/:/g,""))) finalData["VENDOR"] = macDB[key];
+                             }
+                        }
+                        if(!finalData["VENDOR"]) finalData["VENDOR"] = "PRIVATE / UNKNOWN OUI";
+                        
+                        finalData["MAC_ADDR"] = input;
+                        finalData["L2_PROTOCOL"] = "ETHERNET II";
+                        finalData["FRAME_CHECK"] = "VALID";
+                    }
+                }
+
+                // 3. MODO IP / WEB (RECOLECCIÓN MASIVA DE DATOS)
+                if (!isMacMode) {
+                    const p1 = fetch(`https://ipapi.co/${targetIP}/json/`).then(r=>r.json()).catch(e=>({}));
+                    const p2 = fetch(`https://ipwho.is/${targetIP}`).then(r=>r.json()).catch(e=>({}));
+                    const p3 = fetch(`https://api.databat.io/v1/ip/${targetIP}`).then(r=>r.json()).catch(e=>({}));
+
+                    const [d1, d2, d3] = await Promise.all([p1, p2, p3]);
+
+                    finalData["TARGET_IP"] = targetIP;
+                    finalData["HOSTNAME"] = d2.connection?.domain || d1.org || "Unknown";
+                    finalData["CONTINENT"] = d2.continent || d1.continent_code;
+                    finalData["COUNTRY"] = `${d2.country || d1.country_name} ${d2.flag?.emoji || ''}`;
+                    finalData["REGION"] = d2.region || d1.region;
+                    finalData["CITY"] = d2.city || d1.city;
+                    finalData["ZIP_CODE"] = d2.postal || d1.postal;
+                    finalData["COORDINATES"] = `${d2.latitude || d1.latitude}, ${d2.longitude || d1.longitude}`;
+                    finalData["ASN"] = d2.connection?.asn || d1.asn;
+                    finalData["ISP"] = d2.connection?.isp || d1.org;
+                    finalData["ORG"] = d2.connection?.org || d1.org;
+                    finalData["TIMEZONE"] = d2.timezone?.id || d1.timezone;
+                    finalData["UTC_OFFSET"] = d2.timezone?.utc || d1.utc_offset;
+                    finalData["CURRENCY"] = `${d2.currency?.name} (${d2.currency?.symbol})`;
+                    finalData["IS_VPN"] = d2.security?.vpn ? "YES" : "NO (Clean)";
+                    finalData["IS_PROXY"] = d2.security?.proxy ? "YES" : "NO";
+                    finalData["IS_HOSTING"] = d2.security?.hosting ? "YES" : "NO";
+                    
+                    if (type === 'web') {
+                        finalData["SERVER_HEADER"] = "nginx/1.18.0 (Ubuntu)";
+                        finalData["X-POWERED-BY"] = "PHP/8.1";
+                        finalData["PORT_443"] = "OPEN (HTTPS)";
+                        finalData["PORT_80"] = "OPEN (HTTP)";
+                        finalData["WAF_STATUS"] = "DETECTED (Generic)";
+                    }
+                }
+
+                // DEFINICIÓN DINÁMICA DE GENERADOR DE LOGS (SCOPE COMPARTIDO)
+                window.generatePacketLog = function() {
+                    // TIMESTAMP KERNEL STYLE
+                    const now = performance.now();
+                    const kTime = (now / 1000).toFixed(6);
+                    const ts = `<span class="ts-time">[ ${kTime.padStart(11, ' ')} ]</span>`;
+                    
+                    const sport = Math.floor(Math.random() * 65535);
+                    const pid = Math.floor(Math.random() * 9999);
+                    const spoof = `${Math.floor(Math.random()*223)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+                    
+                    let log = "";
+                    let size = 64;
+
+                    // --- GENERADOR AVANZADO DE LOGS ---
+                    
+                    if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
+                        const methods = ["GET", "POST", "HEAD", "PUT"];
+                        const agents = ["Mozilla/5.0 (Windows NT)", "curl/7.68.0", "Go-http-client/1.1", "Python/3.9", "Apache-HttpClient"];
+                        const paths = ["/login", "/", "/api/v1/status", "/admin/config.php", "/static/js/app.js", "/search?q=test"];
+                        const codes = ["200 OK", "404 Not Found", "503 Service Unavailable", "502 Bad Gateway", "301 Moved"];
+                        
+                        const r = Math.random();
+                        if (r < 0.2) {
+                            log = `${ts} <span class="ts-proc">nginx[${pid}]:</span> <span class="ts-info">${state.ip}</span> - - [${new Date().toUTCString()}] "${methods[0]} ${paths[Math.floor(Math.random()*paths.length)]} HTTP/1.1" 200 ${Math.floor(Math.random()*5000)} "-" "${agents[0]}"`;
+                        } else if (r < 0.4) {
+                            log = `${ts} <span class="ts-warn">[WARN]</span> Flood detected from <span class="ts-err">${spoof}</span>. Rate limiting initiated.`;
+                        } else if (r < 0.6) {
+                            log = `${ts} <span class="ts-info">OUTBOUND >></span> ${methods[Math.floor(Math.random()*methods.length)]} ${state.ip}${paths[Math.floor(Math.random()*paths.length)]} | <span class="ts-val">Thread-${pid}</span>`;
+                        } else if (r < 0.8) {
+                            log = `${ts} <span class="ts-err">CONNECTION REFUSED</span> ${state.ip}:80 (Target overload)`;
+                        } else {
+                            log = `${ts} <span class="ts-suc">SSL/TLS Handshake</span> with ${state.ip} success. Cipher: AES256-SHA.`;
+                        }
                         size = Math.floor(Math.random() * 2000) + 200;
 
                     } else if (state.vector && state.vector.name === 'TCP SYN') {
-                        const port = `<span class="ts-port">80</span>`;
-                        const scenarios = [
-                            `${ts} <span class="ts-proc">KERNEL:</span> TCP: ${spoof}:${sport} > ${targetTag}:${port} Flags <span class="ts-warn">[S]</span>, seq ${Math.floor(Math.random()*999999)}, win 65535, len 0`,
-                            `${ts} <span class="ts-info">netfilter:</span> DROP IN=eth0 OUT= MAC=ff:ff:ff:ff:ff:ff SRC=${spoof} DST=${targetTag} PROTO=TCP SPT=${sport} DPT=80 SYN`,
-                            `${ts} <span class="ts-err">TCP:</span> Possible SYN flooding on port 80. Sending cookies to ${targetTag}.`,
-                            `${ts} <span class="ts-info">tcpreplay:</span> Sending packet ${pid} to ${targetTag} via interface eth0`,
-                            `${ts} <span class="ts-proc">firewall:</span> [BLOCK] Suspicious SYN packet from ${spoof} to ${targetTag}. State: INVALID`,
-                            `${ts} <span class="ts-info">TCP:</span> ${targetTag}:${port} > ${spoof}:${sport} Flags [R.], seq 0, win 0, length 0`,
-                            `${ts} <span class="ts-warn">sock:</span> TCP connection reset by peer ${targetTag}`,
-                            `${ts} <span class="ts-data">Raw:</span> 4500 003c 1a2b 4000 4006 .... (SYN Payload) -> ${targetTag}`,
-                            `${ts} <span class="ts-info">Handshake:</span> SYN SENT to ${targetTag} -> Waiting ACK... (Timeout 3000ms)`,
-                            `${ts} <span class="ts-suc">ZOMBIE:</span> Bot ${spoof} joined the swarm. Target: ${targetTag}`,
-                            `${ts} <span class="ts-dim">nf_conntrack:</span> table full, dropping packet to ${targetTag}.`,
-                            `${ts} <span class="ts-info">TCP Window:</span> Zero window probe sent to ${targetTag}`,
-                            `${ts} <span class="ts-warn">FIN_WAIT2:</span> Connection closing with ${targetTag}.`,
-                            `${ts} <span class="ts-err">RST:</span> ${targetTag} rejected connection on port 443.`,
-                            `${ts} <span class="ts-proc">kernel:</span> TCP: too many orphaned sockets. Resetting ${targetTag}`,
-                            `${ts} <span class="ts-info">TSO:</span> Segment offload failed for ${targetTag}`,
-                            `${ts} <span class="ts-data">Flags:</span> [S,E,C] ECN-Echo set to ${targetTag}`,
-                            `${ts} <span class="ts-warn">Retransmission:</span> ${targetTag}:${port} (3rd attempt)`,
-                            `${ts} <span class="ts-dim">Analysis:</span> 99% CPU Load on Target Firewall`,
-                            `${ts} <span class="ts-suc">Packet Injection:</span> 1,000,000 PPS achieved against ${targetTag}`,
-                            `${ts} <span class="ts-err">Out of memory:</span> Kill process ${pid} (syn_flood) score 900 or sacrifice child`,
-                            `${ts} <span class="ts-info">TCP:</span> Treason uncloaked! Peer ${targetTag} sent RST check generated.`,
-                            `${ts} <span class="ts-proc">iptables:</span> mangle table rule hit by ${targetTag}`
-                        ];
-                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
+                        const flags = ["[S]", "[S,.]", "[R]", "[P,.]", "[F]"];
+                        const r = Math.random();
+                        if (r < 0.3) {
+                            log = `${ts} <span class="ts-proc">KERNEL:</span> TCP: ${spoof}:${sport} > <span class="ts-warn">${state.ip}:80</span> Flags ${flags[Math.floor(Math.random()*flags.length)]}, seq ${Math.floor(Math.random()*99999999)}, win 65535, length 0`;
+                        } else if (r < 0.6) {
+                            log = `${ts} <span class="ts-info">netfilter:</span> IN=eth0 OUT= MAC=ff:ff:ff:ff:ff:ff SRC=${spoof} DST=${state.ip} PROTO=TCP SPT=${sport} DPT=80 WINDOW=512 RES=0x00 SYN URGP=0`;
+                        } else {
+                            log = `${ts} <span class="ts-err">TCP: request_sock_TCP:</span> Possible SYN flooding on port 80. Sending cookies.`;
+                        }
                         size = 60;
 
                     } else if (state.vector && state.vector.name === 'DNS AMP') {
-                        const resolvers = ["8.8.8.8", "1.1.1.1", "9.9.9.9", "208.67.222.222", "4.2.2.2"];
-                        const res = `<span class="ts-ip">${resolvers[Math.floor(Math.random()*resolvers.length)]}</span>`;
-                        const scenarios = [
-                            `${ts} <span class="ts-info">IP</span> ${targetTag} (SPOOFED) > ${res}: ${pid}+ <span class="ts-proto">ANY?</span> isc.org. (41)`,
-                            `${ts} <span class="ts-suc">REFLECT:</span> Received ${Math.floor(Math.random()*4000)} bytes from ${res} -> ${targetTag} (Amplification 64x)`,
-                            `${ts} <span class="ts-warn">named[${pid}]:</span> client ${targetTag}#${sport}: query (cache) './NS/IN' denied`,
-                            `${ts} <span class="ts-info">DNS:</span> Standard query response 0x${Math.floor(Math.random()*9999).toString(16)} TXT (Amplified) -> ${targetTag}`,
-                            `${ts} <span class="ts-err">udp sum bad:</span> ${targetTag} > ${res} domain [b2&3=0x1]`,
-                            `${ts} <span class="ts-info">DrDoS:</span> Amplification factor x74. Target ${targetTag} link saturated.`,
-                            `${ts} <span class="ts-proc">resolver:</span> Querying ${res} for "gov" IN ANY (EDNS0 set) spoofing ${targetTag}`,
-                            `${ts} <span class="ts-warn">[ALERT]</span> Large DNS response packet detected (3400 bytes) destined for ${targetTag}. Fragmentation required.`,
-                            `${ts} <span class="ts-info">IP</span> ${res} > ${targetTag}: ${pid}* 4/0/1 . NS a.root-servers.net`,
-                            `${ts} <span class="ts-suc">Traffic:</span> Injected 400pps via open resolver ${res} to ${targetTag}`,
-                            `${ts} <span class="ts-dim">dnscap:</span> [${res}] -> [${targetTag}] DNSKEY response detected`,
-                            `${ts} <span class="ts-err">SERVFAIL:</span> ${targetTag} unable to handle query volume.`,
-                            `${ts} <span class="ts-info">Response:</span> REFUSED. Recursive query from ${targetTag} not allowed.`,
-                            `${ts} <span class="ts-warn">Spoofing:</span> Source IP set to ${targetTag}. Sending to 50 open resolvers.`,
-                            `${ts} <span class="ts-dim">Bind:</span> rate-limit dropped query from ${targetTag}`,
-                            `${ts} <span class="ts-suc">Amplification:</span> 60b query -> 4096b response sent to ${targetTag}`,
-                            `${ts} <span class="ts-data">Rcode:</span> NoError (0) - Answer section: 14 RRs`,
-                            `${ts} <span class="ts-err">Network:</span> Outbound UDP queue full. Dropped 500 queries.`,
-                            `${ts} <span class="ts-info">Target Status:</span> DNS Resolution failing for ${targetTag}`,
-                            `${ts} <span class="ts-dim">tshark:</span> DNS response retransmission detected.`
-                        ];
-                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
+                        const resolvers = ["8.8.8.8", "1.1.1.1", "208.67.222.222", "9.9.9.9"];
+                        const types = ["ANY", "TXT", "A", "AAAA"];
+                        const res = resolvers[Math.floor(Math.random()*resolvers.length)];
+                        
+                        const r = Math.random();
+                        if (r < 0.4) {
+                            log = `${ts} <span class="ts-info">IP (tos 0x0, ttl 64, id ${pid})</span> <span class="ts-err">${state.ip}</span> > ${res}: ${pid}+ [1au] ${types[Math.floor(Math.random()*types.length)]}? . (41)`;
+                        } else if (r < 0.7) {
+                            log = `${ts} <span class="ts-suc">REFLECT:</span> Received ${Math.floor(Math.random()*4000)} bytes from ${res} directed to <span class="ts-warn">${state.ip}</span>`;
+                        } else {
+                            log = `${ts} <span class="ts-dim">udp sum ok</span>: ${state.ip} > ${res} domain [b2&3=0x1] [9873q]`;
+                        }
                         size = 1200;
 
                     } else if (state.vector && state.vector.name === 'ICMP ECHO') {
-                        const scenarios = [
-                            `${ts} <span class="ts-info">IP</span> ${spoof} > ${targetTag}: ICMP echo request, id ${pid}, seq ${Math.floor(Math.random()*1000)}, length 64`,
-                            `${ts} <span class="ts-warn">frag needed</span> and DF set (mtu 1500) ICMP ${targetTag} > ${spoof}: destination unreachable`,
-                            `${ts} <span class="ts-info">PING</span> ${targetTag} (${state.ip}) 56(84) bytes of data.`,
-                            `${ts} <span class="ts-err">Request timeout</span> for icmp_seq ${Math.floor(Math.random()*100)} from ${targetTag}`,
-                            `${ts} <span class="ts-info">IP</span> ${targetTag} > ${spoof}: ICMP echo reply, id ${pid}, seq ${Math.floor(Math.random()*1000)}`,
-                            `${ts} <span class="ts-proc">kernel:</span> ICMP: redirect from ${targetTag} on eth0`,
-                            `${ts} <span class="ts-warn">Flood:</span> Sending 10000 pings/sec to ${targetTag}. Socket buffer full.`,
-                            `${ts} <span class="ts-info">Traceroute:</span> ${targetTag}: hops=30, time=45ms`,
-                            `${ts} <span class="ts-err">ICMP:</span> Destination Host Unreachable from ${targetTag}`,
-                            `${ts} <span class="ts-data">Packet:</span> Type=8 Code=0 Checksum=0x${Math.floor(Math.random()*9999).toString(16)} -> ${targetTag}`,
-                            `${ts} <span class="ts-suc">POD:</span> Ping of Death fragment sent to ${targetTag}`,
-                            `${ts} <span class="ts-dim">ICMP:</span> Timestamp request sent to ${targetTag}`,
-                            `${ts} <span class="ts-info">IP</span> ${spoof} > ${targetTag}: ICMP host ${spoof} unreachable`,
-                            `${ts} <span class="ts-warn">Smurf:</span> Broadcast ping sent to subnet 192.168.1.255 spoofing ${targetTag}`,
-                            `${ts} <span class="ts-err">Packet Loss:</span> 100% packet loss to ${targetTag}`,
-                            `${ts} <span class="ts-data">Raw:</span> 4500 0054 9912 4000 4001 ... (Echo Request)`,
-                            `${ts} <span class="ts-info">Latency:</span> ${Math.floor(Math.random()*5000)}ms (Target unresponsive)`,
-                            `${ts} <span class="ts-suc">Saturation:</span> ICMP buffer overflow on target router.`,
-                            `${ts} <span class="ts-dim">ping:</span> sendmsg: No buffer space available`
-                        ];
-                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
+                        const r = Math.random();
+                        if (r < 0.5) {
+                            log = `${ts} <span class="ts-info">IP ${spoof} > ${state.ip}:</span> ICMP echo request, id ${pid}, seq ${Math.floor(Math.random()*1000)}, length 64`;
+                        } else if (r < 0.8) {
+                            log = `${ts} <span class="ts-warn">frag needed</span> and DF set (mtu 1500) ICMP ${state.ip} > ${spoof}: destination unreachable`;
+                        } else {
+                            log = `${ts} <span class="ts-info">PING</span> ${state.ip} (${state.ip}) 56(84) bytes of data.`;
+                        }
                         size = 84;
 
                     } else { // UDP
-                        const scenarios = [
-                            `${ts} <span class="ts-dim">0x0000:</span> 4500 05dc ${Math.floor(Math.random()*9999)} 0000 4011 .... ${state.ip.split('.').map(n=>parseInt(n).toString(16).padStart(2,'0')).join('')}`,
-                            `${ts} <span class="ts-info">UDP:</span> Packet injected. Len=${Math.floor(Math.random()*1400)} Src=${spoof} Dst=${targetTag}`,
-                            `${ts} <span class="ts-warn">[DROP]</span> UDP Fragment offset wrong. Dropped by kernel. Target: ${targetTag}`,
-                            `${ts} <span class="ts-info">IP</span> ${spoof}.${sport} > ${targetTag}.${Math.floor(Math.random()*65535)}: UDP, length 1400`,
-                            `${ts} <span class="ts-err">ICMP</span> ${targetTag} udp port ${Math.floor(Math.random()*65535)} unreachable`,
-                            `${ts} <span class="ts-suc">Bandwidth:</span> Saturating uplink... 500Mbps sent to ${targetTag}`,
-                            `${ts} <span class="ts-info">Payload:</span> Junk data sent to ${targetTag} (Randomized)`,
-                            `${ts} <span class="ts-proc">eth0:</span> TX bytes:${Math.floor(Math.random()*999999)} packets:${Math.floor(Math.random()*500)} errors:0 dropped:0`,
-                            `${ts} <span class="ts-warn">Congestion:</span> Network buffer full. Dropping frames at queue tail. Target: ${targetTag}`,
-                            `${ts} <span class="ts-data">Binary:</span> 01010110 11001010 10101010 11110000 [Flooding ${targetTag}]`,
-                            `${ts} <span class="ts-err">Buffer:</span> Send queue overflow on interface targeting ${targetTag}`,
-                            `${ts} <span class="ts-info">UDP:</span> Datagram len=65507 sent to ${targetTag}`,
-                            `${ts} <span class="ts-dim">IP Fragment:</span> 1480 bytes, offset 0 -> ${targetTag}`,
-                            `${ts} <span class="ts-warn">Source Quench:</span> Received from gateway regarding ${targetTag}`,
-                            `${ts} <span class="ts-suc">Status:</span> ${targetTag} not responding to polling.`,
-                            `${ts} <span class="ts-info">Traffic:</span> 500,000 packets/sec directed to ${targetTag}`,
-                            `${ts} <span class="ts-proc">udp_sender:</span> Thread 4 wrote 100MB to socket`,
-                            `${ts} <span class="ts-err">Time Exceeded:</span> Fragment reassembly time exceeded for ${targetTag}`
-                        ];
-                        log = scenarios[Math.floor(Math.random() * scenarios.length)];
+                        const r = Math.random();
+                        if (r < 0.5) {
+                            log = `${ts} <span class="ts-dim">0x0000:</span> 4500 05dc ${Math.floor(Math.random()*9999)} 0000 4011 .... ${state.ip.split('.').map(n=>parseInt(n).toString(16).padStart(2,'0')).join('')}`;
+                        } else {
+                            log = `${ts} <span class="ts-info">UDP:</span> Packet injected. Len=${Math.floor(Math.random()*1400)} Source=${spoof} Dest=${state.ip}`;
+                        }
                         size = 1000;
                     }
 
                     return { html: `<div class="terminal-line">${log}</div>`, size: size * (Math.random() * 50 + 10) };
                 };
 
-                function renderObject(obj, prefix = '') { for(let key in obj) { if(obj[key] !== undefined && typeof obj[key] !== 'object') { output.innerHTML += `<div class="api-row"><span class="api-key">${prefix}${key}</span><span class="api-val">${obj[key]}</span></div>`; } } }
-                renderObject(finalData); consoleDiv.classList.remove('hidden'); btn.innerHTML = `<span>✓</span> TARGET LOCKED`; btn.classList.add('bg-green-600', 'text-black'); nextBtn.classList.remove('hidden'); nextBtn.disabled = false; nextBtn.style.cursor = "pointer"; resetBtn.classList.remove('hidden');
-            } catch (e) { console.error("Critical Fail:", e); output.innerHTML = `<div class="api-row"><span class="api-key text-red-500">FATAL ERROR</span><span class="api-val">NETWORK UNREACHABLE</span></div>`; consoleDiv.classList.remove('hidden'); btn.innerHTML = `<span>X</span> FAIL`; btn.classList.add('bg-red-900'); resetBtn.classList.remove('hidden'); }
+                function renderObject(obj, prefix = '') {
+                    for(let key in obj) {
+                        if(obj[key] !== undefined && typeof obj[key] !== 'object') {
+                            output.innerHTML += `<div class="api-row"><span class="api-key">${prefix}${key}</span><span class="api-val">${obj[key]}</span></div>`;
+                        }
+                    }
+                }
+                
+                renderObject(finalData);
+                consoleDiv.classList.remove('hidden');
+                
+                btn.innerHTML = `<span>✓</span> TARGET LOCKED`;
+                btn.classList.add('bg-green-600', 'text-black');
+                nextBtn.classList.remove('hidden');
+                nextBtn.disabled = false; 
+                nextBtn.style.cursor = "pointer";
+                resetBtn.classList.remove('hidden');
+
+            } catch (e) {
+                console.error("Critical Fail:", e);
+                output.innerHTML = `<div class="api-row"><span class="api-key text-red-500">FATAL ERROR</span><span class="api-val">NETWORK UNREACHABLE</span></div>`;
+                consoleDiv.classList.remove('hidden');
+                btn.innerHTML = `<span>X</span> FAIL`;
+                btn.classList.add('bg-red-900');
+                resetBtn.classList.remove('hidden');
+            }
         }
 
-        function resetTarget() { const input = document.getElementById('ip-input'); const btn = document.getElementById('btn-track'); const output = document.getElementById('api-output'); const consoleDiv = document.getElementById('api-console'); const nextBtn = document.getElementById('btn-next-config'); const resetBtn = document.getElementById('btn-reset-target'); input.value = ''; input.focus(); state.ip = ''; btn.innerHTML = `<span>⌖</span> LOCALIZAR`; btn.classList.remove('bg-green-600', 'text-black', 'bg-red-900', 'bg-yellow-600'); consoleDiv.classList.add('hidden'); nextBtn.classList.add('hidden'); resetBtn.classList.add('hidden'); output.innerHTML = ''; }
-        function showConfig() { document.getElementById('sec-target').classList.add('hidden'); document.getElementById('sec-config').classList.remove('hidden'); document.getElementById('config-target-ip').innerText = state.ip; }
-        function selectVector(name, color) { document.querySelectorAll('.vector-card').forEach(c => c.classList.remove('selected')); event.currentTarget.classList.add('selected'); state.vector = { name, color }; checkLaunch(); }
-        function setDuration(min) { document.querySelectorAll('.dur-btn').forEach(b => { b.classList.remove('bg-green-500', 'text-black'); }); event.target.classList.add('bg-green-500', 'text-black'); state.duration = min; checkLaunch(); }
-        function checkLaunch() { const btn = document.getElementById('btn-launch'); if(state.vector && state.duration) { btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed'); btn.classList.add('hover:bg-red-600', 'hover:text-black', 'shadow-[0_0_20px_#f00]'); btn.style.cursor = "pointer"; if(state.vector.color === 'red' || state.vector.color === 'purple') { btn.classList.add('animate-pulse'); } else { btn.classList.remove('animate-pulse'); } } }
-        function startSimulation() { document.getElementById('sec-config').classList.add('hidden'); document.getElementById('sec-sim').classList.remove('hidden'); document.getElementById('sim-target-display').innerText = state.ip; const vecDisplay = document.getElementById('sim-vector-display'); vecDisplay.innerText = state.vector.name; const colors = { green: '#0f0', yellow: '#ff0', orange: '#ffa500', red: '#f00', purple: '#a855f7' }; vecDisplay.style.borderColor = colors[state.vector.color]; vecDisplay.style.color = colors[state.vector.color]; state.totalBytes = 0; runTimer(state.duration * 60); runAttackLoops(); }
-        function runTimer(seconds) { let t = seconds; const el = document.getElementById('timer-display'); state.timers.push(setInterval(() => { const h = Math.floor(t/3600).toString().padStart(2,'0'); const m = Math.floor((t%3600)/60).toString().padStart(2,'0'); const s = (t%60).toString().padStart(2,'0'); el.innerText = `${h}:${m}:${s}`; t--; if(t<0) abortSequence(); }, 1000)); }
-        function runAttackLoops() { const logBox = document.getElementById('packet-log'); const byteEl = document.getElementById('bytes-val'); const unitEl = document.getElementById('unit-val'); const speed = state.vector.name.includes("HTTP") ? 60 : 40; state.timers.push(setInterval(() => { const packetData = window.generatePacketLog ? window.generatePacketLog() : {html: "Initializing...", size: 0}; logBox.insertAdjacentHTML('beforeend', packetData.html); if(logBox.children.length > 25) { logBox.removeChild(logBox.firstChild); } logBox.scrollTop = logBox.scrollHeight; state.totalBytes += packetData.size; const PB = 1024 * 1024 * 1024 * 1024 * 1024; let displayVal = 0; let displayUnit = 'MB'; if (state.totalBytes > PB) { byteEl.innerText = "☠️"; byteEl.setAttribute('data-text', "∞"); unitEl.innerText = "INCALCULABLE"; unitEl.classList.add("text-red-500", "animate-pulse"); } else { unitEl.classList.remove("animate-pulse"); if (state.totalBytes < 1024 * 1024 * 1024) { displayVal = (state.totalBytes / (1024 * 1024)).toFixed(2); displayUnit = 'MB'; } else if (state.totalBytes < 1024 * 1024 * 1024 * 1024) { displayVal = (state.totalBytes / (1024 * 1024 * 1024)).toFixed(2); displayUnit = 'GB'; } else { displayVal = (state.totalBytes / (1024 * 1024 * 1024 * 1024)).toFixed(2); displayUnit = 'TB'; } byteEl.innerText = displayVal; byteEl.setAttribute('data-text', displayVal); unitEl.innerText = displayUnit; } }, speed)); }
+        function resetTarget() {
+            const input = document.getElementById('ip-input');
+            const btn = document.getElementById('btn-track');
+            const output = document.getElementById('api-output');
+            const consoleDiv = document.getElementById('api-console');
+            const nextBtn = document.getElementById('btn-next-config');
+            const resetBtn = document.getElementById('btn-reset-target');
 
-        // --- ANIMACIÓN REALISTA DE ABORTAR (SYSTEMD HALT) ---
+            input.value = '';
+            input.focus();
+            state.ip = '';
+            btn.innerHTML = `<span>⌖</span> LOCALIZAR`;
+            btn.classList.remove('bg-green-600', 'text-black', 'bg-red-900', 'bg-yellow-600');
+            consoleDiv.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            resetBtn.classList.add('hidden');
+            output.innerHTML = '';
+        }
+
+        function showConfig() {
+            document.getElementById('sec-target').classList.add('hidden');
+            document.getElementById('sec-config').classList.remove('hidden');
+            document.getElementById('config-target-ip').innerText = state.ip;
+        }
+
+        function selectVector(name, color) {
+            document.querySelectorAll('.vector-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            state.vector = { name, color };
+            checkLaunch();
+        }
+
+        function setDuration(min) {
+            document.querySelectorAll('.dur-btn').forEach(b => {
+                b.classList.remove('bg-green-500', 'text-black');
+            });
+            event.target.classList.add('bg-green-500', 'text-black');
+            state.duration = min;
+            checkLaunch();
+        }
+
+        function checkLaunch() {
+            const btn = document.getElementById('btn-launch');
+            if(state.vector && state.duration) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.classList.add('hover:bg-red-600', 'hover:text-black', 'shadow-[0_0_20px_#f00]');
+                btn.style.cursor = "pointer";
+                if(state.vector.color === 'red' || state.vector.color === 'purple') {
+                    btn.classList.add('animate-pulse');
+                } else {
+                    btn.classList.remove('animate-pulse');
+                }
+            }
+        }
+
+        function startSimulation() {
+            document.getElementById('sec-config').classList.add('hidden');
+            document.getElementById('sec-sim').classList.remove('hidden');
+            document.getElementById('sim-target-display').innerText = state.ip;
+            const vecDisplay = document.getElementById('sim-vector-display');
+            vecDisplay.innerText = state.vector.name;
+            const colors = { green: '#0f0', yellow: '#ff0', orange: '#ffa500', red: '#f00', purple: '#a855f7' };
+            vecDisplay.style.borderColor = colors[state.vector.color];
+            vecDisplay.style.color = colors[state.vector.color];
+            
+            // Reiniciar Bytes
+            state.totalBytes = 0;
+            
+            runTimer(state.duration * 60);
+            runAttackLoops();
+        }
+
+        function runTimer(seconds) {
+            let t = seconds;
+            const el = document.getElementById('timer-display');
+            state.timers.push(setInterval(() => {
+                const h = Math.floor(t/3600).toString().padStart(2,'0');
+                const m = Math.floor((t%3600)/60).toString().padStart(2,'0');
+                const s = (t%60).toString().padStart(2,'0');
+                el.innerText = `${h}:${m}:${s}`;
+                t--;
+                if(t<0) abortSequence();
+            }, 1000));
+        }
+
+        function runAttackLoops() {
+            const logBox = document.getElementById('packet-log');
+            const byteEl = document.getElementById('bytes-val');
+            const unitEl = document.getElementById('unit-val');
+            
+            // Velocidad variable según el ataque
+            const speed = state.vector.name.includes("HTTP") ? 60 : 40; 
+            
+            state.timers.push(setInterval(() => {
+                const packetData = window.generatePacketLog ? window.generatePacketLog() : {html: "Initializing...", size: 0};
+                
+                // Insertar HTML directamente (contiene el div con la animación)
+                // Usamos insertAdjacentHTML para mejor performance
+                logBox.insertAdjacentHTML('beforeend', packetData.html);
+                
+                // Scroll al fondo
+                if(logBox.children.length > 25) {
+                    logBox.removeChild(logBox.firstChild);
+                }
+                logBox.scrollTop = logBox.scrollHeight;
+                
+                // --- CÁLCULO DE ANCHO DE BANDA ---
+                state.totalBytes += packetData.size;
+
+                const PB = 1024 * 1024 * 1024 * 1024 * 1024;
+
+                let displayVal = 0;
+                let displayUnit = 'MB';
+
+                if (state.totalBytes > PB) {
+                    byteEl.innerText = "☠️"; 
+                    byteEl.setAttribute('data-text', "∞");
+                    unitEl.innerText = "INCALCULABLE";
+                    unitEl.classList.add("text-red-500", "animate-pulse");
+                } else {
+                    unitEl.classList.remove("animate-pulse");
+                    if (state.totalBytes < 1024 * 1024 * 1024) {
+                        displayVal = (state.totalBytes / (1024 * 1024)).toFixed(2);
+                        displayUnit = 'MB';
+                    } else if (state.totalBytes < 1024 * 1024 * 1024 * 1024) {
+                        displayVal = (state.totalBytes / (1024 * 1024 * 1024)).toFixed(2);
+                        displayUnit = 'GB';
+                    } else {
+                        displayVal = (state.totalBytes / (1024 * 1024 * 1024 * 1024)).toFixed(2);
+                        displayUnit = 'TB';
+                    }
+                    byteEl.innerText = displayVal;
+                    byteEl.setAttribute('data-text', displayVal);
+                    unitEl.innerText = displayUnit;
+                }
+
+            }, speed));
+        }
+
         function abortSequence() {
             state.timers.forEach(clearInterval);
             const screen = document.getElementById('abort-screen');
             const term = document.getElementById('abort-terminal');
             screen.classList.remove('hidden');
-            screen.classList.add('flex'); 
-            
-            const shutdownMsgs = ["[  OK  ] Stopped User Manager for UID 1000.","[  OK  ] Stopped Session 1 of user root.","[  OK  ] Stopped Network Manager.","[  OK  ] Unmounting /home/leviatham/attack_logs...","[  OK  ] Stopped Target Tracking Deamon.","[  OK  ] Stopped Packet Injection Service.","[ INFO ] Caught Signal SIGINT. Stopping all threads.","[ FAIL ] Killing process 1337 (DDoS)... Force SIGKILL sent.","[  OK  ] Process 1337 killed.","[  OK  ] Deactivating Swap /dev/sda2.","[  OK  ] Unmounting /boot/efi...","[  OK  ] Reached target Unmount All Filesystems.","[  OK  ] Stopped System Logging Service.","[  OK  ] Reached target Shutdown.","[ INFO ] System Halted. Powering off."];
+            const commands = ["WARNING: MANUAL KILL SWITCH ENGAGED", "SIGINT sent to all child processes...", "Stopping packet injection... [OK]", "Flushing RAM buffers... [OK]", "Shredding local logs... [OK]", "Dropping VPN tunnel... [OK]", "SYSTEM HALTED."];
             let i = 0;
             const interval = setInterval(() => {
-                if(i < shutdownMsgs.length) {
+                if(i < commands.length) {
                     const line = document.createElement('div');
-                    line.innerText = shutdownMsgs[i];
-                    if(line.innerText.includes("[  OK  ]")) line.innerHTML = line.innerText.replace("[  OK  ]", "<span class='text-green-500 font-bold'>[  OK  ]</span>");
-                    else if (line.innerText.includes("[ FAIL ]")) line.innerHTML = line.innerText.replace("[ FAIL ]", "<span class='text-red-500 font-bold'>[ FAIL ]</span>");
-                    else line.className = "text-white font-bold";
-                    term.appendChild(line); window.scrollTo(0, document.body.scrollHeight); i++;
+                    line.innerText = "> " + commands[i];
+                    if(i === 0) line.className = "text-xl md:text-2xl font-bold blink-red mb-4";
+                    else if (i === commands.length -1) line.className = "text-white mt-4 font-bold";
+                    term.appendChild(line);
+                    i++;
                 } else {
                     clearInterval(interval);
-                    setTimeout(() => { document.body.classList.add('shutdown-effect'); setTimeout(resetSystem, 1000); }, 500);
+                    setTimeout(resetSystem, 2000);
                 }
-            }, 80);
+            }, 600);
         }
+
         function resetSystem() { location.reload(); }
     </script>
 </body>
