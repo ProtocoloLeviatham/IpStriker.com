@@ -6,7 +6,7 @@
     <title>LEVIATHAN | ADVANCED WARFARE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -14,6 +14,13 @@
             --danger: #ff0000;
             --dark: #050505;
             --glass: rgba(0, 20, 0, 0.95);
+            /* Colores Terminal Linux Realista */
+            --term-gray: #6b7280;
+            --term-white: #e5e7eb;
+            --term-red: #ef4444;
+            --term-green: #22c55e;
+            --term-yellow: #eab308;
+            --term-blue: #3b82f6;
         }
 
         body {
@@ -40,43 +47,23 @@
             pointer-events: none;
         }
         
-        .glitch-text {
-            position: relative;
-        }
+        .glitch-text { position: relative; }
         .glitch-text::before, .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--dark);
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark);
         }
         .glitch-text::before {
-            left: 2px;
-            text-shadow: -1px 0 red;
-            animation: glitch-anim-1 2s infinite linear alternate-reverse;
-            clip-path: inset(0 0 0 0);
+            left: 2px; text-shadow: -1px 0 red; animation: glitch-anim-1 2s infinite linear alternate-reverse; clip-path: inset(0 0 0 0);
         }
         .glitch-text::after {
-            left: -2px;
-            text-shadow: -1px 0 blue;
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-            clip-path: inset(0 0 0 0);
+            left: -2px; text-shadow: -1px 0 blue; animation: glitch-anim-2 3s infinite linear alternate-reverse; clip-path: inset(0 0 0 0);
         }
-
         @keyframes glitch-anim-1 {
-            0% { clip-path: inset(20% 0 80% 0); }
-            20% { clip-path: inset(60% 0 10% 0); }
-            40% { clip-path: inset(40% 0 50% 0); }
-            60% { clip-path: inset(80% 0 5% 0); }
-            80% { clip-path: inset(10% 0 70% 0); }
-            100% { clip-path: inset(30% 0 20% 0); }
+            0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); } 40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); } 80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 20% 0); }
         }
         @keyframes glitch-anim-2 {
-            0% { clip-path: inset(10% 0 60% 0); }
-            20% { clip-path: inset(30% 0 20% 0); }
-            40% { clip-path: inset(90% 0 10% 0); }
-            60% { clip-path: inset(15% 0 80% 0); }
-            80% { clip-path: inset(55% 0 10% 0); }
-            100% { clip-path: inset(40% 0 30% 0); }
+            0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(30% 0 20% 0); } 40% { clip-path: inset(90% 0 10% 0); }
+            60% { clip-path: inset(15% 0 80% 0); } 80% { clip-path: inset(55% 0 10% 0); } 100% { clip-path: inset(40% 0 30% 0); }
         }
 
         /* --- UI COMPONENTES --- */
@@ -131,16 +118,17 @@
             border-width: 2px;
         }
 
-        /* Scrollbars */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #001100; }
-        ::-webkit-scrollbar-thumb { background: #0f0; }
+        /* Scrollbars (Estilo Minimalista) */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
 
         /* API Data Grid */
         .api-row {
             display: grid;
             grid-template-columns: 140px 1fr;
-            border-bottom: 1px solid #003300;
+            border-bottom: 1px solid #1a1a1a;
             padding: 4px 0;
             font-size: 0.70rem;
         }
@@ -174,56 +162,75 @@
         input, button { cursor: text; }
         button { cursor: pointer; }
         
-        /* --- ESTILO DE TERMINAL LINUX v3 --- */
+        /* --- ESTILO DE TERMINAL LINUX V.PROFESSIONAL --- */
         .terminal-line {
-            font-family: 'Fira Code', 'Courier New', monospace;
+            font-family: 'Roboto Mono', 'Courier New', monospace;
             white-space: pre-wrap;
             word-break: break-all;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             padding-left: 4px;
             border-left: 2px solid transparent;
             line-height: 1.4;
             font-size: 11px;
-            animation: termSlide 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            color: #d1d5db; /* Gris claro profesional */
+            animation: termFade 0.2s ease-out forwards;
             opacity: 0;
-            transform: translateY(10px);
         }
         .terminal-line:hover {
-            border-left-color: var(--primary);
-            background: rgba(0, 255, 0, 0.05);
+            background: rgba(255, 255, 255, 0.05);
         }
-        @keyframes termSlide {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
+        @keyframes termFade {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Sintaxis de colores para logs */
-        .ts-time { color: #666; font-weight: bold; font-size: 0.9em; }
-        .ts-proc { color: #888; font-style: italic; }
+        /* SINTAXIS DE LOGS (REALISMO) */
+        .ts-time { color: var(--term-gray); margin-right: 8px; font-size: 0.9em; user-select: none; }
+        .ts-proc { color: var(--term-white); font-weight: bold; } /* Procesos en blanco */
         
-        /* NUEVO: TAG DE OBJETIVO LLAMATIVO */
+        /* TARGET TAG MEJORADO (Estilo Etiqueta Militar/Tactico) */
         .target-tag {
-            background-color: rgba(255, 0, 0, 0.15);
-            border: 1px solid #ff0000;
+            background-color: rgba(139, 0, 0, 0.4);
+            border: 1px solid #ef4444;
             color: #fff;
             padding: 0 4px;
             font-weight: bold;
-            border-radius: 2px;
-            box-shadow: 0 0 5px rgba(255,0,0,0.3);
-            text-shadow: 0 0 2px red;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 0.5px;
         }
 
-        .ts-ip { color: #00ffff; } 
-        .ts-port { color: #ffa500; }
-        .ts-proto { color: #d8b4fe; font-weight: bold; }
+        .ts-ip { color: #9ca3af; } /* IPs normales en gris */
+        .ts-port { color: #d4d4d4; }
         
-        .ts-info { color: #3b82f6; } 
-        .ts-warn { color: #facc15; font-weight: bold;} 
-        .ts-err { color: #ef4444; font-weight: bold; background: rgba(255,0,0,0.1); padding: 0 2px;} 
-        .ts-suc { color: #22c55e; } 
-        
-        .ts-dim { color: #555; }
-        .ts-data { color: #a8a29e; }
+        .ts-info { color: var(--term-blue); } 
+        .ts-warn { color: var(--term-yellow); } 
+        .ts-err { color: var(--term-red); font-weight: bold; } 
+        .ts-suc { color: var(--term-green); } 
+        .ts-dim { color: #4b5563; } /* Comentarios oscuros */
+        .ts-data { color: #a3a3a3; font-style: italic; }
+
+        /* KILL SWITCH BUTTON MEJORADO */
+        .kill-switch-btn {
+            background: 
+                repeating-linear-gradient(
+                  45deg,
+                  rgba(255, 0, 0, 0.1),
+                  rgba(255, 0, 0, 0.1) 10px,
+                  rgba(0, 0, 0, 0.2) 10px,
+                  rgba(0, 0, 0, 0.2) 20px
+                ),
+                rgba(0,0,0,0.8);
+            border: 2px solid #ef4444;
+            color: #ef4444;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+        }
+        .kill-switch-btn:hover {
+            background: #ef4444;
+            color: #000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+            text-shadow: none;
+        }
 
         /* Ticker Animation */
         .ticker-wrap {
@@ -242,15 +249,15 @@
             100% { transform: translate3d(-100%, 0, 0); }
         }
 
-        /* ANIMACIÓN REALISTA DE APAGADO (TV OFF) */
+        /* ANIMACIÓN DE APAGADO REALISTA */
         @keyframes crtOff {
             0% { transform: scale(1, 1); opacity: 1; filter: brightness(1); }
             40% { transform: scale(1, 0.002); opacity: 1; filter: brightness(3); }
-            50% { transform: scale(1, 0.002); opacity: 1; filter: brightness(5); }
             100% { transform: scale(0, 0); opacity: 0; filter: brightness(0); }
         }
         .shutdown-effect {
-            animation: crtOff 0.4s ease-out forwards;
+            animation: crtOff 0.5s ease-in-out forwards;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -394,7 +401,7 @@
 
                     <div class="flex flex-col md:flex-row justify-end gap-4">
                         <button onclick="resetSystem()" class="order-2 md:order-1 px-6 py-3 border border-gray-600 text-gray-500 hover:text-white cursor-pointer w-full md:w-auto">CANCELAR</button>
-                        <button id="btn-launch" onclick="startSimulation()" disabled class="order-1 md:order-2 w-full md:w-auto px-10 py-4 border-2 border-red-800 bg-black text-red-700 font-bold text-xl uppercase tracking-widest opacity-50 cursor-not-allowed transition-all clip-path-polygon z-100">LANZAR ATAQUE</button>
+                        <button id="btn-launch" onclick="startSimulation()" disabled class="order-1 md:order-2 w-full md:w-auto px-10 py-4 font-bold text-xl uppercase tracking-widest cursor-not-allowed kill-switch-btn z-100 opacity-50">LANZAR ATAQUE</button>
                     </div>
                 </div>
             </section>
@@ -440,11 +447,13 @@
                 </div>
 
                 <div class="fixed bottom-0 left-0 w-full p-2 md:p-4 bg-black border-t-2 border-red-600 z-50 flex justify-center">
-                    <button onclick="abortSequence()" class="w-full md:w-auto bg-transparent text-red-600 border-2 border-red-600 px-4 md:px-12 py-2 md:py-3 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-black transition-all shadow-[0_0_30px_rgba(255,0,0,0.4)] uppercase tracking-widest cursor-pointer">⚠️ ABORTAR (KILL SWITCH) ⚠️</button>
+                    <button onclick="abortSequence()" class="w-full md:w-auto kill-switch-btn px-4 md:px-12 py-2 md:py-3 font-bold text-lg md:text-xl uppercase tracking-widest cursor-pointer relative overflow-hidden">
+                        ⚠️ ABORTAR (KILL SWITCH) ⚠️
+                    </button>
                 </div>
 
-                <div id="abort-screen" class="hidden absolute inset-0 bg-black z-[210] p-4 font-mono text-xs md:text-sm text-gray-400 flex flex-col justify-start overflow-hidden">
-                    <div id="abort-terminal" class="space-y-1 mt-10"></div>
+                <div id="abort-screen" class="hidden absolute inset-0 bg-black z-[210] p-4 font-mono text-xs md:text-sm text-gray-400 flex flex-col justify-end pb-10 overflow-hidden">
+                    <div id="abort-terminal" class="space-y-1"></div>
                 </div>
             </section>
         </main>
@@ -708,126 +717,81 @@
                     }
                 }
 
-                // DEFINICIÓN DE GENERADOR DE LOGS "REALISTA"
                 window.generatePacketLog = function() {
                     const now = new Date();
                     const timeStr = now.toLocaleTimeString('es-AR', { hour12: false }) + "." + now.getMilliseconds().toString().padStart(3, '0');
-                    const ts = `<span class="ts-time">[${timeStr}]</span>`;
+                    const ts = `<span class="ts-time">${timeStr}</span>`;
                     
                     const sport = Math.floor(Math.random() * 65535);
                     const pid = Math.floor(Math.random() * 32000);
                     const spoof = `${Math.floor(Math.random()*223)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
-                    
-                    // TARGET TAG LLAMATIVO
                     const targetTag = `<span class="target-tag">${state.ip}</span>`;
 
                     let log = "";
                     let size = 64;
 
-                    // --- GENERADOR MEJORADO Y VARIADO v6.9 ---
-                    
                     if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
-                        const methods = ["GET", "POST", "HEAD", "PUT", "OPTIONS", "DELETE"];
-                        const agents = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "curl/7.68.0", "Go-http-client/1.1", "Python/3.9", "Apache-HttpClient/4.5.13", "Mediapartners-Google"];
-                        const paths = ["/login", "/", "/api/v1/auth", "/admin", "/wp-login.php", "/search", "/assets/main.css", "/images/logo.png", "/robots.txt", "/.env"];
-                        const method = methods[Math.floor(Math.random()*methods.length)];
-                        
+                        const methods = ["GET", "POST", "HEAD", "PUT", "OPTIONS"];
                         const scenarios = [
-                            `${ts} <span class="ts-proc">nginx[${pid}]:</span> ${spoof} - - [${new Date().toUTCString()}] "${method} ${paths[Math.floor(Math.random()*paths.length)]} HTTP/1.1" 200 ${Math.floor(Math.random()*5000)} "-" "${agents[0]}" to ${targetTag}`,
-                            `${ts} <span class="ts-warn">[WAF]</span> ModSecurity: Access denied with code 403 (phase 2). Pattern match "SQLi" at ARGS:id. Target: ${targetTag}`,
-                            `${ts} <span class="ts-info">OUTBOUND</span> >> ${methods[1]} ${targetTag}${paths[1]} | Payload: <span class="ts-data">${Math.random().toString(36).substring(7)}</span> | Keep-Alive`,
-                            `${ts} <span class="ts-err">CONNECTION TIMEOUT</span> ${targetTag}:443 (Upstream Server Unreachable)`,
-                            `${ts} <span class="ts-suc">SSL Handshake</span> with ${targetTag} success. Protocol: TLSv1.3 Cipher: TLS_AES_256_GCM_SHA384`,
-                            `${ts} <span class="ts-proc">httpd[${pid}]:</span> [core:error] [pid ${pid}] (70007)The timeout specified has expired: [client ${spoof}] AH00524: Handler for fastcgi-script returned invalid result`,
-                            `${ts} <span class="ts-info">Slowloris:</span> Holding socket open to ${targetTag}... (Thread-${pid}) - 24s elapsed`,
-                            `${ts} <span class="ts-warn">[DOS]</span> High request rate detected from ${spoof} targeting ${targetTag}. Throttling via iptables.`,
-                            `${ts} <span class="ts-info">GET</span> ${targetTag}/static/image.jpg HTTP/2 | 200 OK | 45ms | Cache: MISS`,
-                            `${ts} <span class="ts-err">502 Bad Gateway</span> received from ${targetTag}. Reverse proxy error.`,
-                            `${ts} <span class="ts-dim">DEBUG:</span> Header injection: X-Forwarded-For: ${spoof} -> ${targetTag}`,
-                            `${ts} <span class="ts-proc">botnet:</span> Executing challenge-response bypass on ${targetTag}. Cookie acquired.`,
-                            `${ts} <span class="ts-info">POST</span> ${targetTag}/xmlrpc.php | 200 OK | Body: 450 bytes`,
-                            `${ts} <span class="ts-err">CRITICAL:</span> Target ${targetTag} dropped 450 packets in last 1s`
+                            `${ts} <span class="ts-proc">nginx[${pid}]:</span> [${spoof}] - "${methods[Math.floor(Math.random()*5)]} / HTTP/1.1" 200 to ${targetTag}`,
+                            `${ts} <span class="ts-warn">[WAF]</span> Blocked SQL Injection from ${spoof} targeting ${targetTag}`,
+                            `${ts} <span class="ts-info">OUTBOUND</span> >> POST ${targetTag}/api/v1/login | Size: 14KB`,
+                            `${ts} <span class="ts-err">TIMEOUT</span> ${targetTag}:443 (Upstream Unreachable)`,
+                            `${ts} <span class="ts-suc">SSL/TLS</span> Handshake with ${targetTag} successful.`,
+                            `${ts} <span class="ts-dim">DEBUG:</span> X-Forwarded-For injection: ${spoof} -> ${targetTag}`,
+                            `${ts} <span class="ts-proc">botnet:</span> Executing challenge-response bypass on ${targetTag}`,
+                            `${ts} <span class="ts-info">Worker:</span> Thread ${pid} sending 500 req/s to ${targetTag}`,
+                            `${ts} <span class="ts-err">502 Bad Gateway</span> response from ${targetTag}`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = Math.floor(Math.random() * 2000) + 200;
 
                     } else if (state.vector && state.vector.name === 'TCP SYN') {
-                        const port = `<span class="ts-port">80</span>`;
-                        
                         const scenarios = [
-                            `${ts} <span class="ts-proc">KERNEL:</span> TCP: ${spoof}:${sport} > ${targetTag}:${port} Flags <span class="ts-warn">[S]</span>, seq ${Math.floor(Math.random()*999999)}, win 65535, len 0`,
-                            `${ts} <span class="ts-info">netfilter:</span> DROP IN=eth0 OUT= MAC=ff:ff:ff:ff:ff:ff SRC=${spoof} DST=${targetTag} PROTO=TCP SPT=${sport} DPT=80 SYN`,
-                            `${ts} <span class="ts-err">TCP:</span> Possible SYN flooding on port 80. Sending cookies to ${targetTag}.`,
-                            `${ts} <span class="ts-info">tcpreplay:</span> Sending packet ${pid} to ${targetTag} via interface eth0`,
-                            `${ts} <span class="ts-proc">firewall:</span> [BLOCK] Suspicious SYN packet from ${spoof} to ${targetTag}. State: INVALID`,
-                            `${ts} <span class="ts-info">TCP:</span> ${targetTag}:${port} > ${spoof}:${sport} Flags [R.], seq 0, win 0, length 0`,
-                            `${ts} <span class="ts-warn">sock:</span> TCP connection reset by peer ${targetTag}`,
-                            `${ts} <span class="ts-data">Raw:</span> 4500 003c 1a2b 4000 4006 .... (SYN Payload) -> ${targetTag}`,
-                            `${ts} <span class="ts-info">Handshake:</span> SYN SENT to ${targetTag} -> Waiting ACK... (Timeout 3000ms)`,
-                            `${ts} <span class="ts-suc">ZOMBIE:</span> Bot ${spoof} joined the swarm. Target: ${targetTag}`,
-                            `${ts} <span class="ts-dim">nf_conntrack:</span> table full, dropping packet to ${targetTag}.`,
-                            `${ts} <span class="ts-info">TCP Window:</span> Zero window probe sent to ${targetTag}`,
-                            `${ts} <span class="ts-warn">FIN_WAIT2:</span> Connection closing with ${targetTag}.`,
-                            `${ts} <span class="ts-err">RST:</span> ${targetTag} rejected connection on port 443.`
+                            `${ts} <span class="ts-proc">KERNEL:</span> TCP ${spoof}:${sport} > ${targetTag}:80 [S] Seq=${Math.floor(Math.random()*9999)} Win=65535`,
+                            `${ts} <span class="ts-info">netfilter:</span> IN=eth0 OUT= SRC=${spoof} DST=${targetTag} PROTO=TCP SYN`,
+                            `${ts} <span class="ts-err">TCP:</span> SYN flooding detected. Sending cookies to ${targetTag}.`,
+                            `${ts} <span class="ts-info">tcpreplay:</span> Injecting packet ${pid} -> ${targetTag}`,
+                            `${ts} <span class="ts-warn">sock:</span> Connection reset by peer ${targetTag}`,
+                            `${ts} <span class="ts-dim">nf_conntrack:</span> table full, dropping packet to ${targetTag}`,
+                            `${ts} <span class="ts-suc">ZOMBIE:</span> Bot ${spoof} connected to ${targetTag}`,
+                            `${ts} <span class="ts-info">Handshake:</span> SYN SENT -> ${targetTag} (No ACK)`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 60;
 
                     } else if (state.vector && state.vector.name === 'DNS AMP') {
-                        const resolvers = ["8.8.8.8", "1.1.1.1", "9.9.9.9", "208.67.222.222", "4.2.2.2"];
-                        const res = `<span class="ts-ip">${resolvers[Math.floor(Math.random()*resolvers.length)]}</span>`;
-                        
+                        const res = "8.8.8.8";
                         const scenarios = [
-                            `${ts} <span class="ts-info">IP</span> ${targetTag} (SPOOFED) > ${res}: ${pid}+ <span class="ts-proto">ANY?</span> isc.org. (41)`,
-                            `${ts} <span class="ts-suc">REFLECT:</span> Received ${Math.floor(Math.random()*4000)} bytes from ${res} -> ${targetTag} (Amplification 64x)`,
-                            `${ts} <span class="ts-warn">named[${pid}]:</span> client ${targetTag}#${sport}: query (cache) './NS/IN' denied`,
-                            `${ts} <span class="ts-info">DNS:</span> Standard query response 0x${Math.floor(Math.random()*9999).toString(16)} TXT (Amplified) -> ${targetTag}`,
-                            `${ts} <span class="ts-err">udp sum bad:</span> ${targetTag} > ${res} domain [b2&3=0x1]`,
-                            `${ts} <span class="ts-info">DrDoS:</span> Amplification factor x74. Target ${targetTag} link saturated.`,
-                            `${ts} <span class="ts-proc">resolver:</span> Querying ${res} for "gov" IN ANY (EDNS0 set) spoofing ${targetTag}`,
-                            `${ts} <span class="ts-warn">[ALERT]</span> Large DNS response packet detected (3400 bytes) destined for ${targetTag}. Fragmentation required.`,
-                            `${ts} <span class="ts-info">IP</span> ${res} > ${targetTag}: ${pid}* 4/0/1 . NS a.root-servers.net`,
-                            `${ts} <span class="ts-suc">Traffic:</span> Injected 400pps via open resolver ${res} to ${targetTag}`,
-                            `${ts} <span class="ts-dim">dnscap:</span> [${res}] -> [${targetTag}] DNSKEY response detected`,
-                            `${ts} <span class="ts-err">SERVFAIL:</span> ${targetTag} unable to handle query volume.`
+                            `${ts} <span class="ts-info">IP</span> ${targetTag} (SPOOFED) > ${res}: ${pid}+ ANY? isc.org.`,
+                            `${ts} <span class="ts-suc">REFLECT:</span> ${Math.floor(Math.random()*4000)} bytes from ${res} -> ${targetTag}`,
+                            `${ts} <span class="ts-warn">named[${pid}]:</span> query (cache) denied from ${targetTag}`,
+                            `${ts} <span class="ts-err">udp sum bad:</span> ${targetTag} > ${res} domain`,
+                            `${ts} <span class="ts-info">DrDoS:</span> Amplification x74 -> ${targetTag}`,
+                            `${ts} <span class="ts-warn">[ALERT]</span> Large DNS response (3400b) -> ${targetTag}`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 1200;
 
                     } else if (state.vector && state.vector.name === 'ICMP ECHO') {
-                        
                         const scenarios = [
-                            `${ts} <span class="ts-info">IP</span> ${spoof} > ${targetTag}: ICMP echo request, id ${pid}, seq ${Math.floor(Math.random()*1000)}, length 64`,
-                            `${ts} <span class="ts-warn">frag needed</span> and DF set (mtu 1500) ICMP ${targetTag} > ${spoof}: destination unreachable`,
-                            `${ts} <span class="ts-info">PING</span> ${targetTag} (${state.ip}) 56(84) bytes of data.`,
-                            `${ts} <span class="ts-err">Request timeout</span> for icmp_seq ${Math.floor(Math.random()*100)} from ${targetTag}`,
-                            `${ts} <span class="ts-info">IP</span> ${targetTag} > ${spoof}: ICMP echo reply, id ${pid}, seq ${Math.floor(Math.random()*1000)}`,
-                            `${ts} <span class="ts-proc">kernel:</span> ICMP: redirect from ${targetTag} on eth0`,
-                            `${ts} <span class="ts-warn">Flood:</span> Sending 10000 pings/sec to ${targetTag}. Socket buffer full.`,
-                            `${ts} <span class="ts-info">Traceroute:</span> ${targetTag}: hops=30, time=45ms`,
-                            `${ts} <span class="ts-err">ICMP:</span> Destination Host Unreachable from ${targetTag}`,
-                            `${ts} <span class="ts-data">Packet:</span> Type=8 Code=0 Checksum=0x${Math.floor(Math.random()*9999).toString(16)} -> ${targetTag}`,
-                            `${ts} <span class="ts-suc">POD:</span> Ping of Death fragment sent to ${targetTag}`,
-                            `${ts} <span class="ts-dim">ICMP:</span> Timestamp request sent to ${targetTag}`
+                            `${ts} <span class="ts-info">IP</span> ${spoof} > ${targetTag}: ICMP echo request, id ${pid}`,
+                            `${ts} <span class="ts-warn">frag needed</span> and DF set. ${targetTag} > ${spoof}`,
+                            `${ts} <span class="ts-info">PING</span> ${targetTag} 56(84) bytes of data.`,
+                            `${ts} <span class="ts-err">Request timeout</span> for icmp_seq ${Math.floor(Math.random()*100)}`,
+                            `${ts} <span class="ts-suc">POD:</span> Ping of Death sent to ${targetTag}`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 84;
 
                     } else { // UDP
-                        
                         const scenarios = [
-                            `${ts} <span class="ts-dim">0x0000:</span> 4500 05dc ${Math.floor(Math.random()*9999)} 0000 4011 .... ${state.ip.split('.').map(n=>parseInt(n).toString(16).padStart(2,'0')).join('')}`,
-                            `${ts} <span class="ts-info">UDP:</span> Packet injected. Len=${Math.floor(Math.random()*1400)} Src=${spoof} Dst=${targetTag}`,
-                            `${ts} <span class="ts-warn">[DROP]</span> UDP Fragment offset wrong. Dropped by kernel. Target: ${targetTag}`,
-                            `${ts} <span class="ts-info">IP</span> ${spoof}.${sport} > ${targetTag}.${Math.floor(Math.random()*65535)}: UDP, length 1400`,
-                            `${ts} <span class="ts-err">ICMP</span> ${targetTag} udp port ${Math.floor(Math.random()*65535)} unreachable`,
-                            `${ts} <span class="ts-suc">Bandwidth:</span> Saturating uplink... 500Mbps sent to ${targetTag}`,
-                            `${ts} <span class="ts-info">Payload:</span> Junk data sent to ${targetTag} (Randomized)`,
-                            `${ts} <span class="ts-proc">eth0:</span> TX bytes:${Math.floor(Math.random()*999999)} packets:${Math.floor(Math.random()*500)} errors:0 dropped:0`,
-                            `${ts} <span class="ts-warn">Congestion:</span> Network buffer full. Dropping frames at queue tail. Target: ${targetTag}`,
-                            `${ts} <span class="ts-data">Binary:</span> 01010110 11001010 10101010 11110000 [Flooding ${targetTag}]`,
-                            `${ts} <span class="ts-err">Buffer:</span> Send queue overflow on interface targeting ${targetTag}`,
-                            `${ts} <span class="ts-info">UDP:</span> Datagram len=65507 sent to ${targetTag}`
+                            `${ts} <span class="ts-dim">0x0000:</span> 4500 05dc .... ${state.ip} (Hex Dump)`,
+                            `${ts} <span class="ts-info">UDP:</span> Packet injected. Len=${Math.floor(Math.random()*1400)} Dst=${targetTag}`,
+                            `${ts} <span class="ts-warn">[DROP]</span> UDP Fragment offset wrong. Target: ${targetTag}`,
+                            `${ts} <span class="ts-err">ICMP</span> ${targetTag} udp port unreachable`,
+                            `${ts} <span class="ts-suc">Bandwidth:</span> Saturating link to ${targetTag}`,
+                            `${ts} <span class="ts-proc">eth0:</span> TX bytes:${Math.floor(Math.random()*999999)} -> ${targetTag}`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 1000;
@@ -955,27 +919,20 @@
             const byteEl = document.getElementById('bytes-val');
             const unitEl = document.getElementById('unit-val');
             
-            // Velocidad variable según el ataque
             const speed = state.vector.name.includes("HTTP") ? 60 : 40; 
             
             state.timers.push(setInterval(() => {
                 const packetData = window.generatePacketLog ? window.generatePacketLog() : {html: "Initializing...", size: 0};
-                
-                // Insertar HTML directamente (contiene el div con la animación)
-                // Usamos insertAdjacentHTML para mejor performance
                 logBox.insertAdjacentHTML('beforeend', packetData.html);
                 
-                // Scroll al fondo
                 if(logBox.children.length > 25) {
                     logBox.removeChild(logBox.firstChild);
                 }
                 logBox.scrollTop = logBox.scrollHeight;
                 
-                // --- CÁLCULO DE ANCHO DE BANDA ---
                 state.totalBytes += packetData.size;
 
                 const PB = 1024 * 1024 * 1024 * 1024 * 1024;
-
                 let displayVal = 0;
                 let displayUnit = 'MB';
 
@@ -1004,17 +961,15 @@
             }, speed));
         }
 
-        // --- ANIMACIÓN REALISTA DE ABORTAR (SYSTEM HALT) ---
+        // --- ANIMACIÓN REALISTA DE ABORTAR (SYSTEMD HALT) ---
         function abortSequence() {
-            // 1. Detener todos los loops
             state.timers.forEach(clearInterval);
             
             const screen = document.getElementById('abort-screen');
             const term = document.getElementById('abort-terminal');
             screen.classList.remove('hidden');
-            screen.classList.add('flex'); // Asegurar display flex
+            screen.classList.add('flex'); 
             
-            // Mensajes de apagado estilo Linux SystemD / SysVinit
             const shutdownMsgs = [
                 "[  OK  ] Stopped User Manager for UID 1000.",
                 "[  OK  ] Stopped Session 1 of user root.",
@@ -1034,12 +989,10 @@
             ];
 
             let i = 0;
-            // Scroll rápido para simular log de apagado
             const interval = setInterval(() => {
                 if(i < shutdownMsgs.length) {
                     const line = document.createElement('div');
                     line.innerText = shutdownMsgs[i];
-                    // Colorear el [ OK ] y [ FAIL ]
                     if(line.innerText.includes("[  OK  ]")) {
                         line.innerHTML = line.innerText.replace("[  OK  ]", "<span class='text-green-500 font-bold'>[  OK  ]</span>");
                     } else if (line.innerText.includes("[ FAIL ]")) {
@@ -1049,17 +1002,16 @@
                     }
                     
                     term.appendChild(line);
-                    window.scrollTo(0, document.body.scrollHeight); // Auto scroll
+                    window.scrollTo(0, document.body.scrollHeight);
                     i++;
                 } else {
                     clearInterval(interval);
-                    // EFECTO DE APAGADO DE TV (CRT OFF)
                     setTimeout(() => {
                         document.body.classList.add('shutdown-effect');
-                        setTimeout(resetSystem, 1000); // Recargar tras el efecto
+                        setTimeout(resetSystem, 1000); 
                     }, 500);
                 }
-            }, 80); // Velocidad rápida
+            }, 80);
         }
 
         function resetSystem() { location.reload(); }
