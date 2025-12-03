@@ -6,6 +6,7 @@
     <title>LEVIATHAN | ADVANCED WARFARE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -173,15 +174,37 @@
         input, button { cursor: text; }
         button { cursor: pointer; }
         
-        .log-line {
-            font-family: 'Courier New', monospace;
+        /* --- NUEVO ESTILO DE TERMINAL LINUX --- */
+        .terminal-line {
+            font-family: 'Fira Code', 'Courier New', monospace;
             white-space: pre-wrap;
             word-break: break-all;
-            margin-bottom: 2px;
-            border-bottom: 1px solid #111;
-            padding-bottom: 2px;
-            line-height: 1.1;
+            margin-bottom: 3px;
+            padding-left: 6px;
+            border-left: 2px solid transparent;
+            line-height: 1.3;
+            font-size: 11px;
+            animation: termSlide 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(5px);
         }
+        .terminal-line:hover {
+            border-left-color: var(--primary);
+            background: rgba(0, 255, 0, 0.05);
+        }
+        @keyframes termSlide {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Sintaxis de colores para logs */
+        .ts-time { color: #666; font-weight: bold; }
+        .ts-proc { color: #888; }
+        .ts-info { color: #3b82f6; } /* Azul */
+        .ts-warn { color: #eab308; } /* Amarillo */
+        .ts-err { color: #ef4444; font-weight: bold; } /* Rojo */
+        .ts-suc { color: #22c55e; } /* Verde */
+        .ts-dim { color: #444; }
+        .ts-val { color: #d8b4fe; } /* Purpura claro */
 
         /* Ticker Animation */
         .ticker-wrap {
@@ -216,7 +239,7 @@
                     CALCULANDO RED...
                 </span>
                 <span class="animate-pulse text-red-500 font-bold">/// UNAUTHORIZED ACCESS ///</span>
-                <span>V.6.6.9</span>
+                <span>V.6.7.0</span>
             </div>
         </header>
 
@@ -366,7 +389,7 @@
                         <h4 class="text-green-600 border-b border-green-800 mb-2 pb-1 flex justify-between shrink-0">
                             <span>TERMINAL: TRAFICO SALIENTE (RAW)</span><span class="animate-pulse text-red-500">LIVE</span>
                         </h4>
-                        <div id="packet-log" class="flex-grow overflow-hidden flex flex-col justify-end text-[10px] md:text-[11px] leading-tight opacity-90 font-mono text-green-400"></div>
+                        <div id="packet-log" class="flex-grow overflow-hidden flex flex-col justify-end p-1"></div>
                     </div>
 
                     <div class="lg:col-span-4 flex flex-col gap-2 md:gap-4 h-1/3 lg:h-auto">
@@ -399,7 +422,7 @@
         <footer class="w-full border-t border-green-900 bg-black/95 p-2 text-[10px] md:text-xs font-mono relative z-50 overflow-hidden">
             <div class="ticker-wrap border-b border-green-900 mb-2 pb-1 bg-black text-green-700">
                 <div class="ticker">
-                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.6.9 STABLE +++
+                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.7.0 STABLE +++
                 </div>
             </div>
 
@@ -588,7 +611,6 @@
                 // 2. MODO MAC ADDRESS (BASE LOCAL + API)
                 if (type === 'mac') {
                     if (input.includes('.') && !input.includes(':')) {
-                         // CAPA 8 ERROR: USUARIO PUSO URL EN CAMPO MAC
                          finalData["WARNING"] = "DOMAIN DETECTED IN MAC INPUT";
                          finalData["AUTO_CORRECT"] = "VIRTUALIZING NIC...";
                          finalData["MAC_ADDRESS"] = "52:54:00:" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString();
@@ -621,52 +643,33 @@
                         finalData["MAC_ADDR"] = input;
                         finalData["L2_PROTOCOL"] = "ETHERNET II";
                         finalData["FRAME_CHECK"] = "VALID";
-                        finalData["UNICAST"] = "YES";
                     }
                 }
 
                 // 3. MODO IP / WEB (RECOLECCIÓN MASIVA DE DATOS)
                 if (!isMacMode) {
-                    // Mezcla de 3 APIs para obtener máximos datos
                     const p1 = fetch(`https://ipapi.co/${targetIP}/json/`).then(r=>r.json()).catch(e=>({}));
                     const p2 = fetch(`https://ipwho.is/${targetIP}`).then(r=>r.json()).catch(e=>({}));
                     const p3 = fetch(`https://api.databat.io/v1/ip/${targetIP}`).then(r=>r.json()).catch(e=>({}));
 
                     const [d1, d2, d3] = await Promise.all([p1, p2, p3]);
 
-                    // DATOS BÁSICOS
                     finalData["TARGET_IP"] = targetIP;
                     finalData["HOSTNAME"] = d2.connection?.domain || d1.org || "Unknown";
-                    
-                    // GEO
                     finalData["CONTINENT"] = d2.continent || d1.continent_code;
                     finalData["COUNTRY"] = `${d2.country || d1.country_name} ${d2.flag?.emoji || ''}`;
                     finalData["REGION"] = d2.region || d1.region;
                     finalData["CITY"] = d2.city || d1.city;
                     finalData["ZIP_CODE"] = d2.postal || d1.postal;
                     finalData["COORDINATES"] = `${d2.latitude || d1.latitude}, ${d2.longitude || d1.longitude}`;
-                    finalData["CAPITAL"] = d2.capital;
-                    finalData["BORDERS"] = d2.borders;
-                    
-                    // RED
                     finalData["ASN"] = d2.connection?.asn || d1.asn;
                     finalData["ISP"] = d2.connection?.isp || d1.org;
                     finalData["ORG"] = d2.connection?.org || d1.org;
-                    finalData["ROUTE"] = d2.connection?.route || d1.network;
-                    finalData["TYPE"] = d2.type || d1.version;
-                    
-                    // DETALLES
                     finalData["TIMEZONE"] = d2.timezone?.id || d1.timezone;
                     finalData["UTC_OFFSET"] = d2.timezone?.utc || d1.utc_offset;
-                    finalData["CUR_TIME"] = d2.timezone?.current_time;
                     finalData["CURRENCY"] = `${d2.currency?.name} (${d2.currency?.symbol})`;
-                    finalData["CALLING_CODE"] = `+${d2.calling_code || d1.country_calling_code}`;
-                    finalData["TLD"] = d2.tld;
-
-                    // SEGURIDAD / EXTRA (Calculados si la API no los da)
                     finalData["IS_VPN"] = d2.security?.vpn ? "YES" : "NO (Clean)";
                     finalData["IS_PROXY"] = d2.security?.proxy ? "YES" : "NO";
-                    finalData["IS_TOR"] = d2.security?.tor ? "YES" : "NO";
                     finalData["IS_HOSTING"] = d2.security?.hosting ? "YES" : "NO";
                     
                     if (type === 'web') {
@@ -678,93 +681,92 @@
                     }
                 }
 
-                // LOGICA DE GENERACION DE PAQUETE
-                function generatePacketLog() {
-                    const time = new Date().toISOString().split('T')[1].slice(0, -1);
-                    const sport = Math.floor(Math.random() * 65535);
-                    const spoofIP = `${Math.floor(Math.random()*223)+1}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+                // DEFINICIÓN DINÁMICA DE GENERADOR DE LOGS (SCOPE COMPARTIDO)
+                window.generatePacketLog = function() {
+                    // TIMESTAMP KERNEL STYLE
+                    const now = performance.now();
+                    const kTime = (now / 1000).toFixed(6);
+                    const ts = `<span class="ts-time">[ ${kTime.padStart(11, ' ')} ]</span>`;
                     
-                    // Arrays para mayor variedad en los logs
-                    const userAgents = [
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", 
-                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)", 
-                        "curl/7.68.0", 
-                        "python-requests/2.25.1", 
-                        "Go-http-client/1.1"
-                    ];
-                    const httpMethods = ["GET", "POST", "HEAD", "PUT", "OPTIONS"];
-                    const httpPaths = ["/", "/login", "/api/v1/auth", "/admin", "/wp-login.php", "/.env", "/static/css/main.css", "/images/logo.png"];
-                    const dnsTypes = ["A", "AAAA", "MX", "TXT", "NS", "SOA", "ANY"];
-                    const tcpFlags = ["[S]", "[S,.]", "[P,.]", "[R]", "[F,.]"];
-                    const dnsResolvers = ['8.8.8.8', '1.1.1.1', '9.9.9.9', '208.67.222.222'];
+                    const sport = Math.floor(Math.random() * 65535);
+                    const pid = Math.floor(Math.random() * 9999);
+                    const spoof = `${Math.floor(Math.random()*223)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+                    
+                    let log = "";
+                    let size = 64;
 
-                    let packetSize = 0;
-                    let logHtml = '';
-
-                    // SELECCIÓN DE LOG SEGÚN VECTOR
+                    // --- GENERADOR AVANZADO DE LOGS ---
+                    
                     if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
-                        const method = httpMethods[Math.floor(Math.random()*httpMethods.length)];
-                        const path = httpPaths[Math.floor(Math.random()*httpPaths.length)];
-                        const agent = userAgents[Math.floor(Math.random()*userAgents.length)];
-                        packetSize = Math.floor(Math.random() * 1500) + 400; 
-
-                        // 3 Variantes de Log HTTP
-                        const variant = Math.random();
-                        if(variant < 0.33) {
-                            logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-purple-400">HTTP/1.1</span> ${method} ${state.ip}${path}<br><span class="text-gray-600">   UA: ${agent} | Size: ${packetSize}b</span>`;
-                        } else if(variant < 0.66) {
-                             logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-purple-400">REQUEST SENT</span> >> ${state.ip} (Port 80)<br><span class="text-gray-600">   Payload: RandomString(${Math.floor(Math.random()*50)}) | Keep-Alive</span>`;
+                        const methods = ["GET", "POST", "HEAD", "PUT"];
+                        const agents = ["Mozilla/5.0 (Windows NT)", "curl/7.68.0", "Go-http-client/1.1", "Python/3.9", "Apache-HttpClient"];
+                        const paths = ["/login", "/", "/api/v1/status", "/admin/config.php", "/static/js/app.js", "/search?q=test"];
+                        const codes = ["200 OK", "404 Not Found", "503 Service Unavailable", "502 Bad Gateway", "301 Moved"];
+                        
+                        const r = Math.random();
+                        if (r < 0.2) {
+                            log = `${ts} <span class="ts-proc">nginx[${pid}]:</span> <span class="ts-info">${state.ip}</span> - - [${new Date().toUTCString()}] "${methods[0]} ${paths[Math.floor(Math.random()*paths.length)]} HTTP/1.1" 200 ${Math.floor(Math.random()*5000)} "-" "${agents[0]}"`;
+                        } else if (r < 0.4) {
+                            log = `${ts} <span class="ts-warn">[WARN]</span> Flood detected from <span class="ts-err">${spoof}</span>. Rate limiting initiated.`;
+                        } else if (r < 0.6) {
+                            log = `${ts} <span class="ts-info">OUTBOUND >></span> ${methods[Math.floor(Math.random()*methods.length)]} ${state.ip}${paths[Math.floor(Math.random()*paths.length)]} | <span class="ts-val">Thread-${pid}</span>`;
+                        } else if (r < 0.8) {
+                            log = `${ts} <span class="ts-err">CONNECTION REFUSED</span> ${state.ip}:80 (Target overload)`;
                         } else {
-                            logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-red-500">SERVER BUSY</span> (503 Service Unavailable) < ERROR SIMULATED ><br><span class="text-gray-600">   Target is struggling... Threads: ${Math.floor(Math.random()*500)}</span>`;
+                            log = `${ts} <span class="ts-suc">SSL/TLS Handshake</span> with ${state.ip} success. Cipher: AES256-SHA.`;
                         }
-
-                    } else if (state.vector && state.vector.name === 'DNS AMP') {
-                        const resolver = dnsResolvers[Math.floor(Math.random()*dnsResolvers.length)];
-                        const type = dnsTypes[Math.floor(Math.random()*dnsTypes.length)];
-                        const id = Math.floor(Math.random()*65535);
-                        packetSize = 64; // Query small
-
-                        const variant = Math.random();
-                        if(variant < 0.5) {
-                            logHtml = `<span class="text-gray-500">[${time}]</span> IP <span class="text-red-500 font-bold">${state.ip}</span> (SPOOFED) > ${resolver}.53: ${id}+ ${type}? <span class="text-gray-400">amplification_target</span><br><span class="text-gray-600">   Query Size: ${packetSize}b | Exp. Resp: ~3000b</span>`;
-                        } else {
-                            logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-green-500">REFLECTOR HIT</span> ${resolver} accepted query.<br><span class="text-gray-600">   Flooding target with DNS responses...</span>`;
-                        }
+                        size = Math.floor(Math.random() * 2000) + 200;
 
                     } else if (state.vector && state.vector.name === 'TCP SYN') {
-                        const seq = Math.floor(Math.random() * 4294967295);
-                        const win = Math.floor(Math.random() * 65535);
-                        const flag = tcpFlags[Math.floor(Math.random()*tcpFlags.length)];
-                        packetSize = 60;
-                        
-                        logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP}.${sport} > <span class="text-orange-500 font-bold">${state.ip}.80</span>: Flags <span class="text-orange-400">${flag}</span>, seq ${seq}, win ${win}<br><span class="text-gray-600">   TCP Handshake Init (ZOMBIE)</span>`;
-                        
-                    } else if (state.vector && state.vector.name === 'ICMP ECHO') {
-                        const id = Math.floor(Math.random()*65535);
-                        const seq = Math.floor(Math.random()*1000);
-                        packetSize = 1024 + Math.floor(Math.random() * 4000); 
-                        
-                        const variant = Math.random();
-                        if(variant < 0.5) {
-                             logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP} > ${state.ip}: ICMP echo request, id ${id}, seq ${seq}<br><span class="text-yellow-500">   PAYLOAD: ${packetSize} bytes junk data.</span>`;
+                        const flags = ["[S]", "[S,.]", "[R]", "[P,.]", "[F]"];
+                        const r = Math.random();
+                        if (r < 0.3) {
+                            log = `${ts} <span class="ts-proc">KERNEL:</span> TCP: ${spoof}:${sport} > <span class="ts-warn">${state.ip}:80</span> Flags ${flags[Math.floor(Math.random()*flags.length)]}, seq ${Math.floor(Math.random()*99999999)}, win 65535, length 0`;
+                        } else if (r < 0.6) {
+                            log = `${ts} <span class="ts-info">netfilter:</span> IN=eth0 OUT= MAC=ff:ff:ff:ff:ff:ff SRC=${spoof} DST=${state.ip} PROTO=TCP SPT=${sport} DPT=80 WINDOW=512 RES=0x00 SYN URGP=0`;
                         } else {
-                             logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-yellow-500">FRAGMENTATION NEEDED</span> but DF set.<br><span class="text-gray-600">   Forcing packet injection...</span>`;
+                            log = `${ts} <span class="ts-err">TCP: request_sock_TCP:</span> Possible SYN flooding on port 80. Sending cookies.`;
                         }
+                        size = 60;
+
+                    } else if (state.vector && state.vector.name === 'DNS AMP') {
+                        const resolvers = ["8.8.8.8", "1.1.1.1", "208.67.222.222", "9.9.9.9"];
+                        const types = ["ANY", "TXT", "A", "AAAA"];
+                        const res = resolvers[Math.floor(Math.random()*resolvers.length)];
+                        
+                        const r = Math.random();
+                        if (r < 0.4) {
+                            log = `${ts} <span class="ts-info">IP (tos 0x0, ttl 64, id ${pid})</span> <span class="ts-err">${state.ip}</span> > ${res}: ${pid}+ [1au] ${types[Math.floor(Math.random()*types.length)]}? . (41)`;
+                        } else if (r < 0.7) {
+                            log = `${ts} <span class="ts-suc">REFLECT:</span> Received ${Math.floor(Math.random()*4000)} bytes from ${res} directed to <span class="ts-warn">${state.ip}</span>`;
+                        } else {
+                            log = `${ts} <span class="ts-dim">udp sum ok</span>: ${state.ip} > ${res} domain [b2&3=0x1] [9873q]`;
+                        }
+                        size = 1200;
+
+                    } else if (state.vector && state.vector.name === 'ICMP ECHO') {
+                        const r = Math.random();
+                        if (r < 0.5) {
+                            log = `${ts} <span class="ts-info">IP ${spoof} > ${state.ip}:</span> ICMP echo request, id ${pid}, seq ${Math.floor(Math.random()*1000)}, length 64`;
+                        } else if (r < 0.8) {
+                            log = `${ts} <span class="ts-warn">frag needed</span> and DF set (mtu 1500) ICMP ${state.ip} > ${spoof}: destination unreachable`;
+                        } else {
+                            log = `${ts} <span class="ts-info">PING</span> ${state.ip} (${state.ip}) 56(84) bytes of data.`;
+                        }
+                        size = 84;
 
                     } else { // UDP
-                        packetSize = 512 + Math.floor(Math.random()*60000); 
-                        const ttl = 64 + Math.floor(Math.random()*64);
-                        const hex = Math.floor(Math.random()*16777215).toString(16);
-                        
-                        logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-green-500">UDP/IP ></span> ${state.ip}:${Math.floor(Math.random()*65535)} <br><span class="text-gray-400">   LEN=${packetSize} | TTL=${ttl} | DATA=0x${hex}...</span>`;
+                        const r = Math.random();
+                        if (r < 0.5) {
+                            log = `${ts} <span class="ts-dim">0x0000:</span> 4500 05dc ${Math.floor(Math.random()*9999)} 0000 4011 .... ${state.ip.split('.').map(n=>parseInt(n).toString(16).padStart(2,'0')).join('')}`;
+                        } else {
+                            log = `${ts} <span class="ts-info">UDP:</span> Packet injected. Len=${Math.floor(Math.random()*1400)} Source=${spoof} Dest=${state.ip}`;
+                        }
+                        size = 1000;
                     }
 
-                    let simulatedBytes = packetSize * (Math.random() * 100 + 50); 
-                    return { html: logHtml, size: simulatedBytes };
-                }
-
-                // ASIGNAR LA FUNCION GLOBAL PARA QUE EL BUCLE DE ATAQUE LA USE
-                window.generatePacketLog = generatePacketLog;
+                    return { html: `<div class="terminal-line">${log}</div>`, size: size * (Math.random() * 50 + 10) };
+                };
 
                 function renderObject(obj, prefix = '') {
                     for(let key in obj) {
@@ -885,18 +887,21 @@
             const byteEl = document.getElementById('bytes-val');
             const unitEl = document.getElementById('unit-val');
             
-            const speed = state.vector.name.includes("HTTP") ? 80 : 30; 
+            // Velocidad variable según el ataque
+            const speed = state.vector.name.includes("HTTP") ? 60 : 40; 
             
             state.timers.push(setInterval(() => {
-                // NOTA: generatePacketLog se define dinámicamente dentro de trackTarget para acceder a state.ip y otras variables
-                // Pero como fallback inicial o reinicio, la definimos aquí también por seguridad si no se ha llamado trackTarget
                 const packetData = window.generatePacketLog ? window.generatePacketLog() : {html: "Initializing...", size: 0};
                 
-                const div = document.createElement('div');
-                div.className = "log-line";
-                div.innerHTML = packetData.html;
-                logBox.appendChild(div);
-                if(logBox.children.length > 30) logBox.removeChild(logBox.firstChild);
+                // Insertar HTML directamente (contiene el div con la animación)
+                // Usamos insertAdjacentHTML para mejor performance
+                logBox.insertAdjacentHTML('beforeend', packetData.html);
+                
+                // Scroll al fondo
+                if(logBox.children.length > 25) {
+                    logBox.removeChild(logBox.firstChild);
+                }
+                logBox.scrollTop = logBox.scrollHeight;
                 
                 // --- CÁLCULO DE ANCHO DE BANDA ---
                 state.totalBytes += packetData.size;
