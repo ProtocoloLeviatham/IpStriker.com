@@ -6,7 +6,7 @@
     <title>LEVIATHAN | ADVANCED WARFARE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -174,45 +174,44 @@
         input, button { cursor: text; }
         button { cursor: pointer; }
         
-        /* --- NUEVO ESTILO DE TERMINAL LINUX v2 --- */
+        /* --- ESTILO DE TERMINAL LINUX REALISTA --- */
         .terminal-line {
             font-family: 'Fira Code', 'Courier New', monospace;
             white-space: pre-wrap;
             word-break: break-all;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             padding-left: 4px;
             border-left: 2px solid transparent;
-            line-height: 1.4;
+            line-height: 1.3;
             font-size: 11px;
-            /* Animación más lenta y fluida */
-            animation: termSlide 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            color: #ccc; /* Texto base gris claro */
+            animation: termSlide 0.1s ease-out forwards;
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(5px);
         }
         .terminal-line:hover {
-            border-left-color: var(--primary);
-            background: rgba(0, 255, 0, 0.05);
+            background: rgba(255, 255, 255, 0.05);
         }
         @keyframes termSlide {
-            0% { opacity: 0; transform: translateY(10px); }
+            0% { opacity: 0; transform: translateY(5px); }
             100% { opacity: 1; transform: translateY(0); }
         }
         
-        /* Sintaxis de colores para logs MEJORADA */
-        .ts-time { color: #666; font-weight: bold; font-size: 0.9em; }
-        .ts-proc { color: #888; font-style: italic; }
+        /* Sintaxis de colores REALISTA (Estilo Syslog/Tcpdump) */
+        .ts-time { color: #666; font-size: 0.9em; margin-right: 5px; } /* Gris oscuro */
+        .ts-proc { color: #888; font-weight: bold; } /* Proceso en gris */
         
-        .ts-ip { color: #00ffff; font-weight: bold; } /* Cyan para IPs */
-        .ts-port { color: #ffa500; } /* Naranja para puertos */
-        .ts-proto { color: #d8b4fe; font-weight: bold; } /* Purpura para Protocolos */
+        .ts-ip { color: #e5e5e5; } /* Blanco casi puro para IPs */
+        .ts-port { color: #aaa; } /* Gris para puertos */
+        .ts-proto { color: #999; } 
         
-        .ts-info { color: #3b82f6; } /* Azul */
-        .ts-warn { color: #facc15; font-weight: bold;} /* Amarillo fuerte */
-        .ts-err { color: #ef4444; font-weight: bold; background: rgba(255,0,0,0.1); padding: 0 2px;} /* Rojo con fondo */
-        .ts-suc { color: #22c55e; } /* Verde */
+        .ts-info { color: #bbb; } /* Texto informativo standard */
+        .ts-warn { color: #d4d4d4; font-weight: bold; } /* Alerta sutil */
+        .ts-err { color: #ff5555; } /* Rojo terminal */
+        .ts-suc { color: #55ff55; } /* Verde terminal */
         
-        .ts-dim { color: #555; }
-        .ts-data { color: #a8a29e; }
+        .ts-dim { color: #444; } /* Comentarios oscuros */
+        .ts-data { color: #777; } /* Datos hexadecimales */
 
         /* Ticker Animation */
         .ticker-wrap {
@@ -247,7 +246,7 @@
                     CALCULANDO RED...
                 </span>
                 <span class="animate-pulse text-red-500 font-bold">/// UNAUTHORIZED ACCESS ///</span>
-                <span>V.6.8.0</span>
+                <span>V.6.8.5 (STABLE)</span>
             </div>
         </header>
 
@@ -430,7 +429,7 @@
         <footer class="w-full border-t border-green-900 bg-black/95 p-2 text-[10px] md:text-xs font-mono relative z-50 overflow-hidden">
             <div class="ticker-wrap border-b border-green-900 mb-2 pb-1 bg-black text-green-700">
                 <div class="ticker">
-                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.8.0 STABLE +++
+                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.8.5 STABLE +++
                 </div>
             </div>
 
@@ -686,39 +685,41 @@
                     }
                 }
 
-                // DEFINICIÓN DE GENERADOR DE LOGS MASIVO
+                // DEFINICIÓN DE GENERADOR DE LOGS "REALISTA"
                 window.generatePacketLog = function() {
-                    const now = performance.now();
-                    const kTime = (now / 1000).toFixed(6);
-                    const ts = `<span class="ts-time">[ ${kTime.padStart(11, ' ')} ]</span>`;
+                    const now = new Date();
+                    const timeStr = now.toLocaleTimeString('es-AR', { hour12: false }) + "." + now.getMilliseconds().toString().padStart(3, '0');
+                    const ts = `<span class="ts-time">[${timeStr}]</span>`;
                     
                     const sport = Math.floor(Math.random() * 65535);
-                    const pid = Math.floor(Math.random() * 9999);
+                    const pid = Math.floor(Math.random() * 32000);
                     const spoof = `${Math.floor(Math.random()*223)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
                     
                     let log = "";
                     let size = 64;
 
-                    // --- GENERADOR MEJORADO Y VARIADO ---
+                    // --- GENERADOR MEJORADO Y VARIADO v6.8 ---
                     
                     if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
-                        const methods = ["GET", "POST", "HEAD", "PUT", "DELETE"];
-                        const agents = ["Mozilla/5.0", "curl/7.68", "Apache-HttpClient", "Python-requests", "Go-http-client"];
-                        const paths = ["/login", "/", "/api/auth", "/admin", "/wp-login.php", "/search", "/cart", "/checkout", "/assets/app.js"];
+                        const methods = ["GET", "POST", "HEAD", "PUT", "OPTIONS", "DELETE"];
+                        const agents = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "curl/7.68.0", "Go-http-client/1.1", "Python/3.9", "Apache-HttpClient/4.5.13", "Mediapartners-Google"];
+                        const paths = ["/login", "/", "/api/v1/auth", "/admin", "/wp-login.php", "/search", "/assets/main.css", "/images/logo.png", "/robots.txt", "/.env"];
                         const target = `<span class="ts-ip">${state.ip}</span>`;
                         const src = `<span class="ts-ip">${spoof}</span>`;
                         
                         const scenarios = [
                             `${ts} <span class="ts-proc">nginx[${pid}]:</span> ${src} - - [${new Date().toUTCString()}] "${methods[0]} ${paths[Math.floor(Math.random()*paths.length)]} HTTP/1.1" 200 ${Math.floor(Math.random()*5000)} "-" "${agents[0]}"`,
-                            `${ts} <span class="ts-warn">[WAF]</span> Blocked SQL Injection attempt from ${src} to ${target}`,
-                            `${ts} <span class="ts-info">OUTBOUND</span> >> ${methods[1]} ${target}${paths[1]} | Payload: <span class="ts-data">${Math.random().toString(36).substring(7)}</span>`,
-                            `${ts} <span class="ts-err">CONNECTION TIMEOUT</span> ${target}:443 (Server Unreachable)`,
-                            `${ts} <span class="ts-suc">SSL Handshake</span> with ${target} success. TLSv1.3`,
-                            `${ts} <span class="ts-proc">httpd[${pid}]:</span> [error] [client ${src}] ModSecurity: Access denied with code 403`,
-                            `${ts} <span class="ts-info">Slowloris:</span> Holding socket open... (Thread-${pid})`,
-                            `${ts} <span class="ts-warn">[DOS]</span> High request rate detected from ${src}. Throttling.`,
-                            `${ts} <span class="ts-info">GET</span> ${target}/static/image.jpg HTTP/2 | 200 OK | 45ms`,
-                            `${ts} <span class="ts-err">502 Bad Gateway</span> received from ${target}. Load balancer failing.`
+                            `${ts} <span class="ts-warn">[WAF]</span> ModSecurity: Access denied with code 403 (phase 2). Pattern match "SQLi" at ARGS:id.`,
+                            `${ts} <span class="ts-info">OUTBOUND</span> >> ${methods[1]} ${target}${paths[1]} | Payload: <span class="ts-data">${Math.random().toString(36).substring(7)}</span> | Keep-Alive`,
+                            `${ts} <span class="ts-err">CONNECTION TIMEOUT</span> ${target}:443 (Upstream Server Unreachable)`,
+                            `${ts} <span class="ts-suc">SSL Handshake</span> with ${target} success. Protocol: TLSv1.3 Cipher: TLS_AES_256_GCM_SHA384`,
+                            `${ts} <span class="ts-proc">httpd[${pid}]:</span> [core:error] [pid ${pid}] (70007)The timeout specified has expired: [client ${src}] AH00524: Handler for fastcgi-script returned invalid result`,
+                            `${ts} <span class="ts-info">Slowloris:</span> Holding socket open... (Thread-${pid}) - 24s elapsed`,
+                            `${ts} <span class="ts-warn">[DOS]</span> High request rate detected from ${src}. Throttling via iptables.`,
+                            `${ts} <span class="ts-info">GET</span> ${target}/static/image.jpg HTTP/2 | 200 OK | 45ms | Cache: MISS`,
+                            `${ts} <span class="ts-err">502 Bad Gateway</span> received from ${target}. Reverse proxy error.`,
+                            `${ts} <span class="ts-dim">DEBUG:</span> Header injection: X-Forwarded-For: ${spoof}`,
+                            `${ts} <span class="ts-proc">botnet:</span> Executing challenge-response bypass. Cookie acquired.`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = Math.floor(Math.random() * 2000) + 200;
@@ -732,33 +733,36 @@
                             `${ts} <span class="ts-proc">KERNEL:</span> TCP: ${src}:${sport} > ${target}:${port} Flags <span class="ts-warn">[S]</span>, seq ${Math.floor(Math.random()*999999)}, win 65535, len 0`,
                             `${ts} <span class="ts-info">netfilter:</span> DROP IN=eth0 OUT= MAC=ff:ff:ff:ff:ff:ff SRC=${src} DST=${target} PROTO=TCP SPT=${sport} DPT=80 SYN`,
                             `${ts} <span class="ts-err">TCP:</span> Possible SYN flooding on port 80. Sending cookies.`,
-                            `${ts} <span class="ts-info">tcpreplay:</span> Sending packet ${pid} to ${target}`,
-                            `${ts} <span class="ts-proc">firewall:</span> [BLOCK] Suspicious SYN packet from ${src}`,
-                            `${ts} <span class="ts-info">TCP:</span> ${target}:${port} > ${src}:${sport} Flags [R.], seq 0, win 0`,
+                            `${ts} <span class="ts-info">tcpreplay:</span> Sending packet ${pid} to ${target} via interface eth0`,
+                            `${ts} <span class="ts-proc">firewall:</span> [BLOCK] Suspicious SYN packet from ${src}. State: INVALID`,
+                            `${ts} <span class="ts-info">TCP:</span> ${target}:${port} > ${src}:${sport} Flags [R.], seq 0, win 0, length 0`,
                             `${ts} <span class="ts-warn">sock:</span> TCP connection reset by peer ${target}`,
                             `${ts} <span class="ts-data">Raw:</span> 4500 003c 1a2b 4000 4006 .... (SYN Payload)`,
-                            `${ts} <span class="ts-info">Handshake:</span> SYN SENT -> Waiting ACK... (Timeout)`,
-                            `${ts} <span class="ts-suc">ZOMBIE:</span> Bot ${src} joined the swarm. Target: ${target}`
+                            `${ts} <span class="ts-info">Handshake:</span> SYN SENT -> Waiting ACK... (Timeout 3000ms)`,
+                            `${ts} <span class="ts-suc">ZOMBIE:</span> Bot ${src} joined the swarm. Target: ${target}`,
+                            `${ts} <span class="ts-dim">nf_conntrack:</span> table full, dropping packet.`,
+                            `${ts} <span class="ts-info">TCP Window:</span> Zero window probe sent to ${target}`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 60;
 
                     } else if (state.vector && state.vector.name === 'DNS AMP') {
-                        const resolvers = ["8.8.8.8", "1.1.1.1", "9.9.9.9", "208.67.222.222"];
+                        const resolvers = ["8.8.8.8", "1.1.1.1", "9.9.9.9", "208.67.222.222", "4.2.2.2"];
                         const res = `<span class="ts-ip">${resolvers[Math.floor(Math.random()*resolvers.length)]}</span>`;
                         const target = `<span class="ts-ip">${state.ip}</span>`;
                         
                         const scenarios = [
-                            `${ts} <span class="ts-info">IP</span> ${target} (SPOOFED) > ${res}: ${pid}+ <span class="ts-proto">ANY?</span> . (41)`,
-                            `${ts} <span class="ts-suc">REFLECT:</span> Received ${Math.floor(Math.random()*4000)} bytes from ${res} -> ${target}`,
+                            `${ts} <span class="ts-info">IP</span> ${target} (SPOOFED) > ${res}: ${pid}+ <span class="ts-proto">ANY?</span> isc.org. (41)`,
+                            `${ts} <span class="ts-suc">REFLECT:</span> Received ${Math.floor(Math.random()*4000)} bytes from ${res} -> ${target} (Amplification 64x)`,
                             `${ts} <span class="ts-warn">named[${pid}]:</span> client ${target}#${sport}: query (cache) './NS/IN' denied`,
                             `${ts} <span class="ts-info">DNS:</span> Standard query response 0x${Math.floor(Math.random()*9999).toString(16)} TXT (Amplified)`,
                             `${ts} <span class="ts-err">udp sum bad:</span> ${target} > ${res} domain [b2&3=0x1]`,
-                            `${ts} <span class="ts-info">DrDoS:</span> Amplification factor x74. Target saturated.`,
-                            `${ts} <span class="ts-proc">resolver:</span> Querying ${res} for "gov" IN ANY`,
-                            `${ts} <span class="ts-warn">[ALERT]</span> Large DNS response packet detected (3400 bytes)`,
+                            `${ts} <span class="ts-info">DrDoS:</span> Amplification factor x74. Target link saturated.`,
+                            `${ts} <span class="ts-proc">resolver:</span> Querying ${res} for "gov" IN ANY (EDNS0 set)`,
+                            `${ts} <span class="ts-warn">[ALERT]</span> Large DNS response packet detected (3400 bytes). Fragmentation required.`,
                             `${ts} <span class="ts-info">IP</span> ${res} > ${target}: ${pid}* 4/0/1 . NS a.root-servers.net`,
-                            `${ts} <span class="ts-suc">Traffic:</span> Injected 400pps via open resolver ${res}`
+                            `${ts} <span class="ts-suc">Traffic:</span> Injected 400pps via open resolver ${res}`,
+                            `${ts} <span class="ts-dim">dnscap:</span> [${res}] -> [${target}] DNSKEY response detected`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 1200;
@@ -774,10 +778,11 @@
                             `${ts} <span class="ts-err">Request timeout</span> for icmp_seq ${Math.floor(Math.random()*100)}`,
                             `${ts} <span class="ts-info">IP</span> ${target} > ${src}: ICMP echo reply, id ${pid}, seq ${Math.floor(Math.random()*1000)}`,
                             `${ts} <span class="ts-proc">kernel:</span> ICMP: redirect from ${target} on eth0`,
-                            `${ts} <span class="ts-warn">Flood:</span> Sending 10000 pings/sec to ${target}`,
+                            `${ts} <span class="ts-warn">Flood:</span> Sending 10000 pings/sec to ${target}. Socket buffer full.`,
                             `${ts} <span class="ts-info">Traceroute:</span> ${target}: hops=30, time=45ms`,
                             `${ts} <span class="ts-err">ICMP:</span> Destination Host Unreachable from ${src}`,
-                            `${ts} <span class="ts-data">Packet:</span> Type=8 Code=0 Checksum=0x${Math.floor(Math.random()*9999).toString(16)}`
+                            `${ts} <span class="ts-data">Packet:</span> Type=8 Code=0 Checksum=0x${Math.floor(Math.random()*9999).toString(16)}`,
+                            `${ts} <span class="ts-suc">POD:</span> Ping of Death fragment sent to ${target}`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 84;
@@ -793,9 +798,9 @@
                             `${ts} <span class="ts-info">IP</span> ${src}.${sport} > ${target}.${Math.floor(Math.random()*65535)}: UDP, length 1400`,
                             `${ts} <span class="ts-err">ICMP</span> ${target} udp port ${Math.floor(Math.random()*65535)} unreachable`,
                             `${ts} <span class="ts-suc">Bandwidth:</span> Saturating uplink... 500Mbps sent`,
-                            `${ts} <span class="ts-info">Payload:</span> Junk data sent to ${target}`,
-                            `${ts} <span class="ts-proc">eth0:</span> TX bytes:${Math.floor(Math.random()*999999)} packets:${Math.floor(Math.random()*500)}`,
-                            `${ts} <span class="ts-warn">Congestion:</span> Network buffer full. Dropping frames.`,
+                            `${ts} <span class="ts-info">Payload:</span> Junk data sent to ${target} (Randomized)`,
+                            `${ts} <span class="ts-proc">eth0:</span> TX bytes:${Math.floor(Math.random()*999999)} packets:${Math.floor(Math.random()*500)} errors:0 dropped:0`,
+                            `${ts} <span class="ts-warn">Congestion:</span> Network buffer full. Dropping frames at queue tail.`,
                             `${ts} <span class="ts-data">Binary:</span> 01010110 11001010 10101010 11110000 [Flooding]`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
