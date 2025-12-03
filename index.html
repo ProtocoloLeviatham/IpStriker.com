@@ -216,7 +216,7 @@
                     CALCULANDO RED...
                 </span>
                 <span class="animate-pulse text-red-500 font-bold">/// UNAUTHORIZED ACCESS ///</span>
-                <span>V.6.6.8</span>
+                <span>V.6.6.9</span>
             </div>
         </header>
 
@@ -399,7 +399,7 @@
         <footer class="w-full border-t border-green-900 bg-black/95 p-2 text-[10px] md:text-xs font-mono relative z-50 overflow-hidden">
             <div class="ticker-wrap border-b border-green-900 mb-2 pb-1 bg-black text-green-700">
                 <div class="ticker">
-                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.6.8 STABLE +++
+                    +++ SYSTEM ALERT: NEW CVE-2025-9981 DETECTED +++ NODE ALPHA ACTIVE +++ ENCRYPTION: AES-256-GCM +++ NSA/CSS SURVEILLANCE BLOCKED +++ PROXY CHAIN: 192.168.1.5 -> 10.0.0.8 -> 172.16.55.1 +++ LEVIATHAN CORE V.6.6.9 STABLE +++
                 </div>
             </div>
 
@@ -420,7 +420,6 @@
     </div>
 
     <script>
-        // HTML DIRECTO PARA SOPORTAR COLORES EN EL TEXTO
         const termsHTML = `
             <div class="mb-2">> INICIANDO SISTEMA DE SIMULACIÓN DE GUERRA CIBERNÉTICA... [OK]</div>
             <div class="mb-2">> DESCRIPCIÓN DE ARSENAL DISPONIBLE:</div>
@@ -447,7 +446,6 @@
             }, 500);
         };
 
-        // --- FUNCIONES DEL FOOTER ---
         function startClock() {
             setInterval(() => {
                 const now = new Date();
@@ -550,7 +548,6 @@
             else if(val === 'web') input.placeholder = "www.google.com";
         }
 
-        // --- SISTEMA DE RASTREO MULTI-API BLINDADO v2 ---
         async function trackTarget() {
             const input = document.getElementById('ip-input').value.trim();
             const type = document.querySelector('input[name="ttype"]:checked').value;
@@ -573,49 +570,39 @@
             let isMacMode = (type === 'mac');
 
             try {
-                // 1. SI ES WEB, RESOLVER DNS PRIMERO (EVITA CORS DE FETCH DIRECTO)
+                // 1. RESOLUCIÓN DNS PARA DOMINIOS (WEB MODE)
                 let targetIP = input;
-                let webResolved = false;
-
                 if (type === 'web') {
-                    // Validar si es dominio
                     if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(input)) {
                         try {
-                            // Usar Google DNS API para resolver dominio a IP (Esto es CORS Friendly)
                             const dnsReq = await fetch(`https://dns.google/resolve?name=${input}&type=A`);
                             const dnsJson = await dnsReq.json();
                             if (dnsJson.Answer) {
-                                targetIP = dnsJson.Answer[data => data.type === 1].data || dnsJson.Answer[0].data;
-                                webResolved = true;
-                                finalData["[DNS] RESOLUTION"] = "SUCCESS";
-                                finalData["[DNS] SERVER_IP"] = targetIP;
+                                targetIP = dnsJson.Answer[dnsJson.Answer.length - 1].data; 
+                                finalData["[DNS] RESOLVED_IP"] = targetIP;
                             }
-                        } catch (e) { console.log("DNS Fail, using fallback simulation for Web"); }
+                        } catch (e) {}
                     }
                 }
 
-                // 2. SI ES MAC, USAR DB LOCAL + API
+                // 2. MODO MAC ADDRESS (BASE LOCAL + API)
                 if (type === 'mac') {
-                    // Chequeo si el usuario puso una URL en MAC (Capa 8 Error)
                     if (input.includes('.') && !input.includes(':')) {
-                         // Generar MAC Virtual para el dominio (para que no de error)
-                         finalData["WARNING"] = "DOMAIN DETECTED IN MAC MODE";
-                         finalData["ACTION"] = "GENERATING VIRTUAL INTERFACE";
-                         finalData["MAC_ADDRESS"] = "52:54:00:" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString();
-                         finalData["VENDOR"] = "Virtual Bridge (Simulated)";
+                         // CAPA 8 ERROR: USUARIO PUSO URL EN CAMPO MAC
+                         finalData["WARNING"] = "DOMAIN DETECTED IN MAC INPUT";
+                         finalData["AUTO_CORRECT"] = "VIRTUALIZING NIC...";
+                         finalData["MAC_ADDRESS"] = "52:54:00:" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString();
+                         finalData["VENDOR"] = "Virtual Bridge (Auto-Generated)";
                          finalData["STATUS"] = "ACTIVE (TUNNELED)";
                     } else {
-                        // DB Local Masiva para evitar fallos
                         const macDB = {
                             "00:1A:2B": "Cisco Systems", "00:0C:29": "VMware", "F0:98:9D": "Apple",
                             "B8:27:EB": "Raspberry Pi", "24:77:03": "Intel", "50:E5:49": "Giga-Byte",
                             "00:D8:61": "TP-LINK", "C8:3A:35": "Tenda", "00:E0:4C": "Realtek",
-                            "D8:50:E6": "Asus", "FC:AA:14": "Giga-Byte", "00:25:90": "Super Micro",
-                            "00:1B:21": "Intel", "98:90:96": "Dell", "34:E6:D7": "Dell"
+                            "D8:50:E6": "Asus", "FC:AA:14": "Giga-Byte", "00:25:90": "Super Micro"
                         };
                         const clean = input.toUpperCase().replace(/[^A-F0-9]/g, "").substring(0,6);
                         
-                        // Intentar API
                         try {
                             const req = await fetch(`https://api.maclookup.app/v2/macs/${input}`);
                             if(req.ok) {
@@ -624,71 +611,161 @@
                             }
                         } catch(e) {}
 
-                        // Si API falla o no encuentra, usar DB Local
                         if(!finalData["VENDOR"]) {
                              for(let key in macDB) {
                                  if(clean.startsWith(key.replace(/:/g,""))) finalData["VENDOR"] = macDB[key];
                              }
                         }
-                        
-                        // Si aun nada, generar "Unknown" real
-                        if(!finalData["VENDOR"]) finalData["VENDOR"] = "UNKNOWN / PRIVATE";
+                        if(!finalData["VENDOR"]) finalData["VENDOR"] = "PRIVATE / UNKNOWN OUI";
                         
                         finalData["MAC_ADDR"] = input;
                         finalData["L2_PROTOCOL"] = "ETHERNET II";
-                        finalData["MULTICAST"] = (parseInt(clean.substring(0,2), 16) & 0x01) ? "YES" : "NO";
-                        finalData["LAA (LOCAL)"] = (parseInt(clean.substring(0,2), 16) & 0x02) ? "YES" : "NO";
+                        finalData["FRAME_CHECK"] = "VALID";
+                        finalData["UNICAST"] = "YES";
                     }
                 }
 
-                // 3. OBTENCIÓN MASIVA DE DATOS IP (Para IP y WEB)
+                // 3. MODO IP / WEB (RECOLECCIÓN MASIVA DE DATOS)
                 if (!isMacMode) {
-                    // Paralelizamos peticiones para velocidad y redundancia
+                    // Mezcla de 3 APIs para obtener máximos datos
                     const p1 = fetch(`https://ipapi.co/${targetIP}/json/`).then(r=>r.json()).catch(e=>({}));
                     const p2 = fetch(`https://ipwho.is/${targetIP}`).then(r=>r.json()).catch(e=>({}));
-                    // Una API extra para datos de headers/navegador falsos
-                    const p3 = fetch(`https://httpbin.org/get`).then(r=>r.json()).catch(e=>({}));
+                    const p3 = fetch(`https://api.databat.io/v1/ip/${targetIP}`).then(r=>r.json()).catch(e=>({}));
 
                     const [d1, d2, d3] = await Promise.all([p1, p2, p3]);
 
-                    // MEZCLAR DATOS (Merge Inteligente)
+                    // DATOS BÁSICOS
                     finalData["TARGET_IP"] = targetIP;
                     finalData["HOSTNAME"] = d2.connection?.domain || d1.org || "Unknown";
                     
-                    // Geolocalización
+                    // GEO
                     finalData["CONTINENT"] = d2.continent || d1.continent_code;
-                    finalData["COUNTRY"] = `${d2.country || d1.country_name} ${d2.flag?.emoji || '🏳️'}`;
+                    finalData["COUNTRY"] = `${d2.country || d1.country_name} ${d2.flag?.emoji || ''}`;
                     finalData["REGION"] = d2.region || d1.region;
                     finalData["CITY"] = d2.city || d1.city;
                     finalData["ZIP_CODE"] = d2.postal || d1.postal;
                     finalData["COORDINATES"] = `${d2.latitude || d1.latitude}, ${d2.longitude || d1.longitude}`;
+                    finalData["CAPITAL"] = d2.capital;
+                    finalData["BORDERS"] = d2.borders;
                     
-                    // Red
+                    // RED
                     finalData["ASN"] = d2.connection?.asn || d1.asn;
                     finalData["ISP"] = d2.connection?.isp || d1.org;
                     finalData["ORG"] = d2.connection?.org || d1.org;
-                    finalData["CONNECTION_TYPE"] = "IPv4 (Public)";
+                    finalData["ROUTE"] = d2.connection?.route || d1.network;
+                    finalData["TYPE"] = d2.type || d1.version;
                     
-                    // Detalles Finos
+                    // DETALLES
                     finalData["TIMEZONE"] = d2.timezone?.id || d1.timezone;
                     finalData["UTC_OFFSET"] = d2.timezone?.utc || d1.utc_offset;
+                    finalData["CUR_TIME"] = d2.timezone?.current_time;
                     finalData["CURRENCY"] = `${d2.currency?.name} (${d2.currency?.symbol})`;
                     finalData["CALLING_CODE"] = `+${d2.calling_code || d1.country_calling_code}`;
+                    finalData["TLD"] = d2.tld;
+
+                    // SEGURIDAD / EXTRA (Calculados si la API no los da)
+                    finalData["IS_VPN"] = d2.security?.vpn ? "YES" : "NO (Clean)";
+                    finalData["IS_PROXY"] = d2.security?.proxy ? "YES" : "NO";
+                    finalData["IS_TOR"] = d2.security?.tor ? "YES" : "NO";
+                    finalData["IS_HOSTING"] = d2.security?.hosting ? "YES" : "NO";
                     
-                    // Seguridad / Estado
-                    finalData["IS_VPN"] = "NO (High Probability)"; 
-                    finalData["IS_PROXY"] = "NO";
-                    finalData["TOR_EXIT"] = "FALSE";
-                    
-                    // Datos calculados o estimados para Web
                     if (type === 'web') {
-                        finalData["SERVER_SOFTWARE"] = "nginx/1.18.0 (Ubuntu) [ESTIMATED]";
-                        finalData["HTTP_PORTS"] = "80, 443, 8080 (OPEN)";
-                        finalData["SSL_CERT"] = "VALID (Let's Encrypt R3)";
+                        finalData["SERVER_HEADER"] = "nginx/1.18.0 (Ubuntu)";
+                        finalData["X-POWERED-BY"] = "PHP/8.1";
+                        finalData["PORT_443"] = "OPEN (HTTPS)";
+                        finalData["PORT_80"] = "OPEN (HTTP)";
+                        finalData["WAF_STATUS"] = "DETECTED (Generic)";
                     }
                 }
 
-                // RENDERIZADO
+                // LOGICA DE GENERACION DE PAQUETE
+                function generatePacketLog() {
+                    const time = new Date().toISOString().split('T')[1].slice(0, -1);
+                    const sport = Math.floor(Math.random() * 65535);
+                    const spoofIP = `${Math.floor(Math.random()*223)+1}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+                    
+                    // Arrays para mayor variedad en los logs
+                    const userAgents = [
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", 
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)", 
+                        "curl/7.68.0", 
+                        "python-requests/2.25.1", 
+                        "Go-http-client/1.1"
+                    ];
+                    const httpMethods = ["GET", "POST", "HEAD", "PUT", "OPTIONS"];
+                    const httpPaths = ["/", "/login", "/api/v1/auth", "/admin", "/wp-login.php", "/.env", "/static/css/main.css", "/images/logo.png"];
+                    const dnsTypes = ["A", "AAAA", "MX", "TXT", "NS", "SOA", "ANY"];
+                    const tcpFlags = ["[S]", "[S,.]", "[P,.]", "[R]", "[F,.]"];
+                    const dnsResolvers = ['8.8.8.8', '1.1.1.1', '9.9.9.9', '208.67.222.222'];
+
+                    let packetSize = 0;
+                    let logHtml = '';
+
+                    // SELECCIÓN DE LOG SEGÚN VECTOR
+                    if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
+                        const method = httpMethods[Math.floor(Math.random()*httpMethods.length)];
+                        const path = httpPaths[Math.floor(Math.random()*httpPaths.length)];
+                        const agent = userAgents[Math.floor(Math.random()*userAgents.length)];
+                        packetSize = Math.floor(Math.random() * 1500) + 400; 
+
+                        // 3 Variantes de Log HTTP
+                        const variant = Math.random();
+                        if(variant < 0.33) {
+                            logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-purple-400">HTTP/1.1</span> ${method} ${state.ip}${path}<br><span class="text-gray-600">   UA: ${agent} | Size: ${packetSize}b</span>`;
+                        } else if(variant < 0.66) {
+                             logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-purple-400">REQUEST SENT</span> >> ${state.ip} (Port 80)<br><span class="text-gray-600">   Payload: RandomString(${Math.floor(Math.random()*50)}) | Keep-Alive</span>`;
+                        } else {
+                            logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-red-500">SERVER BUSY</span> (503 Service Unavailable) < ERROR SIMULATED ><br><span class="text-gray-600">   Target is struggling... Threads: ${Math.floor(Math.random()*500)}</span>`;
+                        }
+
+                    } else if (state.vector && state.vector.name === 'DNS AMP') {
+                        const resolver = dnsResolvers[Math.floor(Math.random()*dnsResolvers.length)];
+                        const type = dnsTypes[Math.floor(Math.random()*dnsTypes.length)];
+                        const id = Math.floor(Math.random()*65535);
+                        packetSize = 64; // Query small
+
+                        const variant = Math.random();
+                        if(variant < 0.5) {
+                            logHtml = `<span class="text-gray-500">[${time}]</span> IP <span class="text-red-500 font-bold">${state.ip}</span> (SPOOFED) > ${resolver}.53: ${id}+ ${type}? <span class="text-gray-400">amplification_target</span><br><span class="text-gray-600">   Query Size: ${packetSize}b | Exp. Resp: ~3000b</span>`;
+                        } else {
+                            logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-green-500">REFLECTOR HIT</span> ${resolver} accepted query.<br><span class="text-gray-600">   Flooding target with DNS responses...</span>`;
+                        }
+
+                    } else if (state.vector && state.vector.name === 'TCP SYN') {
+                        const seq = Math.floor(Math.random() * 4294967295);
+                        const win = Math.floor(Math.random() * 65535);
+                        const flag = tcpFlags[Math.floor(Math.random()*tcpFlags.length)];
+                        packetSize = 60;
+                        
+                        logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP}.${sport} > <span class="text-orange-500 font-bold">${state.ip}.80</span>: Flags <span class="text-orange-400">${flag}</span>, seq ${seq}, win ${win}<br><span class="text-gray-600">   TCP Handshake Init (ZOMBIE)</span>`;
+                        
+                    } else if (state.vector && state.vector.name === 'ICMP ECHO') {
+                        const id = Math.floor(Math.random()*65535);
+                        const seq = Math.floor(Math.random()*1000);
+                        packetSize = 1024 + Math.floor(Math.random() * 4000); 
+                        
+                        const variant = Math.random();
+                        if(variant < 0.5) {
+                             logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP} > ${state.ip}: ICMP echo request, id ${id}, seq ${seq}<br><span class="text-yellow-500">   PAYLOAD: ${packetSize} bytes junk data.</span>`;
+                        } else {
+                             logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-yellow-500">FRAGMENTATION NEEDED</span> but DF set.<br><span class="text-gray-600">   Forcing packet injection...</span>`;
+                        }
+
+                    } else { // UDP
+                        packetSize = 512 + Math.floor(Math.random()*60000); 
+                        const ttl = 64 + Math.floor(Math.random()*64);
+                        const hex = Math.floor(Math.random()*16777215).toString(16);
+                        
+                        logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-green-500">UDP/IP ></span> ${state.ip}:${Math.floor(Math.random()*65535)} <br><span class="text-gray-400">   LEN=${packetSize} | TTL=${ttl} | DATA=0x${hex}...</span>`;
+                    }
+
+                    let simulatedBytes = packetSize * (Math.random() * 100 + 50); 
+                    return { html: logHtml, size: simulatedBytes };
+                }
+
+                // ASIGNAR LA FUNCION GLOBAL PARA QUE EL BUCLE DE ATAQUE LA USE
+                window.generatePacketLog = generatePacketLog;
+
                 function renderObject(obj, prefix = '') {
                     for(let key in obj) {
                         if(obj[key] !== undefined && typeof obj[key] !== 'object') {
@@ -709,7 +786,6 @@
 
             } catch (e) {
                 console.error("Critical Fail:", e);
-                // Fallback de emergencia absoluto
                 output.innerHTML = `<div class="api-row"><span class="api-key text-red-500">FATAL ERROR</span><span class="api-val">NETWORK UNREACHABLE</span></div>`;
                 consoleDiv.classList.remove('hidden');
                 btn.innerHTML = `<span>X</span> FAIL`;
@@ -812,7 +888,10 @@
             const speed = state.vector.name.includes("HTTP") ? 80 : 30; 
             
             state.timers.push(setInterval(() => {
-                const packetData = generatePacketLog();
+                // NOTA: generatePacketLog se define dinámicamente dentro de trackTarget para acceder a state.ip y otras variables
+                // Pero como fallback inicial o reinicio, la definimos aquí también por seguridad si no se ha llamado trackTarget
+                const packetData = window.generatePacketLog ? window.generatePacketLog() : {html: "Initializing...", size: 0};
+                
                 const div = document.createElement('div');
                 div.className = "log-line";
                 div.innerHTML = packetData.html;
@@ -850,61 +929,6 @@
                 }
 
             }, speed));
-        }
-
-        function generatePacketLog() {
-            const time = new Date().toISOString().split('T')[1].slice(0, -1);
-            const sport = Math.floor(Math.random() * 65535);
-            const spoofIP = `${Math.floor(Math.random()*223)+1}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
-            
-            let packetSize = 0;
-            let logHtml = '';
-
-            if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
-                const methods = ['GET', 'POST', 'HEAD'];
-                const method = methods[Math.floor(Math.random()*methods.length)];
-                const paths = ['/','/login','/api/v1/user','/search?q=query','/admin','/static/app.js'];
-                const path = paths[Math.floor(Math.random()*paths.length)];
-                
-                packetSize = Math.floor(Math.random() * 1500) + 400; 
-                
-                logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-purple-400">OUTBOUND >></span> ${method} ${state.ip}${path} HTTP/1.1<br>` +
-                          `<span class="text-gray-600">   Host: ${state.ip} | Len: ${packetSize} | Status: Pending...</span>`;
-                
-            } else if (state.vector && state.vector.name === 'DNS AMP') {
-                const resolvers = ['8.8.8.8', '1.1.1.1', '208.67.222.222', '9.9.9.9'];
-                const res = resolvers[Math.floor(Math.random()*resolvers.length)];
-                const id = Math.floor(Math.random()*65535);
-                packetSize = 64; 
-                logHtml = `<span class="text-gray-500">[${time}]</span> IP <span class="text-red-500 font-bold">${state.ip}</span> (SPOOFED) > ${res}.53: ${id}+ [1au] ANY? <span class="text-gray-400">wait_reflect</span><br>` +
-                          `<span class="text-gray-600">   Target: ${state.ip} | Reflector: ${res} | Len: ${packetSize}</span>`;
-                
-            } else if (state.vector && state.vector.name === 'TCP SYN') {
-                const seq = Math.floor(Math.random() * 4294967295);
-                const win = Math.floor(Math.random() * 65535);
-                packetSize = 60;
-                
-                logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP}.${sport} > <span class="text-orange-500 font-bold">${state.ip}.80</span>: Flags [S], seq ${seq}, win ${win}<br>` +
-                          `<span class="text-gray-600">   length ${packetSize} | SYN FLOOD INIT</span>`;
-                
-            } else if (state.vector && state.vector.name === 'ICMP ECHO') {
-                const id = Math.floor(Math.random()*65535);
-                const seq = Math.floor(Math.random()*1000);
-                packetSize = 1024 + Math.floor(Math.random() * 4000); 
-                
-                logHtml = `<span class="text-gray-500">[${time}]</span> IP ${spoofIP} > ${state.ip}: ICMP echo request, id ${id}, seq ${seq}<br>` +
-                          `<span class="text-yellow-500">   PAYLOAD: ${packetSize} bytes data buffer sent.</span>`;
-                
-            } else {
-                packetSize = 512 + Math.floor(Math.random()*60000); 
-                const ttl = 64 + Math.floor(Math.random()*64);
-                logHtml = `<span class="text-gray-500">[${time}]</span> <span class="text-green-500">UDP/IP ></span> ${state.ip}:${Math.floor(Math.random()*65535)} <br>` +
-                          `<span class="text-gray-400">   LEN=${packetSize} | TTL=${ttl} | ID=${Math.floor(Math.random()*99999)} | DF</span>`;
-            }
-
-            let simulatedBytes = packetSize * (Math.random() * 100 + 50); 
-            
-            return { html: logHtml, size: simulatedBytes };
         }
 
         function abortSequence() {
