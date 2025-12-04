@@ -122,18 +122,14 @@
             padding: 4px 0;
             font-size: 0.70rem;
         }
-        .api-key { color: #00aa00; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-family: 'Fira Code', monospace; }
-        .api-val { color: #ccffcc; word-break: break-all; text-align: right; font-family: 'Fira Code', monospace; }
+        .api-key { color: var(--term-green); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-family: 'Fira Code', monospace; }
+        .api-val { color: var(--term-white); word-break: break-all; text-align: right; font-family: 'Fira Code', monospace; }
 
         @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
         .scan-line {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 20px;
-            background: rgba(0, 255, 0, 0.1);
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
-            animation: scanline 2s linear infinite;
-            pointer-events: none;
-            z-index: 40;
+            position: absolute; top: 0; left: 0; width: 100%; height: 20px;
+            background: rgba(0, 255, 0, 0.1); box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            animation: scanline 2s linear infinite; pointer-events: none; z-index: 40;
         }
 
         .bg-grid-pattern {
@@ -143,64 +139,61 @@
         }
 
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        
         input, button { cursor: text; }
         button { cursor: pointer; }
         
-        /* --- ESTILO DE TERMINAL KALI/LINUX --- */
+        /* --- ESTILO DE TERMINAL LINUX V.PROFESSIONAL (MEJORADO) --- */
         .terminal-line {
             font-family: 'Fira Code', 'Roboto Mono', monospace;
             white-space: pre-wrap;
             word-break: break-all;
-            margin-bottom: 1px;
-            padding-left: 6px;
+            margin-bottom: 2px;
+            padding-left: 4px;
             border-left: 2px solid transparent;
-            line-height: 1.35;
+            line-height: 1.5; 
             font-size: 11px;
-            color: #e6e6e6;
-            animation: termSlide 0.1s linear forwards;
+            color: #d1d5db;
+            /* Animación más rápida para 0.10s */
+            animation: termFade 0.1s ease-out forwards;
             opacity: 0;
-            transform: translateY(5px);
+            transform: translateY(3px);
         }
-        .terminal-line:hover {
-            border-left-color: var(--term-blue);
-            background: rgba(255, 255, 255, 0.05);
-        }
+        .terminal-line:hover { background: rgba(255, 255, 255, 0.05); }
         
-        @keyframes termSlide {
+        @keyframes termFade {
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .ts-time { color: var(--term-blue); margin-right: 10px; font-weight: bold; font-size: 0.9em; }
-        .ts-proc { color: var(--term-green); font-weight: bold; }
+        /* SINTAXIS DE LOGS (REALISMO) */
+        .ts-time { color: var(--term-gray); margin-right: 8px; font-size: 0.9em; user-select: none; }
+        .ts-proc { color: var(--term-white); font-weight: bold; }
         
         .target-tag {
-            background-color: #991b1b;
+            background-color: rgba(139, 0, 0, 0.4);
             border: 1px solid #ef4444;
-            color: #ffffff;
-            padding: 0 5px;
-            font-weight: 800;
+            color: #fff;
+            padding: 0 4px;
+            font-weight: bold;
             font-family: 'Share Tech Mono', monospace;
-            letter-spacing: 1px;
-            border-radius: 2px;
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
-            margin: 0 2px;
+            letter-spacing: 0.5px;
         }
 
-        .ts-ip { color: #5eead4; }
+        .ts-ip { color: var(--term-cyan); } 
         .ts-port { color: var(--term-yellow); }
-        .ts-info { color: #e5e7eb; } 
-        .ts-warn { color: var(--term-yellow); font-weight: bold; } 
-        .ts-err { color: var(--term-red); font-weight: bold; } 
+        .ts-info { color: var(--term-blue); } 
+        .ts-warn { color: var(--term-yellow); font-weight: bold;} 
+        .ts-err { color: var(--term-red); font-weight: bold; background: rgba(255,0,0,0.1); padding: 0 2px;} 
         .ts-suc { color: var(--term-green); } 
-        .ts-dim { color: #6e7681; }
-        .ts-data { color: #c084fc; font-style: italic; }
+        .ts-dim { color: #4b5563; }
+        .ts-data { color: #a3a3a3; font-style: italic; }
 
         .kill-switch-btn {
             background: repeating-linear-gradient(45deg, rgba(255, 0, 0, 0.1), rgba(255, 0, 0, 0.1) 10px, rgba(0, 0, 0, 0.2) 10px, rgba(0, 0, 0, 0.2) 20px), rgba(0,0,0,0.8);
             border: 2px solid #ef4444; color: #ef4444; transition: all 0.3s ease; box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
         }
-        .kill-switch-btn:hover { background: #ef4444; color: #000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.6); text-shadow: none; }
+        .kill-switch-btn:hover {
+            background: #ef4444; color: #000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.6); text-shadow: none;
+        }
 
         .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
         .ticker { display: inline-block; padding-left: 100%; animation: ticker 30s linear infinite; }
@@ -227,7 +220,7 @@
                 <span>CIA_CYBER_CMD::NODE_ALPHA</span>
                 <span id="real-network-stats" class="text-xs text-yellow-500 border border-yellow-800 px-2 py-1 bg-black/50">CALCULANDO RED...</span>
                 <span class="animate-pulse text-red-500 font-bold">/// UNAUTHORIZED ACCESS ///</span>
-                <span>KERNEL V.8.0.0</span>
+                <span>V.8.5.0</span>
             </div>
         </header>
 
@@ -442,7 +435,6 @@
                 if (type === 'web') { if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(input)) { try { const dnsReq = await fetch(`https://dns.google/resolve?name=${input}&type=A`); const dnsJson = await dnsReq.json(); if (dnsJson.Answer) { targetIP = dnsJson.Answer[dnsJson.Answer.length - 1].data; finalData["[DNS] RESOLVED_IP"] = targetIP; } } catch (e) {} } }
                 if (type === 'mac') { if (input.includes('.') && !input.includes(':')) { finalData["WARNING"] = "DOMAIN DETECTED IN MAC INPUT"; finalData["AUTO_CORRECT"] = "VIRTUALIZING NIC..."; finalData["MAC_ADDRESS"] = "52:54:00:" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString() + ":" + Math.floor(Math.random()*99).toString(); finalData["VENDOR"] = "Virtual Bridge (Auto-Generated)"; finalData["STATUS"] = "ACTIVE (TUNNELED)"; } else { const macDB = { "00:1A:2B": "Cisco Systems", "00:0C:29": "VMware", "F0:98:9D": "Apple", "B8:27:EB": "Raspberry Pi", "24:77:03": "Intel", "50:E5:49": "Giga-Byte", "00:D8:61": "TP-LINK", "C8:3A:35": "Tenda", "00:E0:4C": "Realtek", "D8:50:E6": "Asus", "FC:AA:14": "Giga-Byte", "00:25:90": "Super Micro" }; const clean = input.toUpperCase().replace(/[^A-F0-9]/g, "").substring(0,6); try { const req = await fetch(`https://api.maclookup.app/v2/macs/${input}`); if(req.ok) { const json = await req.json(); if(json.found) finalData["VENDOR"] = json.company; } } catch(e) {} if(!finalData["VENDOR"]) { for(let key in macDB) { if(clean.startsWith(key.replace(/:/g,""))) finalData["VENDOR"] = macDB[key]; } } if(!finalData["VENDOR"]) finalData["VENDOR"] = "PRIVATE / UNKNOWN OUI"; finalData["MAC_ADDR"] = input; finalData["L2_PROTOCOL"] = "ETHERNET II"; finalData["FRAME_CHECK"] = "VALID"; } }
                 if (!isMacMode) { 
-                    // EXTRACTION DE DATOS MASIVA (6 APIS EN PARALELO + CALCULOS LOCALES)
                     const p1 = fetch(`https://ipapi.co/${targetIP}/json/`).then(r=>r.json()).catch(e=>({})); 
                     const p2 = fetch(`https://ipwho.is/${targetIP}`).then(r=>r.json()).catch(e=>({})); 
                     const p3 = fetch(`https://api.databat.io/v1/ip/${targetIP}`).then(r=>r.json()).catch(e=>({})); 
@@ -455,8 +447,6 @@
                     
                     finalData["[ID] TARGET"] = targetIP; 
                     finalData["[ID] TYPE"] = d2.type || d6.ipVersion || "IPv4";
-                    
-                    // GEO INTELLIGENCE
                     finalData["[GEO] CONTINENT"] = d2.continent || d6.continent || "Unknown";
                     finalData["[GEO] COUNTRY"] = `${d2.country || d1.country_name || d7.country_name} ${d2.flag?.emoji || ''}`;
                     finalData["[GEO] REGION"] = d2.region || d1.region || d6.regionName;
@@ -467,14 +457,11 @@
                     finalData["[GEO] UTC OFF"] = d2.timezone?.utc || d1.utc_offset;
                     finalData["[GEO] CURRENCY"] = `${d2.currency?.name} (${d2.currency?.symbol})`;
                     finalData["[GEO] CALLING"] = `+${d2.calling_code || d1.country_calling_code}`;
-                    
-                    // NETWORK INTELLIGENCE
                     finalData["[NET] ASN"] = d2.connection?.asn || d1.asn || d7.asn; 
                     finalData["[NET] ISP"] = d2.connection?.isp || d1.org || d7.isp; 
                     finalData["[NET] ORG"] = d2.connection?.org || d1.org; 
                     finalData["[NET] RANGE"] = d1.network || d5.address?.cidr || "Unknown";
                     
-                    // BGP DATA
                     if(d4.data && d4.data.prefixes) {
                         finalData["[BGP] PREFIX"] = d4.data.prefixes[0]?.prefix;
                         finalData["[BGP] NAME"] = d4.data.prefixes[0]?.name;
@@ -482,7 +469,6 @@
                         finalData["[BGP] RIR"] = d4.data.rir_allocation?.rir_name;
                     }
 
-                    // CALCULATION DATA
                     if(d5.address) {
                         finalData["[CALC] BINARY"] = d5.address.binary;
                         finalData["[CALC] HEX"] = "0x" + targetIP.split('.').map(x => parseInt(x).toString(16).padStart(2,'0')).join('').toUpperCase();
@@ -493,16 +479,11 @@
                         finalData["[CALC] HEX"] = "0x" + targetIP.split('.').map(x => parseInt(x).toString(16).padStart(2,'0')).join('').toUpperCase();
                     }
 
-                    // SECURITY SCORING
                     finalData["[SEC] VPN"] = d2.security?.vpn ? "YES" : "NO"; 
                     finalData["[SEC] PROXY"] = d2.security?.proxy ? "YES" : "NO"; 
                     finalData["[SEC] TOR"] = d2.security?.tor ? "YES" : "NO"; 
                     finalData["[SEC] HOSTING"] = d2.security?.hosting ? "YES" : "NO";
-                    
-                    if (type === 'web') { 
-                        finalData["[WEB] SERVER"] = "nginx/1.18.0 (Ubuntu) [Est]"; 
-                        finalData["[WEB] PORTS"] = "80, 443 (OPEN)"; 
-                    } 
+                    if (type === 'web') { finalData["[WEB] SERVER"] = "nginx/1.18.0 (Ubuntu) [Est]"; finalData["[WEB] PORTS"] = "80, 443 (OPEN)"; } 
                 }
 
                 window.generatePacketLog = function() {
@@ -511,38 +492,21 @@
                     const targetTag = `<span class="target-tag">${state.ip}</span>`;
                     let log = "", size = 64;
 
-                    // --- GENERADOR MASIVO DE LOGS RAW v8.0 (25+ Scenarios each) ---
-                    
                     if (state.vector && state.vector.name === 'LAYER 7 HTTP-FLOOD') {
-                        const methods = ["GET", "POST", "HEAD", "PUT", "OPTIONS", "DELETE", "PATCH"];
+                        const methods = ["GET", "POST", "HEAD", "PUT"];
                         const agents = ["Mozilla/5.0", "curl/7.68.0", "python-requests/2.26.0", "Go-http-client/1.1", "Apache-HttpClient/4.5.13"];
                         const method = methods[Math.floor(Math.random()*methods.length)];
-                        
                         const scenarios = [
-                            `${ts} <span class="ts-proc">nginx-access:</span> ${spoof} - - [${new Date().toUTCString()}] "${method} /admin HTTP/1.1" 200 450 "-" "${agents[0]}"`,
-                            `${ts} <span class="ts-info">HTTP/1.1</span> 200 OK | Date: ${new Date().toUTCString()} | Server: nginx | Content-Length: 1450`,
-                            `${ts} <span class="ts-dim">Raw:</span> 47 45 54 20 2f 20 48 54 54 50 2f 31 2e 31 0d 0a 48 6f 73 74 3a 20 ${targetTag} (GET /)`,
-                            `${ts} <span class="ts-warn">[WAF]</span> 403 Forbidden: SQL Injection detected in User-Agent field from ${spoof}`,
-                            `${ts} <span class="ts-info">OUTBOUND</span> ${method} ${targetTag}/api/v1/status | Body: {"id": ${Math.floor(Math.random()*9999)}}`,
-                            `${ts} <span class="ts-proc">apache2:</span> [error] [client ${spoof}] AH00124: Request exceeded the limit of 10 internal redirects due to probable configuration error.`,
-                            `${ts} <span class="ts-data">Header:</span> X-Forwarded-For: ${spoof}, 10.0.0.1`,
-                            `${ts} <span class="ts-err">502 Bad Gateway</span> - Upstream timed out (110: Connection timed out)`,
-                            `${ts} <span class="ts-info">SSL/TLS:</span> Client Hello (v1.2) -> Server Hello -> Certificate -> Server Key Exchange`,
-                            `${ts} <span class="ts-dim">Debug:</span> Reuse of existing connection to ${targetTag}:443`,
-                            `${ts} <span class="ts-proc">httpd:</span> Caught SIGTERM, shutting down`,
+                            `${ts} <span class="ts-proc">httpd[${pid}]:</span> [client ${spoof}] AH00037: Request body exceeded limit (1MB). Possible resource exhaustion attack.`,
+                            `${ts} <span class="ts-proc">nginx:</span> [error] limit_req_zone_req_rate: client ${spoof} exceeded rate limit of 10r/s`,
+                            `${ts} <span class="ts-warn">php-fpm[${pid}]:</span> [WARNING] server reached max_children setting, consider increasing it`,
+                            `${ts} <span class="ts-proc">httpd[${pid}]:</span> [client ${spoof}] "POST /api/search HTTP/1.1" 503 219 "http://..." user-agent: "${agents[0]}"`,
+                            `${ts} <span class="ts-proc">mysql:</span> [Warning] Aborted connection ${Math.floor(Math.random()*20000)} to db: 'appdb' user: 'webuser' (Got timeout reading communication packets)`,
+                            `${ts} <span class="ts-err">502 Bad Gateway</span> - Upstream timed out (110: Connection timed out) from ${targetTag}`,
                             `${ts} <span class="ts-warn">Varnish:</span> Backend healthy check failed. Retry 3/5.`,
                             `${ts} <span class="ts-info">POST</span> ${targetTag}/login.php | Payload: user=admin&pass=******** | 302 Found`,
-                            `${ts} <span class="ts-err">ECONNRESET:</span> Peer closed connection unexpectedly.`,
-                            `${ts} <span class="ts-data">Cookie:</span> PHPSESSID=${Math.random().toString(36).substring(7)}; security=high`,
                             `${ts} <span class="ts-dim">ModSecurity:</span> Warning. Pattern match "bin/bash" at ARGS:cmd.`,
-                            `${ts} <span class="ts-info">RateLimit:</span> 429 Too Many Requests sent to ${targetTag}`,
-                            `${ts} <span class="ts-proc">haproxy:</span> ${spoof}:${sport} [${new Date().getDate()}/Jun/2025] main_app/app01 10/0/0/150/160 200 8500 - - --NI 1/1/0/0/0 0/0`,
-                            `${ts} <span class="ts-info">HTTP/2</span> Stream 1 frame: HEADERS flags=END_HEADERS`,
-                            `${ts} <span class="ts-warn">Keep-Alive:</span> timeout=5, max=100 (Closing connection)`,
-                            `${ts} <span class="ts-err">Fatal error:</span> Uncaught PDOException: SQLSTATE[HY000] [2002] Connection refused`,
-                            `${ts} <span class="ts-info">OPTIONS</span> ${targetTag}/* HTTP/1.1 | Allow: GET,HEAD,POST,OPTIONS`,
-                            `${ts} <span class="ts-dim">Trace:</span> at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)`,
-                            `${ts} <span class="ts-proc">node:</span> (node:${pid}) UnhandledPromiseRejectionWarning: Error: connect ETIMEDOUT ${targetTag}:80`
+                            `${ts} <span class="ts-info">RateLimit:</span> 429 Too Many Requests sent to ${targetTag}`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = Math.floor(Math.random() * 2000) + 200;
@@ -550,27 +514,14 @@
                     } else if (state.vector && state.vector.name === 'TCP SYN') {
                         const port = `<span class="ts-port">80</span>`;
                         const scenarios = [
-                            `${ts} <span class="ts-dim">IP</span> ${spoof}.${sport} > ${targetTag}.80: Flags [S], seq ${Math.floor(Math.random()*999999)}, win 29200, options [mss 1460,sackOK,TS val 123 ecr 0,nop,wscale 7], length 0`,
-                            `${ts} <span class="ts-info">tcpdump:</span> verbose output suppressed, use -v or -vv for full protocol decode`,
-                            `${ts} <span class="ts-proc">kernel:</span> [${Math.floor(Math.random()*99999)}.${Math.floor(Math.random()*999)}] TCP: request_sock_TCP: Possible SYN flooding on port 80. Sending cookies.`,
-                            `${ts} <span class="ts-warn">iptables:</span> LOG dropped: IN=eth0 OUT= MAC=00:11:22:33:44:55 SRC=${spoof} DST=${targetTag} PROTO=TCP SPT=${sport} DPT=80 WINDOW=65535 RES=0x00 SYN URGP=0`,
-                            `${ts} <span class="ts-dim">Raw:</span> 4500 003c 7f33 4000 4006 .... (SYN Payload)`,
-                            `${ts} <span class="ts-info">Handshake:</span> SYN_SENT -> SYN_RCVD -> ESTABLISHED`,
-                            `${ts} <span class="ts-err">RST:</span> Connection reset by peer ${targetTag}:443`,
-                            `${ts} <span class="ts-data">Flags:</span> [F,P,U] Push Fin Urgent set`,
-                            `${ts} <span class="ts-dim">Socket:</span> state=TIME_WAIT timer=0`,
-                            `${ts} <span class="ts-info">TCP:</span> ${targetTag}:${port} > ${spoof}:${sport} Flags [S.], seq 0, ack 1, win 65535`,
-                            `${ts} <span class="ts-warn">Conntrack:</span> table full, dropping packet.`,
-                            `${ts} <span class="ts-dim">Win:</span> Window size scaling factor: 128`,
-                            `${ts} <span class="ts-proc">syslog:</span> Dec 12 10:00:01 server kernel: Possible SYN flooding on port 80. Sending cookies.`,
-                            `${ts} <span class="ts-info">Retransmission:</span> TCP [${targetTag}:80] -> [${spoof}:${sport}] (Seq: 1, Len: 0)`,
-                            `${ts} <span class="ts-err">DROP</span> input packet on interface eth0 (rule: block_invalid_tcp)`,
-                            `${ts} <span class="ts-dim">ECN:</span> Congestion Experienced (CE) bit set`,
-                            `${ts} <span class="ts-info">Analysis:</span> 0.000000 ${spoof} -> ${targetTag} TCP 74 53342 > 80 [SYN] Seq=0 Win=29200 Len=0 MSS=1460`,
-                            `${ts} <span class="ts-proc">suricata:</span> [1:2010935:2] ET SCAN Suspicious inbound to my SQL port 1433`,
-                            `${ts} <span class="ts-warn">Zombie:</span> Thread ${pid} spawning 500 connections to ${targetTag}`,
-                            `${ts} <span class="ts-info">TCP Options:</span> NOP, NOP, TS val 2838272 ecr 0`,
-                            `${ts} <span class="ts-err">Finite State:</span> Transition SYN_SENT -> CLOSED (Timeout)`
+                            `${ts} <span class="ts-proc">kernel:</span> TCP: request_sock_TCP: Possible SYN flooding on port 80. Dropping request.`,
+                            `${ts} <span class="ts-proc">httpd[${pid}]:</span> [client ${spoof}] AH00447: Server ran out of slots to serve the requests.`,
+                            `${ts} <span class="ts-proc">kernel:</span> IN=eth0 OUT= MAC=... SRC=${spoof} DST=${targetTag} LEN=60 PROTO=TCP SPT=${sport} DPT=80 WINDOW=14600 RES=0x00 SYN`,
+                            `${ts} <span class="ts-info">netstat:</span> tcp_mem is too low. Increasing kernel memory usage by 12MB. 15000 sockets currently in SYN_RECV state.`,
+                            `${ts} <span class="ts-warn">sock:</span> TCP connection reset by peer ${targetTag}`,
+                            `${ts} <span class="ts-dim">nf_conntrack:</span> table full, dropping packet to ${targetTag}.`,
+                            `${ts} <span class="ts-info">Handshake:</span> SYN SENT to ${targetTag} -> Waiting ACK... (Timeout 3000ms)`,
+                            `${ts} <span class="ts-err">RST:</span> ${targetTag} rejected connection on port 443.`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 60;
@@ -578,78 +529,39 @@
                     } else if (state.vector && state.vector.name === 'DNS AMP') {
                         const res = "8.8.8.8";
                         const scenarios = [
-                            `${ts} <span class="ts-info">IP</span> ${targetTag}.1024 > ${res}.53: ${pid}+ [1au] ANY? isc.org. (41)`,
-                            `${ts} <span class="ts-dim">tshark:</span> Standard query 0x${Math.floor(Math.random()*9999).toString(16)} ANY <Root>`,
-                            `${ts} <span class="ts-info">DNS:</span> Standard query response 0x${Math.floor(Math.random()*9999).toString(16)} TXT "v=spf1 include:_spf.google.com ~all"`,
-                            `${ts} <span class="ts-warn">named[${pid}]:</span> client @0x7f.. ${targetTag}#${sport} (google.com): query (cache) 'google.com/ANY/IN' denied`,
-                            `${ts} <span class="ts-err">UDP sum bad:</span> ${targetTag} > ${res} domain [b2&3=0x1]`,
-                            `${ts} <span class="ts-info">Response:</span> len 3800 Rcode 0 (No Error) -> ${targetTag}`,
-                            `${ts} <span class="ts-proc">resolver:</span> query: . IN NS < + > (127.0.0.1)`,
-                            `${ts} <span class="ts-dim">EDNS0:</span> version: 0, flags: do; udp: 4096`,
-                            `${ts} <span class="ts-info">Question:</span> Type ANY, Class IN`,
-                            `${ts} <span class="ts-warn">[Reflector]</span> Open resolver ${res} responding to spoofed IP ${targetTag}`,
-                            `${ts} <span class="ts-err">SERVFAIL:</span> The name server was unable to process this query.`,
-                            `${ts} <span class="ts-info">Authoritative:</span> Answer section: 13 RRs, Authority section: 0 RRs`,
-                            `${ts} <span class="ts-dim">Bind:</span> rate-limit: limiting responses to ${targetTag}/24`,
-                            `${ts} <span class="ts-info">Dig:</span> ; <<>> DiG 9.11.3-1ubuntu1.11 <<>> @${res} ANY target.com`,
-                            `${ts} <span class="ts-warn">NXDOMAIN:</span> ${targetTag} -> No such name`,
-                            `${ts} <span class="ts-info">Traffic:</span> Ingress UDP traffic 800Mbps on interface eth0`,
-                            `${ts} <span class="ts-proc">dnstop:</span> ${targetTag} count 5000 % 45.2`,
-                            `${ts} <span class="ts-err">Format Error:</span> The name server found a format error in the query.`,
-                            `${ts} <span class="ts-info">DNSKEY:</span> 257 3 8 AwEAAb... (2048 bits)`,
-                            `${ts} <span class="ts-dim">Raw:</span> 2c 6d 01 00 00 01 00 00 00 00 00 00 06 67 6f 6f 67 6c 65 03 63 6f 6d 00 00 ff 00 01`
+                            `${ts} <span class="ts-proc">kernel:</span> IN=eth0 OUT= MAC=... SRC=8.8.8.8 DST=${targetTag} LEN=3800 PROTO=UDP SPT=53 DPT=${sport}`,
+                            `${ts} <span class="ts-proc">named[${pid}]:</span> client ${targetTag}#${sport}: RCODE=0 (No error) length 3800`,
+                            `${ts} <span class="ts-err">systemd-network:</span> eth0: critical: Link saturated. Ingress traffic exceeds 1Gbps threshold.`,
+                            `${ts} <span class="ts-warn">auditd:</span> INFO: Query type ANY detected. Source IP spoofing ${targetTag}`,
+                            `${ts} <span class="ts-info">dnstop:</span> 8.8.8.8 count 12000 % 65.0 - Large Response Threshold Exceeded.`,
+                            `${ts} <span class="ts-suc">REFLECT:</span> Received ${Math.floor(Math.random()*4000)} bytes from ${res} -> ${targetTag}`,
+                            `${ts} <span class="ts-err">SERVFAIL:</span> ${targetTag} unable to handle query volume.`,
+                            `${ts} <span class="ts-dim">Bind:</span> rate-limit dropped query from ${targetTag}`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 1200;
 
                     } else if (state.vector && state.vector.name === 'ICMP ECHO') {
                         const scenarios = [
-                            `${ts} <span class="ts-info">IP</span> ${spoof} > ${targetTag}: ICMP echo request, id ${pid}, seq ${Math.floor(Math.random()*1000)}, length 64`,
-                            `${ts} <span class="ts-info">64 bytes from</span> ${targetTag}: icmp_seq=1 ttl=54 time=24.5 ms`,
-                            `${ts} <span class="ts-warn">From 192.168.1.1</span> icmp_seq=1 Destination Net Unreachable`,
-                            `${ts} <span class="ts-err">Request timeout</span> for icmp_seq ${Math.floor(Math.random()*100)}`,
-                            `${ts} <span class="ts-dim">Raw:</span> 08 00 4d 5a 12 34 00 01 ...`,
-                            `${ts} <span class="ts-proc">kernel:</span> ICMP: ${targetTag}: protocol 1 unreachable`,
-                            `${ts} <span class="ts-info">IP</span> ${targetTag} > ${spoof}: ICMP echo reply, id ${pid}, seq ${Math.floor(Math.random()*1000)}`,
-                            `${ts} <span class="ts-warn">Frag needed:</span> MTU 1500, packet size 65500 (Ping of Death)`,
-                            `${ts} <span class="ts-info">Traceroute:</span> 14  ${targetTag}  24.232 ms  24.198 ms  24.180 ms`,
-                            `${ts} <span class="ts-err">Packet Loss:</span> 100% loss to ${targetTag} (Defense active)`,
-                            `${ts} <span class="ts-info">Type:</span> 8 (Echo Request) Code: 0`,
-                            `${ts} <span class="ts-dim">Checksum:</span> 0x1a2b [correct]`,
-                            `${ts} <span class="ts-proc">hping3:</span> ${targetTag} mode set to ICMP`,
-                            `${ts} <span class="ts-info">Redirect:</span> Host Redirect from gateway 10.0.0.1`,
-                            `${ts} <span class="ts-warn">TTL Exceeded:</span> Time to live exceeded in transit`,
-                            `${ts} <span class="ts-info">Smurf:</span> Broadcast to 192.168.1.255 source ${targetTag}`,
-                            `${ts} <span class="ts-dim">Tcpdump:</span> verbose output suppressed, use -v or -vv`,
-                            `${ts} <span class="ts-err">Source Quench:</span> Please slow down transmission`,
-                            `${ts} <span class="ts-info">Timestamp:</span> Request from ${spoof} to ${targetTag}`,
-                            `${ts} <span class="ts-proc">wireshark:</span> Frame ${pid}: 98 bytes on wire (784 bits)`
+                            `${ts} <span class="ts-proc">kernel:</span> [IPTABLES] ICMP-DROP: IN=eth0 OUT= MAC=... SRC=${spoof} DST=${targetTag} TYPE=8 CODE=0`,
+                            `${ts} <span class="ts-warn">serverX auditd:</span> ALERT: Multiple ICMP Echo Requests from ${spoof} to subnet 192.168.1.0/24 detected.`,
+                            `${ts} <span class="ts-info">systemd-network:</span> interface eth0: ICMP rate limiting active for ${spoof}. Packets per second: 1.`,
+                            `${ts} <span class="ts-warn">snort[${pid}]:</span> [SID 2005] ATTACK-RESPONSES host ${targetTag} did not send ICMP Echo Reply. Stealth mode active.`,
+                            `${ts} <span class="ts-err">systemd:</span> service host-discovery-scan failed to complete. Status: ICMP_TIMEOUT`,
+                            `${ts} <span class="ts-info">PING</span> ${targetTag} (${state.ip}) 56(84) bytes of data.`,
+                            `${ts} <span class="ts-suc">Saturation:</span> ICMP buffer overflow on target router.`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 84;
 
-                    } else { // UDP
+                    } else { // UDP (Default)
                         const scenarios = [
-                            `${ts} <span class="ts-dim">0x0000:</span> 4500 05dc ${Math.floor(Math.random()*9999)} 0000 4011 .... ${state.ip.split('.').map(n=>parseInt(n).toString(16).padStart(2,'0')).join('')}`,
-                            `${ts} <span class="ts-info">IP</span> ${spoof}.${sport} > ${targetTag}.${Math.floor(Math.random()*65535)}: UDP, length 1400`,
-                            `${ts} <span class="ts-warn">[DROP]</span> UDP Fragment offset wrong. Dropped by kernel. Target: ${targetTag}`,
-                            `${ts} <span class="ts-err">ICMP</span> ${targetTag} udp port ${Math.floor(Math.random()*65535)} unreachable`,
-                            `${ts} <span class="ts-dim">Payload:</span> 58 58 58 58 58 58 58 58 (XXXXXXXX)`,
-                            `${ts} <span class="ts-info">Traffic:</span> 850 Mbps Outbound UDP flood`,
-                            `${ts} <span class="ts-proc">eth0:</span> TX packets: 24532 errors:0 dropped:0 overruns:0 carrier:0`,
-                            `${ts} <span class="ts-warn">Congestion:</span> Queue full on interface tun0`,
-                            `${ts} <span class="ts-info">Source:</span> Spoofed IP range 10.0.0.0/8`,
-                            `${ts} <span class="ts-err">Buffer Overflow:</span> Socket send buffer full`,
-                            `${ts} <span class="ts-dim">Memcached:</span> ASCII protocol detected on port 11211`,
-                            `${ts} <span class="ts-info">NTP:</span> Monlist command sent to ${targetTag}`,
-                            `${ts} <span class="ts-proc">LOIC:</span> Flooding ${targetTag} with random garbage data`,
-                            `${ts} <span class="ts-info">Length:</span> 65507 (Max UDP)`,
-                            `${ts} <span class="ts-warn">Firewall:</span> Rate limiting UDP traffic from ${spoof}`,
-                            `${ts} <span class="ts-dim">Fragment:</span> Offset 1480, More fragments=1`,
-                            `${ts} <span class="ts-err">Checksum:</span> 0xffff (Disabled)`,
-                            `${ts} <span class="ts-info">Bitrate:</span> 1.2 Mpps achieved`,
-                            `${ts} <span class="ts-proc">hping3:</span> UDP mode set. Target: ${targetTag}`,
-                            `${ts} <span class="ts-dim">Raw:</span> 45 00 00 1c 3e 21 00 00 40 11 ...`
+                            `${ts} <span class="ts-proc">kernel:</span> [ALERT] IN=eth0 OUT= MAC=... SRC=${spoof} DST=${targetTag} LEN=1500 PROTO=UDP SPT=${sport} DPT=${Math.floor(Math.random()*65535)}`,
+                            `${ts} <span class="ts-proc">kernel:</span> [CONNTRACK] UDP flood: ${spoof} hit 1000/sec limit. Dropping.`,
+                            `${ts} <span class="ts-err">systemd-network:</span> eth0: critical: RCV_ERR=128, DROPPED=4096. Link utilization 98%`,
+                            `${ts} <span class="ts-err">ping:</span> sendto: No buffer space available`,
+                            `${ts} <span class="ts-info">UDP:</span> Packet injected. Len=${Math.floor(Math.random()*1400)} Src=${spoof} Dst=${targetTag}`,
+                            `${ts} <span class="ts-suc">Bandwidth:</span> Saturating uplink... 500Mbps sent to ${targetTag}`
                         ];
                         log = scenarios[Math.floor(Math.random() * scenarios.length)];
                         size = 1000;
@@ -670,7 +582,51 @@
         function checkLaunch() { const btn = document.getElementById('btn-launch'); if(state.vector && state.duration) { btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed'); btn.classList.add('hover:bg-red-600', 'hover:text-black', 'shadow-[0_0_20px_#f00]'); btn.style.cursor = "pointer"; if(state.vector.color === 'red' || state.vector.color === 'purple') { btn.classList.add('animate-pulse'); } else { btn.classList.remove('animate-pulse'); } } }
         function startSimulation() { document.getElementById('sec-config').classList.add('hidden'); document.getElementById('sec-sim').classList.remove('hidden'); document.getElementById('sim-target-display').innerText = state.ip; const vecDisplay = document.getElementById('sim-vector-display'); vecDisplay.innerText = state.vector.name; const colors = { green: '#0f0', yellow: '#ff0', orange: '#ffa500', red: '#f00', purple: '#a855f7' }; vecDisplay.style.borderColor = colors[state.vector.color]; vecDisplay.style.color = colors[state.vector.color]; state.totalBytes = 0; runTimer(state.duration * 60); runAttackLoops(); }
         function runTimer(seconds) { let t = seconds; const el = document.getElementById('timer-display'); state.timers.push(setInterval(() => { const h = Math.floor(t/3600).toString().padStart(2,'0'); const m = Math.floor((t%3600)/60).toString().padStart(2,'0'); const s = (t%60).toString().padStart(2,'0'); el.innerText = `${h}:${m}:${s}`; t--; if(t<0) abortSequence(); }, 1000)); }
-        function runAttackLoops() { const logBox = document.getElementById('packet-log'); const byteEl = document.getElementById('bytes-val'); const unitEl = document.getElementById('unit-val'); const speed = 100; state.timers.push(setInterval(() => { const packetData = window.generatePacketLog ? window.generatePacketLog() : {html: "Initializing...", size: 0}; logBox.insertAdjacentHTML('beforeend', packetData.html); if(logBox.children.length > 25) { logBox.removeChild(logBox.firstChild); } logBox.scrollTop = logBox.scrollHeight; state.totalBytes += packetData.size; const PB = 1024 * 1024 * 1024 * 1024 * 1024; let displayVal = 0; let displayUnit = 'MB'; if (state.totalBytes > PB) { byteEl.innerText = "☠️"; byteEl.setAttribute('data-text', "∞"); unitEl.innerText = "INCALCULABLE"; unitEl.classList.add("text-red-500", "animate-pulse"); } else { unitEl.classList.remove("animate-pulse"); if (state.totalBytes < 1024 * 1024 * 1024) { displayVal = (state.totalBytes / (1024 * 1024)).toFixed(2); displayUnit = 'MB'; } else if (state.totalBytes < 1024 * 1024 * 1024 * 1024) { displayVal = (state.totalBytes / (1024 * 1024 * 1024)).toFixed(2); displayUnit = 'GB'; } else { displayVal = (state.totalBytes / (1024 * 1024 * 1024 * 1024)).toFixed(2); displayUnit = 'TB'; } byteEl.innerText = displayVal; byteEl.setAttribute('data-text', displayVal); unitEl.innerText = displayUnit; } }, speed)); }
+        function runAttackLoops() { 
+            const logBox = document.getElementById('packet-log'); 
+            const byteEl = document.getElementById('bytes-val'); 
+            const unitEl = document.getElementById('unit-val'); 
+            
+            // VELOCIDAD LOGS: 0.10s
+            const speed = 100; 
+            
+            state.timers.push(setInterval(() => { 
+                const packetData = window.generatePacketLog ? window.generatePacketLog() : {html: "Initializing...", size: 0}; 
+                logBox.insertAdjacentHTML('beforeend', packetData.html); 
+                if(logBox.children.length > 25) { logBox.removeChild(logBox.firstChild); } 
+                logBox.scrollTop = logBox.scrollHeight; 
+                
+                // MULTIPLICADORES DE ANCHO DE BANDA
+                let multiplier = 1;
+                if (state.vector.name === 'DNS AMP') multiplier = 50; 
+                else if (state.vector.name === 'UDP FLOOD') multiplier = 20;
+                else if (state.vector.name === 'TCP SYN') multiplier = 10;
+                else multiplier = 5;
+
+                state.totalBytes += packetData.size * multiplier; 
+                
+                const PB = 1024 * 1024 * 1024 * 1024 * 1024; 
+                let displayVal = 0; 
+                let displayUnit = 'MB'; 
+                
+                if (state.totalBytes > PB) { 
+                    byteEl.innerText = "☠️"; 
+                    byteEl.setAttribute('data-text', "∞"); 
+                    unitEl.innerText = "INCALCULABLE"; 
+                    unitEl.classList.add("text-red-500", "animate-pulse"); 
+                } else { 
+                    unitEl.classList.remove("animate-pulse"); 
+                    if (state.totalBytes < 1024 * 1024 * 1024) { 
+                        displayVal = (state.totalBytes / (1024 * 1024)).toFixed(2); displayUnit = 'MB'; 
+                    } else if (state.totalBytes < 1024 * 1024 * 1024 * 1024) { 
+                        displayVal = (state.totalBytes / (1024 * 1024 * 1024)).toFixed(2); displayUnit = 'GB'; 
+                    } else { 
+                        displayVal = (state.totalBytes / (1024 * 1024 * 1024 * 1024)).toFixed(2); displayUnit = 'TB'; 
+                    } 
+                    byteEl.innerText = displayVal; byteEl.setAttribute('data-text', displayVal); unitEl.innerText = displayUnit; 
+                } 
+            }, speed)); 
+        }
 
         // --- ANIMACIÓN REALISTA DE ABORTAR (SYSTEMD HALT) ---
         function abortSequence() {
